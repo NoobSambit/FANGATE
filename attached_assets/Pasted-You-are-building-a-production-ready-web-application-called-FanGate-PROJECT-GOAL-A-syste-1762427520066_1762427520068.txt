@@ -1,0 +1,203 @@
+You are building a production-ready web application called **FanGate**.
+
+### 🚀 PROJECT GOAL
+A system that verifies real BTS fans before accessing the concert ticket purchase link.
+Verification steps:
+1. Login via Spotify OAuth
+2. Spotify listening history analysis (top tracks, artists, recently played)
+3. BTS quiz
+4. If fan passes, generate a secure one-time token & redirect to ticket sale page.
+
+---
+
+### ✅ TECHNOLOGY STACK
+- Next.js 14 (App Router)
+- TypeScript
+- TailwindCSS
+- Prisma ORM
+- PostgreSQL database (Supabase or Neon) – MUST be fully setup
+- NextAuth (Spotify provider)
+- JWT + server session tokens
+- Axios/Fetch for Spotify requests
+- Ready for Vercel deployment
+
+---
+
+### ✅ DATABASE REQUIREMENTS (POSTGRESQL + PRISMA)
+
+Create these tables:
+
+✅ `User`
+- id (string uuid)
+- spotifyId (unique)
+- email
+- displayName
+- image
+- createdAt
+
+✅ `Verification`
+- id
+- userId (relation)
+- fanScore
+- quizPassed
+- verifiedAt
+- passToken
+- tokenExpiresAt
+
+✅ `QuizQuestion`
+- id
+- question (string)
+- options (string[])
+- correctIndex (integer)
+
+✅ `QuizAttempt`
+- id
+- userId
+- score
+- createdAt
+
+---
+
+### ✅ IMPORTANT: QUIZ HANDLING
+
+#### ✅ Include a `quiz.json` file in `/data/quiz.json`
+This JSON file will be used to store quiz questions manually later.
+
+Example format:
+```json
+[
+  {
+    "question": "Which BTS member released 'Seven'?",
+    "options": ["Jungkook", "V", "Jimin", "RM"],
+    "correctIndex": 0
+  }
+]
+✅ Include a script /scripts/seedQuiz.ts that:
+Reads /data/quiz.json
+
+Inserts all entries into QuizQuestion using Prisma
+
+Runs with npm run seed
+
+Does NOT crash if duplicates exist (use upsert or skip)
+
+✅ FALLBACK QUIZ (MANDATORY)
+Even if JSON is not loaded, Bolt must insert 5 default BTS questions into the database on project init.
+Questions should be REAL BTS trivia, not generic or AI-looking.
+
+Example fallback questions:
+
+“What is the name of BTS’s fandom?” → ARMY
+
+“Which BTS member is also known as Agust D?” → Suga
+
+“Which BTS album contains the song Blood Sweat & Tears?” → Wings
+
+“Who is the leader of BTS?” → RM
+
+“Which member’s solo album is called ‘FACE’?” → Jimin
+
+These should be automatically inserted only if DB has zero quiz questions.
+
+✅ LANDING PAGE
+Aesthetic BTS-themed (purple, neon, gradient, glass)
+
+Not generic UI
+
+Premium, professional
+
+Sections:
+✅ Hero with CTA: “Login with Spotify”
+✅ Why Fan Verification?
+✅ Steps of process
+✅ Footer
+
+✅ SPOTIFY AUTH & DATA ANALYSIS
+After login:
+
+Fetch top artists
+
+Fetch top tracks
+
+Fetch recently played
+
+Compare with hardcoded BTS artist ID array
+
+Compute fan score:
++50 if BTS in top artists
++20 per solo member in top artists
++10 per BTS track in top songs
++30 if recent BTS listening in last 30 days
++10 if Spotify account > 60 days old
+
+Store verification attempt.
+
+If score >= 70 → allow quiz.
+
+✅ QUIZ PAGE
+10 questions from DB
+
+Timer + anti-bot
+
+Score >= 7 → Passed
+
+Store QuizAttempt
+
+If passed + fan score valid → generate passToken (JWT) expiring in 10 minutes
+
+✅ AFTER VERIFICATION
+Show success screen:
+
+Confetti animation
+
+“You are a verified ARMY”
+
+Button → redirect to process.env.TICKET_REDIRECT_URL with token
+
+✅ ADMIN PANEL /admin
+Protected by admin email in env
+
+Show:
+
+users
+
+verification score
+
+quiz results
+
+export CSV button
+
+✅ DEPLOYMENT REQUIREMENTS
+Fully compatible with Vercel serverless
+
+.env.example must include:
+DATABASE_URL
+SPOTIFY_CLIENT_ID
+SPOTIFY_CLIENT_SECRET
+NEXTAUTH_SECRET
+TICKET_REDIRECT_URL
+ADMIN_EMAIL
+
+No TODOs left in code
+
+Must run with: npm run seed to load quiz.json
+
+✅ FINAL DELIVERABLE FROM BOLT
+Bolt must generate:
+
+✅ Next.js app
+✅ Tailwind styling
+✅ NextAuth + Spotify login
+✅ Prisma schema + migration files
+✅ quiz.json file
+✅ seedQuiz.ts script
+✅ fallback quiz insertion
+✅ Fan score API
+✅ Quiz system
+✅ Token redirect logic
+✅ Admin panel
+✅ Fully deployable on Vercel
+
+NO placeholder UI.
+NO partial implementations.
+UI must be unique, aesthetic, premium, BTS-themed.
