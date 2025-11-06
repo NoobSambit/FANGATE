@@ -12,6 +12,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const user = await prisma.user.findFirst({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     const { verificationId } = await req.json();
 
     const verification = await prisma.verification.findUnique({
@@ -23,13 +31,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Verification not found' }, { status: 404 });
     }
 
+    if (verification.userId !== user.id) {
+      return NextResponse.json({ error: 'Forbidden: Verification does not belong to you' }, { status: 403 });
+    }
+
     if (!verification.quizPassed) {
       return NextResponse.json({ error: 'Quiz not passed' }, { status: 400 });
     }
 
-    const secret = new TextEncoder().encode(
-      process.env.NEXTAUTH_SECRET || 'your-secret-key'
-    );
+    if (!process.env.NEXTAUTH_SECRET) {
+      throw new Error('NEXTAUTH_SECRET must be set for secure token generation');
+    }
+
+    const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET);
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 

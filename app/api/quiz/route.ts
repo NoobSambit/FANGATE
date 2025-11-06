@@ -39,6 +39,20 @@ export async function POST(req: NextRequest) {
 
     const { answers, verificationId } = await req.json();
 
+    if (verificationId) {
+      const verification = await prisma.verification.findUnique({
+        where: { id: verificationId },
+      });
+
+      if (!verification) {
+        return NextResponse.json({ error: 'Verification not found' }, { status: 404 });
+      }
+
+      if (verification.userId !== user.id) {
+        return NextResponse.json({ error: 'Forbidden: Verification does not belong to you' }, { status: 403 });
+      }
+    }
+
     const questions = await prisma.quizQuestion.findMany({
       take: 10,
       orderBy: {
