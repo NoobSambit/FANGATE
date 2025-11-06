@@ -15,12 +15,18 @@ body {
     sans-serif;
 }
 
-.gradient-purple {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
-.gradient-neon {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
 }
 
 .glass-effect {
@@ -29,10 +35,31 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.gradient-purple {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-neon {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
 .glow-purple {
   box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
 }
 
 .glow-pink {
   box-shadow: 0 0 20px rgba(240, 147, 251, 0.5);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
