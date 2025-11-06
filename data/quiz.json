@@ -1,0 +1,77 @@
+[
+  {
+    "question": "Which BTS member released 'Seven'?",
+    "options": ["Jungkook", "V", "Jimin", "RM"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the name of BTS's fandom?",
+    "options": ["BLINK", "ARMY", "ONCE", "STAY"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS member is also known as Agust D?",
+    "options": ["RM", "J-Hope", "Suga", "Jin"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS album contains the song 'Blood Sweat & Tears'?",
+    "options": ["Love Yourself: Tear", "Wings", "Map of the Soul: 7", "The Most Beautiful Moment in Life"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Who is the leader of BTS?",
+    "options": ["Suga", "J-Hope", "RM", "Jin"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which member's solo album is called 'FACE'?",
+    "options": ["Jungkook", "Jimin", "V", "Jin"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What year did BTS debut?",
+    "options": ["2011", "2012", "2013", "2014"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song was their first Billboard Hot 100 number one hit?",
+    "options": ["Butter", "Dynamite", "Permission to Dance", "Life Goes On"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is Jin's real name?",
+    "options": ["Kim Seokjin", "Park Jimin", "Kim Taehyung", "Jung Hoseok"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which member is known as the 'Golden Maknae'?",
+    "options": ["V", "Jimin", "Jungkook", "Suga"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What is V's real name?",
+    "options": ["Kim Namjoon", "Kim Taehyung", "Min Yoongi", "Jung Hoseok"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS album won a Grammy nomination?",
+    "options": ["Love Yourself: Answer", "Map of the Soul: 7", "BE", "Proof"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What company did BTS debut under?",
+    "options": ["SM Entertainment", "YG Entertainment", "Big Hit Entertainment", "JYP Entertainment"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which member released the solo song 'Chicken Noodle Soup'?",
+    "options": ["RM", "Suga", "J-Hope", "Jungkook"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What does BTS stand for?",
+    "options": ["Beyond The Scene", "Bangtan Sonyeondan", "Both A and B", "Born To Shine"],
+    "correctIndex": 2
+  }
+]

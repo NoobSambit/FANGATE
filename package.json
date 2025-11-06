@@ -1,0 +1,38 @@
+{
+  "name": "fangate",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 5000",
+    "build": "next build",
+    "start": "next start -p 5000",
+    "lint": "next lint",
+    "seed": "tsx scripts/seedQuiz.ts",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "next": "14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "next-auth": "^4.24.10",
+    "prisma": "^5.22.0",
+    "@prisma/client": "^5.22.0",
+    "jose": "^5.9.6",
+    "axios": "^1.7.8",
+    "react-confetti": "^6.1.0",
+    "lucide-react": "^0.460.0",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/papaparse": "^5.3.15",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.18",
+    "tsx": "^4.19.2"
+  }
+}
