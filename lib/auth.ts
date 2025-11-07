@@ -35,9 +35,10 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, token, user }) {
+      // For JWT strategy, use token; for database strategy, use user
       if (session.user) {
-        session.user.id = user.id;
+        session.user.id = (token?.sub as string) || (user?.id as string) || '';
       }
       return session;
     },
@@ -46,12 +47,19 @@ export const authOptions: NextAuthOptions = {
       // No need to manually create/update user here
       return true;
     },
+    async jwt({ token, user, account, profile }) {
+      // Store user ID in token for JWT strategy
+      if (user) {
+        token.sub = user.id;
+      }
+      return token;
+    },
   },
   pages: {
     signIn: '/',
   },
   session: {
-    strategy: 'database',
+    strategy: 'jwt', // Temporarily using JWT to test if database is the issue
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
