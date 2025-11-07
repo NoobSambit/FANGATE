@@ -92,7 +92,7 @@ export default function SuccessPage() {
                 </div>
                 <h1 className="text-5xl font-bold mb-4">
                   <span className="gradient-purple bg-clip-text text-transparent">
-                    You're a Verified ARMY!
+                    You&apos;re a Verified ARMY!
                   </span>
                 </h1>
                 <p className="text-xl text-gray-300">
@@ -145,7 +145,7 @@ export default function SuccessPage() {
 
               <div className="glass-effect p-8 rounded-2xl">
                 <p className="text-gray-300 mb-4">
-                  Don't worry! You can try again after listening to more BTS music and learning more about the group.
+                  Don&apos;t worry! You can try again after listening to more BTS music and learning more about the group.
                 </p>
                 <button
                   onClick={() => router.push('/')}

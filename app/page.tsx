@@ -56,7 +56,7 @@ export default function Home() {
             </div>
             
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
-              <span className="text-white">Prove You're a</span>
+              <span className="text-white">Prove You&apos;re a</span>
               <br />
               <span className="relative inline-block">
                 <span className="relative z-10 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-gradient">

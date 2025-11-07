@@ -66,7 +66,7 @@ export default function VerificationPage() {
               </span>
             </h1>
             <p className="text-gray-300">
-              We'll analyze your Spotify listening history to calculate your BTS fan score
+              We&apos;ll analyze your Spotify listening history to calculate your BTS fan score
             </p>
           </div>
 
