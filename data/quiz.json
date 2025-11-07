@@ -1,77 +1,558 @@
 [
   {
-    "question": "Which BTS member released 'Seven'?",
-    "options": ["Jungkook", "V", "Jimin", "RM"],
+    "question": "What color did BTS wear at the 2019 Grammy Awards?",
+    "options": ["Black", "Blue", "Red", "White"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS member is the oldest?",
+    "options": ["Jin", "Suga", "RM", "J-Hope"],
     "correctIndex": 0
   },
   {
-    "question": "What is the name of BTS's fandom?",
-    "options": ["BLINK", "ARMY", "ONCE", "STAY"],
+    "question": "What is Jimin's real name?",
+    "options": ["Park Jimin", "Kim Jimin", "Lee Jimin", "Jeon Jimin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which song features Halsey?",
+    "options": ["Mic Drop", "Boy With Luv", "DNA", "Fake Love"],
     "correctIndex": 1
   },
   {
-    "question": "Which BTS member is also known as Agust D?",
-    "options": ["RM", "J-Hope", "Suga", "Jin"],
-    "correctIndex": 2
-  },
-  {
-    "question": "Which BTS album contains the song 'Blood Sweat & Tears'?",
-    "options": ["Love Yourself: Tear", "Wings", "Map of the Soul: 7", "The Most Beautiful Moment in Life"],
+    "question": "What is J-Hope's real name?",
+    "options": ["Kim Hoseok", "Jung Hoseok", "Lee Hoseok", "Park Hoseok"],
     "correctIndex": 1
   },
   {
-    "question": "Who is the leader of BTS?",
-    "options": ["Suga", "J-Hope", "RM", "Jin"],
+    "question": "Which BTS member was born in Gwangju?",
+    "options": ["RM", "Suga", "J-Hope", "V"],
     "correctIndex": 2
   },
   {
-    "question": "Which member's solo album is called 'FACE'?",
-    "options": ["Jungkook", "Jimin", "V", "Jin"],
+    "question": "What was BTS's debut song?",
+    "options": ["No More Dream", "We Are Bulletproof Pt.2", "N.O", "Boy In Luv"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which member's solo song is 'Euphoria'?",
+    "options": ["V", "Jimin", "Jungkook", "Jin"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What is RM's real name?",
+    "options": ["Kim Namjoon", "Park Namjoon", "Lee Namjoon", "Jung Namjoon"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS album features 'Spring Day'?",
+    "options": ["Wings", "You Never Walk Alone", "Love Yourself: Her", "Dark & Wild"],
     "correctIndex": 1
   },
   {
-    "question": "What year did BTS debut?",
-    "options": ["2011", "2012", "2013", "2014"],
+    "question": "What is Suga's real name?",
+    "options": ["Min Yoongi", "Kim Yoongi", "Park Yoongi", "Lee Yoongi"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which member released the song 'Singularity'?",
+    "options": ["Jin", "V", "Jimin", "Suga"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What does ARMY stand for?",
+    "options": ["Adorable Representative M.C for Youth", "Amazing Representative Music for Youth", "Adorable Representative Music for You", "Amazing Representative M.C for You"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which year did BTS perform at the Billboard Music Awards for the first time?",
+    "options": ["2016", "2017", "2018", "2019"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is Jungkook's real name?",
+    "options": ["Jeon Jungkook", "Kim Jungkook", "Park Jungkook", "Lee Jungkook"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS song features Nicki Minaj?",
+    "options": ["DNA", "Idol", "Fake Love", "Boy With Luv"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of Jin's solo song released in 2019?",
+    "options": ["Epiphany", "Moon", "Awake", "Tonight"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which member is known for his deep voice?",
+    "options": ["Jimin", "V", "Jungkook", "J-Hope"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What was the first BTS song to reach 1 billion views on YouTube?",
+    "options": ["DNA", "Boy With Luv", "Fake Love", "Mic Drop"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS album was released in 2020 during the pandemic?",
+    "options": ["Map of the Soul: 7", "BE", "Proof", "Love Yourself: Answer"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What position does J-Hope hold in BTS?",
+    "options": ["Main Vocalist", "Lead Rapper", "Main Dancer", "Visual"],
     "correctIndex": 2
   },
   {
-    "question": "Which BTS song was their first Billboard Hot 100 number one hit?",
+    "question": "Which member released 'Hope World' mixtape?",
+    "options": ["RM", "Suga", "J-Hope", "Jin"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What is the name of BTS's reality show?",
+    "options": ["Run BTS", "BTS Gayo", "Bon Voyage", "Both A and C"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS song has a fully English version?",
+    "options": ["Fire", "Not Today", "Dynamite", "Save Me"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What year did BTS win their first major award (Artist of the Year)?",
+    "options": ["2014", "2015", "2016", "2017"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which member's stage name was inspired by a hat?",
+    "options": ["J-Hope", "V", "Suga", "RM"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of RM's first solo mixtape?",
+    "options": ["Mono", "RM", "Indigo", "Hope World"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song was performed at the UN General Assembly?",
+    "options": ["Spring Day", "Permission to Dance", "Dynamite", "Butter"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the youngest member's position in BTS?",
+    "options": ["Main Rapper", "Lead Dancer", "Main Vocalist", "Sub Vocalist"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which album series includes 'Her', 'Tear', and 'Answer'?",
+    "options": ["Wings", "Love Yourself", "Map of the Soul", "The Most Beautiful Moment in Life"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song features the lyrics 'I'm in the stars tonight'?",
     "options": ["Butter", "Dynamite", "Permission to Dance", "Life Goes On"],
     "correctIndex": 1
   },
   {
-    "question": "What is Jin's real name?",
-    "options": ["Kim Seokjin", "Park Jimin", "Kim Taehyung", "Jung Hoseok"],
+    "question": "What is the name of Jungkook's first solo album?",
+    "options": ["Golden", "Face", "Hope World", "Indigo"],
     "correctIndex": 0
   },
   {
-    "question": "Which member is known as the 'Golden Maknae'?",
-    "options": ["V", "Jimin", "Jungkook", "Suga"],
+    "question": "Which BTS member released the solo album 'Indigo'?",
+    "options": ["Suga", "J-Hope", "RM", "V"],
     "correctIndex": 2
   },
   {
-    "question": "What is V's real name?",
-    "options": ["Kim Namjoon", "Kim Taehyung", "Min Yoongi", "Jung Hoseok"],
+    "question": "What is V's solo album called?",
+    "options": ["Layover", "Hope World", "D-Day", "Jack In The Box"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member was born in Busan?",
+    "options": ["Jin", "Jimin", "V", "Both Jimin and Jungkook"],
+    "correctIndex": 3
+  },
+  {
+    "question": "What was BTS's first full-length album?",
+    "options": ["Dark & Wild", "Skool Luv Affair", "O!RUL8,2?", "Wings"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS song was released in 2021 and became their third number one on Billboard Hot 100?",
+    "options": ["Dynamite", "Butter", "Permission to Dance", "My Universe"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What is Suga's solo album series called?",
+    "options": ["Hope World", "Agust D", "Mono", "Indigo"],
     "correctIndex": 1
   },
   {
-    "question": "Which BTS album won a Grammy nomination?",
-    "options": ["Love Yourself: Answer", "Map of the Soul: 7", "BE", "Proof"],
+    "question": "Which BTS member was born in Daegu?",
+    "options": ["V", "Suga", "Jin", "J-Hope"],
     "correctIndex": 1
   },
   {
-    "question": "What company did BTS debut under?",
-    "options": ["SM Entertainment", "YG Entertainment", "Big Hit Entertainment", "JYP Entertainment"],
+    "question": "What was BTS's lightstick called before the redesign?",
+    "options": ["Bang Bong", "Army Bomb", "BTS Stick", "Purple Light"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song features Steve Aoki?",
+    "options": ["Mic Drop", "DNA", "Not Today", "Fire"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What year was BTS's Love Yourself World Tour?",
+    "options": ["2017", "2018", "2019", "2020"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS member released 'The Astronaut'?",
+    "options": ["Jin", "V", "Jimin", "Jungkook"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is J-Hope's solo album called?",
+    "options": ["Hope World", "Jack In The Box", "Both A and B", "More"],
     "correctIndex": 2
   },
   {
-    "question": "Which member released the solo song 'Chicken Noodle Soup'?",
-    "options": ["RM", "Suga", "J-Hope", "Jungkook"],
+    "question": "Which BTS song was their first to chart on Billboard Hot 100?",
+    "options": ["DNA", "Mic Drop", "Boy With Luv", "Fake Love"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What color represents BTS and ARMY?",
+    "options": ["Purple", "Blue", "Pink", "Gold"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member's birthday is September 12?",
+    "options": ["RM", "Jin", "Suga", "Jungkook"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What was BTS's first music video to reach 100 million views?",
+    "options": ["Dope", "Blood Sweat & Tears", "Fire", "Save Me"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS album features 'Life Goes On'?",
+    "options": ["Map of the Soul: 7", "BE", "Proof", "Love Yourself: Answer"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of BTS's collaboration with Coldplay?",
+    "options": ["My Universe", "Permission to Dance", "Butter", "Dynamite"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member's birthday is October 13?",
+    "options": ["Jimin", "V", "Jungkook", "Jin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What was BTS's first win on a music show?",
+    "options": ["No More Dream", "Boy In Luv", "I Need U", "Danger"],
     "correctIndex": 2
   },
   {
-    "question": "What does BTS stand for?",
-    "options": ["Beyond The Scene", "Bangtan Sonyeondan", "Both A and B", "Born To Shine"],
+    "question": "Which BTS member's birthday is December 4?",
+    "options": ["Jin", "RM", "V", "Suga"],
     "correctIndex": 2
+  },
+  {
+    "question": "What is the name of BTS's 2023 anthology album?",
+    "options": ["Proof", "BE", "Map of the Soul: 7", "Love Yourself: Answer"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member's birthday is December 30?",
+    "options": ["V", "Jungkook", "Jin", "Suga"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What was BTS's first single released entirely in English?",
+    "options": ["Boy With Luv", "Dynamite", "Butter", "ON"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song features Lauv?",
+    "options": ["Make It Right", "Boy With Luv", "Mic Drop", "DNA"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the name of BTS's 2020 online concert?",
+    "options": ["Bang Bang Con", "Map of the Soul ON:E", "Both A and B", "BTS World Tour"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS member's birthday is February 18?",
+    "options": ["J-Hope", "RM", "Suga", "Jimin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What was the theme of BTS's 2019 'Speak Yourself' tour?",
+    "options": ["Love Yourself", "Map of the Soul", "Wings", "Youth"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member's birthday is March 9?",
+    "options": ["Suga", "RM", "J-Hope", "Jin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the name of BTS's second English single?",
+    "options": ["Dynamite", "Butter", "Permission to Dance", "My Universe"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS member's birthday is September 1?",
+    "options": ["Jungkook", "V", "Jimin", "RM"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What year did BTS perform at the American Music Awards for the first time?",
+    "options": ["2016", "2017", "2018", "2019"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song was written about their struggles and journey?",
+    "options": ["Tomorrow", "Never Mind", "Spine Breaker", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "What is the name of BTS's mobile game?",
+    "options": ["BTS World", "Superstar BTS", "BTS Island", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS album series features 'Persona' and 'Shadow'?",
+    "options": ["Love Yourself", "Map of the Soul", "Wings", "The Most Beautiful Moment in Life"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What was BTS's first concert in the United States?",
+    "options": ["2014 KCON LA", "2015 TRB Tour", "2017 Wings Tour", "2016 Epilogue Concert"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS song features Megan Thee Stallion?",
+    "options": ["Dynamite", "Butter", "Permission to Dance", "None"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What does 'Borahae' mean?",
+    "options": ["I love you", "I purple you", "Forever", "Thank you"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS member created the term 'Borahae'?",
+    "options": ["RM", "Jin", "V", "Jungkook"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song features the line 'So show me, I'll show you'?",
+    "options": ["Mic Drop", "DNA", "Fire", "Save Me"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of the BTS webtoon series?",
+    "options": ["Save Me", "BTS Universe", "Hyyh", "The Notes"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member has a solo song called 'Filter'?",
+    "options": ["V", "Jimin", "Jungkook", "Jin"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What was BTS's first award win?",
+    "options": ["Rookie of the Year", "Best New Artist", "New Artist Award", "Rising Star Award"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song was used in a Hyundai commercial?",
+    "options": ["Not Today", "IONIQ: I'm On It", "DNA", "Fire"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of RM's 2022 solo album?",
+    "options": ["Mono", "Indigo", "RM", "Hope World"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS member has a solo song called 'Inner Child'?",
+    "options": ["Jimin", "V", "Jungkook", "Jin"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What year did BTS receive the Order of Cultural Merit from South Korea?",
+    "options": ["2017", "2018", "2019", "2020"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song features the rap line only?",
+    "options": ["Ddaeng", "Cypher Pt. 3", "Outro: Tear", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "What is the name of Suga's 2023 solo album?",
+    "options": ["Agust D", "D-2", "D-Day", "Shadow"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song has a music video filmed in one continuous shot?",
+    "options": ["Save Me", "Run", "I Need U", "Spring Day"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the name of BTS's travel reality show?",
+    "options": ["Run BTS", "Bon Voyage", "In The Soop", "Both B and C"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS member released the song 'Still With You'?",
+    "options": ["Jungkook", "V", "Jimin", "Jin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What was BTS's stadium tour called in 2019?",
+    "options": ["Love Yourself", "Speak Yourself", "Map of the Soul", "Wings"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song was written about the Sewol Ferry tragedy?",
+    "options": ["Whalien 52", "Spring Day", "Tomorrow", "2! 3!"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is Jin's solo song from Wings album called?",
+    "options": ["Awake", "Epiphany", "Moon", "Tonight"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member appeared in the drama 'Hwarang'?",
+    "options": ["Jin", "V", "Jungkook", "Jimin"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of the vocal line unit song from Wings?",
+    "options": ["Stigma", "The Truth Untold", "Lost", "Dimple"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS member wrote 'Magic Shop'?",
+    "options": ["RM", "Jungkook", "Suga", "J-Hope"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What was BTS's first Japanese single?",
+    "options": ["No More Dream", "For You", "Run", "I Need U"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song features the lyric 'I'm the one I should love'?",
+    "options": ["Answer: Love Myself", "Epiphany", "Magic Shop", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "What is RM's mixtape 'Mono' subtitle?",
+    "options": ["Playlist", "Diary", "Reflection", "Journey"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member has a dog named Yeontan?",
+    "options": ["Jimin", "V", "Jungkook", "Jin"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of BTS's 2017 repackage album?",
+    "options": ["Wings", "You Never Walk Alone", "Love Yourself: Her", "Dark & Wild"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song was performed at the 2019 Grammy Awards?",
+    "options": ["IDOL", "Fake Love", "Boy With Luv", "Mic Drop"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is Jungkook's nickname given by fans?",
+    "options": ["Golden Maknae", "Muscle Pig", "Justin Seagull", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS album features the song 'House of Cards'?",
+    "options": ["Dark & Wild", "The Most Beautiful Moment in Life Pt. 2", "Wings", "Skool Luv Affair"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What was the first BTS song to have an all-English title?",
+    "options": ["Boy With Luv", "Dynamite", "MIC Drop", "Butter"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS member has a solo song called 'Reflection'?",
+    "options": ["RM", "Suga", "J-Hope", "Jin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the name of the BTS Universe story?",
+    "options": ["BU", "HYYH", "Save Me", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS song features the line 'I'm working late, cause I'm a singer'?",
+    "options": ["Coffee", "Pied Piper", "Spine Breaker", "Boyz With Fun"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What year did BTS sign with Columbia Records?",
+    "options": ["2017", "2018", "2019", "2020"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS member has a dog named Holly?",
+    "options": ["RM", "Suga", "J-Hope", "Jin"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of the subunit featuring RM, Suga, and J-Hope?",
+    "options": ["Rap Line", "Cypher", "BTS Rap Unit", "Trinity"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS song won Song of the Year at the 2020 Melon Music Awards?",
+    "options": ["Dynamite", "ON", "Black Swan", "Life Goes On"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is V's solo song from Map of the Soul: 7 called?",
+    "options": ["Singularity", "Stigma", "Inner Child", "Sweet Night"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS member studied in New Zealand?",
+    "options": ["RM", "Jin", "J-Hope", "Jungkook"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the name of BTS's 2015 mini album?",
+    "options": ["Skool Luv Affair", "The Most Beautiful Moment in Life Pt. 1", "Dark & Wild", "O!RUL8,2?"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song features the Bangtan Boys' phone numbers in the lyrics?",
+    "options": ["War of Hormone", "Just One Day", "Miss Right", "Hold Me Tight"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the name of J-Hope's second solo album released in 2022?",
+    "options": ["Hope World", "Jack In The Box", "More", "Arson"],
+    "correctIndex": 1
   }
 ]
+
