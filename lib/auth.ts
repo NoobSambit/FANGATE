@@ -42,39 +42,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account, profile }) {
-      try {
-        if (account?.provider === 'spotify' && profile) {
-          const spotifyProfile = profile as any;
-          
-          // Try to upsert user, but don't fail if it errors (PrismaAdapter handles user creation)
-          try {
-            await prisma.user.upsert({
-              where: { spotifyId: account.providerAccountId },
-              update: {
-                email: spotifyProfile.email,
-                displayName: spotifyProfile.display_name,
-                image: spotifyProfile.images?.[0]?.url,
-              },
-              create: {
-                spotifyId: account.providerAccountId,
-                email: spotifyProfile.email,
-                displayName: spotifyProfile.display_name,
-                image: spotifyProfile.images?.[0]?.url,
-              },
-            });
-          } catch (dbError: any) {
-            // Log database errors but don't block sign-in
-            // PrismaAdapter will handle user/account creation
-            console.error('User upsert error (non-blocking):', dbError?.message || dbError);
-          }
-        }
-        return true;
-      } catch (error: any) {
-        console.error('SignIn callback error:', error?.message || error);
-        // Return true to allow sign-in to proceed even if callback fails
-        // The PrismaAdapter will handle the database operations
-        return true;
-      }
+      // PrismaAdapter handles user/account creation automatically
+      // No need to manually create/update user here
+      return true;
     },
   },
   pages: {
