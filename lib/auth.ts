@@ -42,25 +42,31 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account, profile }) {
-      if (account?.provider === 'spotify' && profile) {
-        const spotifyProfile = profile as any;
-        
-        await prisma.user.upsert({
-          where: { spotifyId: account.providerAccountId },
-          update: {
-            email: spotifyProfile.email,
-            displayName: spotifyProfile.display_name,
-            image: spotifyProfile.images?.[0]?.url,
-          },
-          create: {
-            spotifyId: account.providerAccountId,
-            email: spotifyProfile.email,
-            displayName: spotifyProfile.display_name,
-            image: spotifyProfile.images?.[0]?.url,
-          },
-        });
+      try {
+        if (account?.provider === 'spotify' && profile) {
+          const spotifyProfile = profile as any;
+          
+          await prisma.user.upsert({
+            where: { spotifyId: account.providerAccountId },
+            update: {
+              email: spotifyProfile.email,
+              displayName: spotifyProfile.display_name,
+              image: spotifyProfile.images?.[0]?.url,
+            },
+            create: {
+              spotifyId: account.providerAccountId,
+              email: spotifyProfile.email,
+              displayName: spotifyProfile.display_name,
+              image: spotifyProfile.images?.[0]?.url,
+            },
+          });
+        }
+        return true;
+      } catch (error) {
+        console.error('SignIn callback error:', error);
+        // Don't block sign-in if user upsert fails, but log it
+        return true;
       }
-      return true;
     },
   },
   pages: {

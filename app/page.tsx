@@ -1,13 +1,15 @@
 'use client';
 
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { Music, Shield, Trophy, Sparkles, ChevronRight, Star, Zap, Award } from 'lucide-react';
+import { Music, Shield, Trophy, Sparkles, ChevronRight, Star, Zap, Award, AlertCircle } from 'lucide-react';
 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get('error');
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -81,6 +83,20 @@ export default function Home() {
               <span className="relative z-10">Login with Spotify</span>
               <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={20} />
             </button>
+
+            {error && (
+              <div className="mt-6 max-w-md mx-auto p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start gap-3">
+                <AlertCircle className="text-red-400 flex-shrink-0 mt-0.5" size={20} />
+                <div>
+                  <p className="text-red-200 font-semibold">Login Error</p>
+                  <p className="text-red-300 text-sm mt-1">
+                    {error === 'OAuthCallback' 
+                      ? 'Authentication failed. This might be a database connection issue. Please try again or contact support.'
+                      : `Error: ${error}`}
+                  </p>
+                </div>
+              </div>
+            )}
 
             <p className="text-sm text-gray-500 mt-6 flex items-center justify-center gap-2">
               <Shield size={14} />
