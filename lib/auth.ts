@@ -22,7 +22,8 @@ if (!process.env.NEXTAUTH_SECRET) {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // Temporarily disabled adapter to test if it's causing the issue
+  // adapter: PrismaAdapter(prisma),
   providers: [
     SpotifyProvider({
       clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -43,14 +44,38 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account, profile }) {
-      // PrismaAdapter handles user/account creation automatically
-      // No need to manually create/update user here
+      // Without adapter, manually create user in database
+      if (account?.provider === 'spotify' && profile) {
+        try {
+          const spotifyProfile = profile as any;
+          await prisma.user.upsert({
+            where: { spotifyId: account.providerAccountId },
+            update: {
+              email: spotifyProfile.email,
+              displayName: spotifyProfile.display_name,
+              image: spotifyProfile.images?.[0]?.url,
+            },
+            create: {
+              spotifyId: account.providerAccountId,
+              email: spotifyProfile.email,
+              displayName: spotifyProfile.display_name,
+              image: spotifyProfile.images?.[0]?.url,
+            },
+          });
+        } catch (error: any) {
+          console.error('User creation error:', error);
+          // Don't block sign-in, but log the error
+        }
+      }
       return true;
     },
     async jwt({ token, user, account, profile }) {
       // Store user ID in token for JWT strategy
       if (user) {
-        token.sub = user.id;
+        token.sub = user.id || account?.providerAccountId || '';
+      } else if (account?.providerAccountId) {
+        // If no user object, use providerAccountId
+        token.sub = account.providerAccountId;
       }
       return token;
     },
