@@ -8,4 +8,8 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
+  # These are public URLs, not secrets - exclude from secrets scanning
+  SECRETS_SCAN_OMIT_KEYS = "NEXTAUTH_URL,NEXT_PUBLIC_TICKET_REDIRECT_URL"
+  # Exclude build cache directories from secrets scanning
+  SECRETS_SCAN_OMIT_PATHS = ".netlify/**,.next/**,node_modules/**"
 
