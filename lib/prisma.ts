@@ -3,9 +3,10 @@ import { PrismaClient } from '@prisma/client';
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 // Configure Prisma for serverless environments
-const prismaClientOptions = {
+const prismaClientOptions: {
+  log?: ('query' | 'info' | 'warn' | 'error')[];
+} = {
   log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  errorFormat: 'pretty',
 };
 
 export const prisma = globalForPrisma.prisma || new PrismaClient(prismaClientOptions);
