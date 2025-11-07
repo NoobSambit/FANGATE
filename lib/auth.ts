@@ -10,14 +10,27 @@ const SPOTIFY_SCOPES = [
   'user-read-recently-played'
 ].join(' ');
 
+// Validate required environment variables
+if (!process.env.SPOTIFY_CLIENT_ID) {
+  throw new Error('SPOTIFY_CLIENT_ID is not set in environment variables');
+}
+if (!process.env.SPOTIFY_CLIENT_SECRET) {
+  throw new Error('SPOTIFY_CLIENT_SECRET is not set in environment variables');
+}
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error('NEXTAUTH_SECRET is not set in environment variables');
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     SpotifyProvider({
-      clientId: process.env.SPOTIFY_CLIENT_ID!,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
+      clientId: process.env.SPOTIFY_CLIENT_ID,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
       authorization: {
-        params: { scope: SPOTIFY_SCOPES },
+        params: { 
+          scope: SPOTIFY_SCOPES,
+        },
       },
     }),
   ],
