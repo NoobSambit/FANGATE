@@ -39,25 +39,41 @@ export async function getSpotifyData(accessToken: string) {
 
 export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
   let score = 0;
+  const breakdown = {
+    topArtists: 0,
+    soloMembers: 0,
+    soloMembersCount: 0,
+    topTracks: 0,
+    topTracksCount: 0,
+    recentListening: 0,
+    accountAge: 0,
+  };
   
   const topArtistIds = spotifyData.topArtists.map((artist: any) => artist.id);
   const hasBTS = topArtistIds.some((id: string) => BTS_ARTIST_IDS.includes(id));
   
   if (hasBTS) {
     score += 50;
+    breakdown.topArtists = 50;
   }
   
   const soloMembersCount = topArtistIds.filter((id: string) => 
     BTS_SOLO_ARTIST_IDS.includes(id)
   ).length;
-  score += soloMembersCount * 20;
+  const soloMembersPoints = soloMembersCount * 20;
+  score += soloMembersPoints;
+  breakdown.soloMembers = soloMembersPoints;
+  breakdown.soloMembersCount = soloMembersCount;
   
   const btsTracks = spotifyData.topTracks.filter((track: any) =>
     track.artists.some((artist: any) => 
       BTS_ARTIST_IDS.includes(artist.id) || BTS_SOLO_ARTIST_IDS.includes(artist.id)
     )
   );
-  score += btsTracks.length * 10;
+  const topTracksPoints = btsTracks.length * 10;
+  score += topTracksPoints;
+  breakdown.topTracks = topTracksPoints;
+  breakdown.topTracksCount = btsTracks.length;
   
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -70,6 +86,7 @@ export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
   
   if (recentBTSListening) {
     score += 30;
+    breakdown.recentListening = 30;
   }
   
   const sixtyDaysAgo = new Date();
@@ -77,7 +94,13 @@ export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
   
   if (accountCreatedAt < sixtyDaysAgo) {
     score += 10;
+    breakdown.accountAge = 10;
   }
   
-  return Math.min(score, 200);
+  const totalScore = Math.min(score, 200);
+  
+  return {
+    totalScore,
+    breakdown,
+  };
 }

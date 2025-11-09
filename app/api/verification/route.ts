@@ -50,20 +50,21 @@ export async function POST(req: NextRequest) {
     }
 
     const spotifyData = await getSpotifyData(account.access_token);
-    const fanScore = calculateFanScore(spotifyData, user.createdAt);
+    const fanScoreResult = calculateFanScore(spotifyData, user.createdAt);
 
     const verification = await prisma.verification.create({
       data: {
         userId: user.id,
-        fanScore,
+        fanScore: fanScoreResult.totalScore,
         quizPassed: false,
       },
     });
 
     return NextResponse.json({
       verificationId: verification.id,
-      fanScore,
-      canTakeQuiz: fanScore >= 70,
+      fanScore: fanScoreResult.totalScore,
+      breakdown: fanScoreResult.breakdown,
+      canTakeQuiz: fanScoreResult.totalScore >= 70,
     });
   } catch (error: any) {
     console.error('Verification error:', error);
