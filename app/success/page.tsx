@@ -28,6 +28,7 @@ export default function SuccessPage() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [questionResults, setQuestionResults] = useState<QuestionResult[]>([]);
   const [showAnswers, setShowAnswers] = useState(true);
+  const [loadingResults, setLoadingResults] = useState(true);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -42,17 +43,23 @@ export default function SuccessPage() {
       });
 
       // Load quiz results from sessionStorage
-      const storedResults = sessionStorage.getItem('quizResults');
-      if (storedResults) {
+      const loadQuizResults = () => {
         try {
-          const results = JSON.parse(storedResults);
-          setQuestionResults(results);
-          // Clear sessionStorage after reading
-          sessionStorage.removeItem('quizResults');
+          const storedResults = sessionStorage.getItem('quizResults');
+          if (storedResults) {
+            const results = JSON.parse(storedResults);
+            if (Array.isArray(results) && results.length > 0) {
+              setQuestionResults(results);
+            }
+          }
         } catch (error) {
           console.error('Failed to parse quiz results:', error);
+        } finally {
+          setLoadingResults(false);
         }
-      }
+      };
+
+      loadQuizResults();
     }
   }, [status, router]);
 
@@ -111,15 +118,13 @@ export default function SuccessPage() {
           {passed ? (
             <>
               <div className="mb-8 text-center">
-                <div className="w-24 h-24 gradient-purple rounded-full flex items-center justify-center mx-auto mb-6 glow-purple">
-                  <Trophy size={48} />
+                <div className="w-20 h-20 md:w-24 md:h-24 gradient-purple rounded-full flex items-center justify-center mx-auto mb-6 glow-purple">
+                  <Trophy className="w-10 h-10 md:w-12 md:h-12 text-white" />
                 </div>
-                <h1 className="text-5xl font-bold mb-4">
-                  <span className="gradient-purple bg-clip-text text-transparent">
-                    You&apos;re a Verified ARMY!
-                  </span>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
+                  You&apos;re a Verified ARMY!
                 </h1>
-                <p className="text-xl text-gray-300">
+                <p className="text-lg md:text-xl text-gray-300">
                   Congratulations! You scored {score}/10 on the quiz
                 </p>
               </div>
@@ -128,53 +133,53 @@ export default function SuccessPage() {
               {questionResults.length > 0 && (
                 <div className="glass-effect p-6 md:p-8 rounded-2xl mb-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl md:text-3xl font-bold text-white">
+                    <h2 className="text-xl md:text-2xl font-bold text-white">
                       Quiz Results
                     </h2>
                     <button
                       onClick={() => setShowAnswers(!showAnswers)}
                       className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
                     >
-                      {showAnswers ? 'Hide Answers' : 'Show Answers'}
+                      {showAnswers ? 'Hide' : 'Show'}
                     </button>
                   </div>
 
                   {showAnswers && (
-                    <div className="space-y-6">
+                    <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                       {questionResults.map((result, index) => (
                         <div
                           key={result.id}
-                          className={`p-4 md:p-5 rounded-xl border-2 ${
+                          className={`p-4 rounded-xl border ${
                             result.isCorrect
-                              ? 'bg-green-500/10 border-green-500/50'
-                              : 'bg-red-500/10 border-red-500/50'
+                              ? 'bg-green-500/10 border-green-500/30'
+                              : 'bg-red-500/10 border-red-500/30'
                           }`}
                         >
-                          <div className="flex items-start gap-3 mb-4">
+                          <div className="flex items-start gap-3 mb-3">
                             <div
-                              className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+                              className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                                 result.isCorrect
                                   ? 'bg-green-500 text-white'
                                   : 'bg-red-500 text-white'
                               }`}
                             >
                               {result.isCorrect ? (
-                                <CheckCircle size={20} />
+                                <CheckCircle size={16} />
                               ) : (
-                                <X size={20} />
+                                <X size={16} />
                               )}
                             </div>
-                            <div className="flex-1">
-                              <div className="text-sm text-gray-400 mb-1">
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs text-gray-400 mb-1">
                                 Question {index + 1}
                               </div>
-                              <h3 className="text-lg md:text-xl font-semibold text-white mb-4">
+                              <h3 className="text-base md:text-lg font-semibold text-white mb-3">
                                 {result.question}
                               </h3>
                             </div>
                           </div>
 
-                          <div className="space-y-2 ml-11">
+                          <div className="space-y-2 ml-9">
                             {result.options.map((option, optionIndex) => {
                               const isCorrect = optionIndex === result.correctIndex;
                               const isUserAnswer = optionIndex === result.userAnswer;
@@ -183,7 +188,7 @@ export default function SuccessPage() {
                               return (
                                 <div
                                   key={optionIndex}
-                                  className={`p-3 rounded-lg border-2 flex items-center gap-3 ${
+                                  className={`p-2.5 rounded-lg border flex items-center gap-2 ${
                                     isCorrect
                                       ? 'bg-green-500/20 border-green-500/50'
                                       : isWrongAnswer
@@ -192,7 +197,7 @@ export default function SuccessPage() {
                                   }`}
                                 >
                                   <div
-                                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                    className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${
                                       isCorrect
                                         ? 'border-green-400 bg-green-400'
                                         : isWrongAnswer
@@ -201,14 +206,14 @@ export default function SuccessPage() {
                                     }`}
                                   >
                                     {isCorrect && (
-                                      <CheckCircle size={14} className="text-white" />
+                                      <CheckCircle size={10} className="text-white" />
                                     )}
                                     {isWrongAnswer && (
-                                      <X size={14} className="text-white" />
+                                      <X size={10} className="text-white" />
                                     )}
                                   </div>
                                   <span
-                                    className={`flex-1 ${
+                                    className={`flex-1 text-sm ${
                                       isCorrect
                                         ? 'text-green-200 font-medium'
                                         : isWrongAnswer
@@ -219,12 +224,12 @@ export default function SuccessPage() {
                                     {option}
                                   </span>
                                   {isCorrect && (
-                                    <span className="text-xs text-green-300 font-semibold px-2 py-1 bg-green-500/30 rounded">
+                                    <span className="text-xs text-green-300 font-semibold px-2 py-0.5 bg-green-500/30 rounded">
                                       Correct
                                     </span>
                                   )}
                                   {isWrongAnswer && (
-                                    <span className="text-xs text-red-300 font-semibold px-2 py-1 bg-red-500/30 rounded">
+                                    <span className="text-xs text-red-300 font-semibold px-2 py-0.5 bg-red-500/30 rounded">
                                       Your Answer
                                     </span>
                                   )}
@@ -239,45 +244,45 @@ export default function SuccessPage() {
                 </div>
               )}
 
-              <div className="glass-effect p-8 rounded-2xl mb-8 text-center">
-                <h2 className="text-2xl font-semibold mb-4">Your Access Token</h2>
+              <div className="glass-effect p-6 md:p-8 rounded-2xl mb-6">
+                <h2 className="text-xl md:text-2xl font-semibold mb-4 text-center">Your Access Token</h2>
                 {loading ? (
-                  <div className="text-purple-400">Generating token...</div>
+                  <div className="text-purple-400 text-center">Generating token...</div>
                 ) : token ? (
                   <>
-                    <div className="bg-black/30 p-4 rounded-lg mb-6 break-all font-mono text-sm">
+                    <div className="bg-black/40 p-3 md:p-4 rounded-lg mb-4 break-all font-mono text-xs md:text-sm border border-gray-700">
                       {token}
                     </div>
-                    <p className="text-sm text-gray-400 mb-6">
+                    <p className="text-xs md:text-sm text-gray-400 mb-4 text-center">
                       This token expires in 10 minutes. Click below to access the ticket sale page.
                     </p>
                     <button
                       onClick={handleRedirect}
-                      className="gradient-purple px-8 py-4 rounded-xl font-semibold hover:opacity-90 transition-all inline-flex items-center gap-2"
+                      className="w-full gradient-purple px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold hover:opacity-90 transition-all inline-flex items-center justify-center gap-2"
                     >
                       Access Ticket Sale
-                      <ExternalLink size={20} />
+                      <ExternalLink size={18} />
                     </button>
                   </>
                 ) : (
-                  <div className="text-red-400">Failed to generate token</div>
+                  <div className="text-red-400 text-center">Failed to generate token</div>
                 )}
               </div>
 
-              <div className="text-sm text-gray-500 text-center">
+              <div className="text-sm text-gray-400 text-center">
                 Thank you for being a true ARMY member! 💜
               </div>
             </>
           ) : (
             <>
               <div className="mb-8 text-center">
-                <div className="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-red-500">
-                  <XCircle size={48} className="text-red-400" />
+                <div className="w-20 h-20 md:w-24 md:h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-red-500">
+                  <XCircle className="w-10 h-10 md:w-12 md:h-12 text-red-400" />
                 </div>
-                <h1 className="text-5xl font-bold mb-4 text-red-400">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-red-400">
                   Quiz Not Passed
                 </h1>
-                <p className="text-xl text-gray-300 mb-2">
+                <p className="text-lg md:text-xl text-gray-300 mb-2">
                   You scored {score}/10 (minimum 7 required)
                 </p>
                 <p className="text-sm text-gray-400">
@@ -289,109 +294,109 @@ export default function SuccessPage() {
               {questionResults.length > 0 && (
                 <div className="glass-effect p-6 md:p-8 rounded-2xl mb-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl md:text-3xl font-bold text-white">
+                    <h2 className="text-xl md:text-2xl font-bold text-white">
                       Quiz Results
                     </h2>
                     <button
                       onClick={() => setShowAnswers(!showAnswers)}
                       className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
                     >
-                      {showAnswers ? 'Hide Answers' : 'Show Answers'}
+                      {showAnswers ? 'Hide' : 'Show'}
                     </button>
                   </div>
 
                   {showAnswers && (
-                    <div className="space-y-6">
+                    <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                       {questionResults.map((result, index) => (
-                      <div
-                        key={result.id}
-                        className={`p-4 md:p-5 rounded-xl border-2 ${
-                          result.isCorrect
-                            ? 'bg-green-500/10 border-green-500/50'
-                            : 'bg-red-500/10 border-red-500/50'
-                        }`}
-                      >
-                        <div className="flex items-start gap-3 mb-4">
-                          <div
-                            className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-                              result.isCorrect
-                                ? 'bg-green-500 text-white'
-                                : 'bg-red-500 text-white'
-                            }`}
-                          >
-                            {result.isCorrect ? (
-                              <CheckCircle size={20} />
-                            ) : (
-                              <X size={20} />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-sm text-gray-400 mb-1">
-                              Question {index + 1}
+                        <div
+                          key={result.id}
+                          className={`p-4 rounded-xl border ${
+                            result.isCorrect
+                              ? 'bg-green-500/10 border-green-500/30'
+                              : 'bg-red-500/10 border-red-500/30'
+                          }`}
+                        >
+                          <div className="flex items-start gap-3 mb-3">
+                            <div
+                              className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                                result.isCorrect
+                                  ? 'bg-green-500 text-white'
+                                  : 'bg-red-500 text-white'
+                              }`}
+                            >
+                              {result.isCorrect ? (
+                                <CheckCircle size={16} />
+                              ) : (
+                                <X size={16} />
+                              )}
                             </div>
-                            <h3 className="text-lg md:text-xl font-semibold text-white mb-4">
-                              {result.question}
-                            </h3>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs text-gray-400 mb-1">
+                                Question {index + 1}
+                              </div>
+                              <h3 className="text-base md:text-lg font-semibold text-white mb-3">
+                                {result.question}
+                              </h3>
+                            </div>
                           </div>
-                        </div>
 
-                        <div className="space-y-2 ml-11">
-                          {result.options.map((option, optionIndex) => {
-                            const isCorrect = optionIndex === result.correctIndex;
-                            const isUserAnswer = optionIndex === result.userAnswer;
-                            const isWrongAnswer = isUserAnswer && !isCorrect;
+                          <div className="space-y-2 ml-9">
+                            {result.options.map((option, optionIndex) => {
+                              const isCorrect = optionIndex === result.correctIndex;
+                              const isUserAnswer = optionIndex === result.userAnswer;
+                              const isWrongAnswer = isUserAnswer && !isCorrect;
 
-                            return (
-                              <div
-                                key={optionIndex}
-                                className={`p-3 rounded-lg border-2 flex items-center gap-3 ${
-                                  isCorrect
-                                    ? 'bg-green-500/20 border-green-500/50'
-                                    : isWrongAnswer
-                                    ? 'bg-red-500/20 border-red-500/50'
-                                    : 'bg-white/5 border-gray-700'
-                                }`}
-                              >
+                              return (
                                 <div
-                                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                  key={optionIndex}
+                                  className={`p-2.5 rounded-lg border flex items-center gap-2 ${
                                     isCorrect
-                                      ? 'border-green-400 bg-green-400'
+                                      ? 'bg-green-500/20 border-green-500/50'
                                       : isWrongAnswer
-                                      ? 'border-red-400 bg-red-400'
-                                      : 'border-gray-500'
+                                      ? 'bg-red-500/20 border-red-500/50'
+                                      : 'bg-white/5 border-gray-700'
                                   }`}
                                 >
+                                  <div
+                                    className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                                      isCorrect
+                                        ? 'border-green-400 bg-green-400'
+                                        : isWrongAnswer
+                                        ? 'border-red-400 bg-red-400'
+                                        : 'border-gray-500'
+                                    }`}
+                                  >
+                                    {isCorrect && (
+                                      <CheckCircle size={10} className="text-white" />
+                                    )}
+                                    {isWrongAnswer && (
+                                      <X size={10} className="text-white" />
+                                    )}
+                                  </div>
+                                  <span
+                                    className={`flex-1 text-sm ${
+                                      isCorrect
+                                        ? 'text-green-200 font-medium'
+                                        : isWrongAnswer
+                                        ? 'text-red-200 font-medium'
+                                        : 'text-gray-300'
+                                    }`}
+                                  >
+                                    {option}
+                                  </span>
                                   {isCorrect && (
-                                    <CheckCircle size={14} className="text-white" />
+                                    <span className="text-xs text-green-300 font-semibold px-2 py-0.5 bg-green-500/30 rounded">
+                                      Correct
+                                    </span>
                                   )}
                                   {isWrongAnswer && (
-                                    <X size={14} className="text-white" />
+                                    <span className="text-xs text-red-300 font-semibold px-2 py-0.5 bg-red-500/30 rounded">
+                                      Your Answer
+                                    </span>
                                   )}
                                 </div>
-                                <span
-                                  className={`flex-1 ${
-                                    isCorrect
-                                      ? 'text-green-200 font-medium'
-                                      : isWrongAnswer
-                                      ? 'text-red-200 font-medium'
-                                      : 'text-gray-300'
-                                  }`}
-                                >
-                                  {option}
-                                </span>
-                                {isCorrect && (
-                                  <span className="text-xs text-green-300 font-semibold px-2 py-1 bg-green-500/30 rounded">
-                                    Correct
-                                  </span>
-                                )}
-                                {isWrongAnswer && (
-                                  <span className="text-xs text-red-300 font-semibold px-2 py-1 bg-red-500/30 rounded">
-                                    Your Answer
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
                           </div>
                         </div>
                       ))}
@@ -401,19 +406,19 @@ export default function SuccessPage() {
               )}
 
               <div className="glass-effect p-6 md:p-8 rounded-2xl">
-                <p className="text-gray-300 mb-6 text-center">
+                <p className="text-gray-300 mb-6 text-center text-sm md:text-base">
                   Don&apos;t worry! You can try again after listening to more BTS music and learning more about the group.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <button
                     onClick={() => router.push('/verification')}
-                    className="gradient-purple px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
+                    className="gradient-purple px-6 md:px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
                   >
                     Try Quiz Again
                   </button>
                   <button
                     onClick={() => router.push('/')}
-                    className="px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition-all border-2 border-gray-700 hover:border-gray-600 text-gray-300"
+                    className="px-6 md:px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition-all border-2 border-gray-700 hover:border-gray-600 text-gray-300"
                   >
                     Back to Home
                   </button>

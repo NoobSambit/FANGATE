@@ -119,12 +119,13 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (passed && verificationId) {
+    // Update verification status
+    if (verificationId) {
       await prisma.verification.update({
         where: { id: verificationId },
         data: {
-          quizPassed: true,
-          verifiedAt: new Date(),
+          quizPassed: passed,
+          verifiedAt: passed ? new Date() : undefined,
         },
       });
     }

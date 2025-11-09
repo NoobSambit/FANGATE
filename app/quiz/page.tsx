@@ -131,6 +131,12 @@ export default function QuizPage() {
         return;
       }
 
+      // Store quiz results in sessionStorage before redirecting
+      // This allows the success page to display the results
+      if (result.questions && typeof window !== 'undefined') {
+        sessionStorage.setItem('quizResults', JSON.stringify(result.questions));
+      }
+
       router.push(`/success?passed=${result.passed}&score=${result.score}&verificationId=${verificationId}`);
     } catch (error) {
       console.error('Quiz submission error:', error);
