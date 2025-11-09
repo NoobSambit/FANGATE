@@ -30,7 +30,8 @@ export default function VerificationPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Verification failed');
+        console.error('Verification API error:', data);
+        throw new Error(data.error || data.details || 'Verification failed');
       }
 
       setResult(data);
@@ -41,7 +42,8 @@ export default function VerificationPage() {
         }, 2000);
       }
     } catch (err: any) {
-      setError(err.message);
+      console.error('Verification error:', err);
+      setError(err.message || 'Failed to verify. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -123,8 +125,12 @@ export default function VerificationPage() {
               </button>
 
               {error && (
-                <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
-                  {error}
+                <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
+                  <p className="text-red-200 font-semibold mb-1">Error</p>
+                  <p className="text-red-300 text-sm">{error}</p>
+                  <p className="text-red-400 text-xs mt-2">
+                    Check the browser console (F12) for more details
+                  </p>
                 </div>
               )}
             </div>

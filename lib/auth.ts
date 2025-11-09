@@ -44,11 +44,13 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account, profile }) {
-      // Without adapter, manually create user in database
+      // Without adapter, manually create user and account in database
       if (account?.provider === 'spotify' && profile) {
         try {
           const spotifyProfile = profile as any;
-          await prisma.user.upsert({
+          
+          // Create or update user
+          const dbUser = await prisma.user.upsert({
             where: { spotifyId: account.providerAccountId },
             update: {
               email: spotifyProfile.email,
@@ -62,8 +64,36 @@ export const authOptions: NextAuthOptions = {
               image: spotifyProfile.images?.[0]?.url,
             },
           });
+          
+          // Create or update account with access token
+          await prisma.account.upsert({
+            where: {
+              provider_providerAccountId: {
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+              },
+            },
+            update: {
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              scope: account.scope,
+            },
+            create: {
+              userId: dbUser.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              scope: account.scope,
+            },
+          });
         } catch (error: any) {
-          console.error('User creation error:', error);
+          console.error('User/Account creation error:', error);
           // Don't block sign-in, but log the error
         }
       }
