@@ -12,12 +12,14 @@ export default function QuizPage() {
   const verificationId = searchParams.get('verificationId');
 
   const [questions, setQuestions] = useState<any[]>([]);
+  const [questionIds, setQuestionIds] = useState<string[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState(600);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -50,10 +52,25 @@ export default function QuizPage() {
     try {
       const res = await fetch('/api/quiz');
       const data = await res.json();
-      setQuestions(data);
-      setLoading(false);
+      
+      if (res.ok && Array.isArray(data) && data.length > 0) {
+        setQuestions(data);
+        // Extract question IDs in the same order as questions
+        setQuestionIds(data.map((q: any) => q.id));
+        // Initialize answers array with -1 (unanswered)
+        setAnswers(new Array(data.length).fill(-1));
+        setLoading(false);
+        setError(null);
+      } else {
+        const errorMsg = data.error || 'No questions available. Please contact support.';
+        console.error('Failed to fetch quiz:', data);
+        setError(errorMsg);
+        setLoading(false);
+      }
     } catch (error) {
       console.error('Failed to fetch quiz:', error);
+      setError('Failed to load quiz. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -63,18 +80,37 @@ export default function QuizPage() {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = selectedAnswer;
     setAnswers(newAnswers);
-    setSelectedAnswer(null);
 
     if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      const nextQuestion = currentQuestion + 1;
+      setCurrentQuestion(nextQuestion);
+      // Restore previously selected answer if exists, otherwise reset to null
+      setSelectedAnswer(newAnswers[nextQuestion] >= 0 ? newAnswers[nextQuestion] : null);
     } else {
       handleSubmit(newAnswers);
     }
   };
 
+  // Update selected answer when question changes
+  useEffect(() => {
+    if (answers[currentQuestion] >= 0) {
+      setSelectedAnswer(answers[currentQuestion]);
+    } else {
+      setSelectedAnswer(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQuestion]);
+
   const handleSubmit = async (finalAnswers?: number[]) => {
     setSubmitting(true);
     const submittedAnswers = finalAnswers || answers;
+
+    // Ensure we have question IDs
+    if (!questionIds || questionIds.length === 0) {
+      console.error('Question IDs not available');
+      setSubmitting(false);
+      return;
+    }
 
     try {
       const res = await fetch('/api/quiz', {
@@ -82,15 +118,22 @@ export default function QuizPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           answers: submittedAnswers,
+          questionIds: questionIds,
           verificationId,
         }),
       });
 
       const result = await res.json();
+      
+      if (!res.ok) {
+        console.error('Quiz submission error:', result);
+        setSubmitting(false);
+        return;
+      }
+
       router.push(`/success?passed=${result.passed}&score=${result.score}&verificationId=${verificationId}`);
     } catch (error) {
       console.error('Quiz submission error:', error);
-    } finally {
       setSubmitting(false);
     }
   };
@@ -99,6 +142,35 @@ export default function QuizPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0118] via-[#1a0a2e] to-[#16003b]">
         <div className="text-2xl text-purple-400">Loading quiz...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0118] via-[#1a0a2e] to-[#16003b]">
+        <div className="glass-effect p-8 rounded-2xl max-w-md mx-auto text-center">
+          <div className="text-red-400 text-xl font-bold mb-4">Error</div>
+          <div className="text-gray-300 mb-6">{error}</div>
+          <button
+            onClick={() => {
+              setError(null);
+              setLoading(true);
+              fetchQuestions();
+            }}
+            className="gradient-purple px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0118] via-[#1a0a2e] to-[#16003b]">
+        <div className="text-2xl text-purple-400">No questions available</div>
       </div>
     );
   }

@@ -5,14 +5,33 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
+    // Get all question IDs first
+    const allQuestions = await prisma.quizQuestion.findMany({
+      select: { id: true },
+    });
+
+    if (allQuestions.length === 0) {
+      return NextResponse.json({ error: 'No questions available' }, { status: 404 });
+    }
+
+    // Shuffle and select 10 random questions
+    const shuffled = allQuestions.sort(() => Math.random() - 0.5);
+    const selectedIds = shuffled.slice(0, Math.min(10, allQuestions.length)).map(q => q.id);
+
+    // Fetch the selected questions
     const questions = await prisma.quizQuestion.findMany({
-      take: 10,
-      orderBy: {
-        createdAt: 'asc',
+      where: {
+        id: {
+          in: selectedIds,
+        },
       },
     });
 
-    const sanitizedQuestions = questions.map(({ correctIndex, ...q }) => q);
+    // Shuffle the order of questions again for extra randomization
+    const randomizedQuestions = questions.sort(() => Math.random() - 0.5);
+
+    // Remove correctIndex before sending to client
+    const sanitizedQuestions = randomizedQuestions.map(({ correctIndex, ...q }) => q);
 
     return NextResponse.json(sanitizedQuestions);
   } catch (error) {
@@ -37,7 +56,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { answers, verificationId } = await req.json();
+    const { answers, questionIds, verificationId } = await req.json();
+
+    if (!questionIds || !Array.isArray(questionIds) || questionIds.length !== 10) {
+      return NextResponse.json({ error: 'Invalid question IDs' }, { status: 400 });
+    }
+
+    if (!answers || !Array.isArray(answers) || answers.length !== 10) {
+      return NextResponse.json({ error: 'Invalid answers' }, { status: 400 });
+    }
 
     if (verificationId) {
       const verification = await prisma.verification.findUnique({
@@ -53,16 +80,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Fetch questions by their IDs to match answers correctly
     const questions = await prisma.quizQuestion.findMany({
-      take: 10,
-      orderBy: {
-        createdAt: 'asc',
+      where: {
+        id: {
+          in: questionIds,
+        },
       },
     });
 
+    // Create a map of question ID to question for quick lookup
+    const questionMap = new Map(questions.map(q => [q.id, q]));
+
     let correctCount = 0;
-    answers.forEach((answer: number, index: number) => {
-      if (questions[index] && questions[index].correctIndex === answer) {
+    questionIds.forEach((questionId: string, index: number) => {
+      const question = questionMap.get(questionId);
+      if (question && question.correctIndex === answers[index]) {
         correctCount++;
       }
     });
