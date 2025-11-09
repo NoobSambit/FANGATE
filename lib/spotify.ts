@@ -46,6 +46,7 @@ export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
     topTracks: 0,
     topTracksCount: 0,
     recentListening: 0,
+    recentListeningCount: 0,
     accountAge: 0,
   };
   
@@ -115,22 +116,23 @@ export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
     )
   );
   
-  const recentBTSListening = recentBTSItems.length > 0;
+  // Recent listening: 1 point per song, up to 50 points max (for 50 recently played tracks)
+  const recentBTSListeningCount = recentBTSItems.length;
+  const recentListeningPoints = Math.min(recentBTSListeningCount, 50);
+  score += recentListeningPoints;
+  breakdown.recentListening = recentListeningPoints;
+  breakdown.recentListeningCount = recentBTSListeningCount;
   
-  if (recentBTSListening) {
-    score += 30;
-    breakdown.recentListening = 30;
-    details.recentTracks = recentBTSItems.slice(0, 10).map((item: any) => ({
-      id: item.track.id,
-      name: item.track.name,
-      artists: item.track.artists.map((a: any) => a.name).join(', '),
-      album: item.track.album.name,
-      image: item.track.album.images?.[0]?.url || item.track.album.images?.[1]?.url || null,
-      external_urls: item.track.external_urls,
-      preview_url: item.track.preview_url,
-      played_at: item.played_at,
-    }));
-  }
+  details.recentTracks = recentBTSItems.slice(0, 50).map((item: any) => ({
+    id: item.track.id,
+    name: item.track.name,
+    artists: item.track.artists.map((a: any) => a.name).join(', '),
+    album: item.track.album.name,
+    image: item.track.album.images?.[0]?.url || item.track.album.images?.[1]?.url || null,
+    external_urls: item.track.external_urls,
+    preview_url: item.track.preview_url,
+    played_at: item.played_at,
+  }));
   
   const sixtyDaysAgo = new Date();
   sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);

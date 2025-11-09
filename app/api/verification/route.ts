@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       breakdown: fanScoreResult.breakdown,
       details: fanScoreResult.details,
       canTakeQuiz: fanScoreResult.totalScore >= 70,
+      recentListeningCount: fanScoreResult.breakdown.recentListeningCount || 0,
     });
   } catch (error: any) {
     console.error('Verification error:', error);

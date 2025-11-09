@@ -2,7 +2,8 @@
 
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Music, Shield, Trophy, ChevronRight, Star, Zap, Award, AlertCircle, LogOut, CheckCircle } from 'lucide-react';
+import { Music, Shield, CheckCircle, LogOut, ArrowRight, Sparkles, TrendingUp, Clock, Award, Info } from 'lucide-react';
+import { getScoringBreakdown } from '@/lib/scoring';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -16,290 +17,279 @@ export default function Home() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0118]">
-        <div className="text-2xl text-purple-400 animate-pulse">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse delay-75" />
+          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse delay-150" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0118] overflow-hidden">
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/10 to-blue-900/20"></div>
-      <div className="fixed inset-0" style={{
-        backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%)',
-      }}></div>
+    <div className="min-h-screen bg-[#0a0a0f]">
+      {/* Subtle background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-b from-purple-950/20 via-transparent to-pink-950/20 pointer-events-none" />
       
       <div className="relative z-10">
-        <nav className="container mx-auto px-6 py-8">
+        {/* Navigation */}
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <Music className="text-white" size={20} />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                <Music className="text-white" size={18} />
               </div>
-              <div className="text-2xl font-bold text-white">
+              <span className="text-xl font-bold text-white">
                 Fan<span className="text-purple-400">Gate</span>
-              </div>
+              </span>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-6 text-sm text-gray-400">
-                <a href="#how-it-works" className="hover:text-white transition">How it Works</a>
-                <a href="#features" className="hover:text-white transition">Features</a>
-              </div>
-              {session && (
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-3 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full">
-                    {session.user?.image && (
-                      <img 
-                        src={session.user.image} 
-                        alt={session.user.name || 'User'} 
-                        className="w-8 h-8 rounded-full"
-                      />
-                    )}
-                    <span className="text-sm text-white hidden sm:inline">
-                      {session.user?.name || session.user?.email || 'User'}
-                    </span>
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 hover:border-red-500/50 rounded-lg transition-colors"
-                    title="Disconnect Spotify"
-                  >
-                    <LogOut size={16} />
-                    <span className="hidden sm:inline">Disconnect</span>
-                  </button>
+            {session && (
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg">
+                  {session.user?.image && (
+                    <img 
+                      src={session.user.image} 
+                      alt={session.user.name || 'User'} 
+                      className="w-6 h-6 rounded-full"
+                    />
+                  )}
+                  <span className="text-sm text-white/90">
+                    {session.user?.name || session.user?.email?.split('@')[0] || 'User'}
+                  </span>
                 </div>
-              )}
-            </div>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-white/60 hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-colors"
+                  title="Disconnect Spotify"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            )}
           </div>
         </nav>
 
-        <section className="container mx-auto px-6 pt-20 pb-32 text-center">
-          <div className="max-w-5xl mx-auto">
-            <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full backdrop-blur-sm">
-              <Star className="text-purple-400" size={16} />
-              <span className="text-sm text-purple-300 font-medium">Exclusive BTS Concert Access</span>
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 lg:pt-24 pb-20">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 bg-purple-500/10 border border-purple-500/20 rounded-full">
+              <Sparkles className="text-purple-400" size={14} />
+              <span className="text-sm text-purple-300 font-medium">Exclusive BTS Access</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
+            {/* Main Heading */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
               <span className="text-white">Prove You&apos;re a</span>
               <br />
-              <span className="relative inline-block">
-                <span className="relative z-10 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-gradient">
-                  Real ARMY
-                </span>
-                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur-2xl opacity-30 animate-pulse"></div>
+              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                Real ARMY
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Verify your BTS fandom through Spotify listening history and quiz knowledge
-              <br className="hidden md:block" />
-              to access exclusive concert ticket sales.
+            {/* Description */}
+            <p className="text-lg sm:text-xl text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Verify your BTS fandom through Spotify listening history and quiz knowledge to access exclusive concert ticket sales.
             </p>
 
+            {/* CTA Button */}
             {session ? (
               <div className="flex flex-col items-center gap-4">
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/20 border border-green-500/50 rounded-full backdrop-blur-sm">
-                  <CheckCircle className="text-green-400" size={20} />
-                  <span className="text-green-300 font-medium">Spotify Connected</span>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-lg mb-2">
+                  <CheckCircle className="text-green-400" size={18} />
+                  <span className="text-sm text-green-300 font-medium">Spotify Connected</span>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <button
-                    onClick={() => router.push('/verification')}
-                    className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-lg font-bold text-white overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <Trophy className="relative z-10" size={24} />
-                    <span className="relative z-10">Start Verification</span>
-                    <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={20} />
-                  </button>
-                </div>
+                <button
+                  onClick={() => router.push('/verification')}
+                  className="btn-primary inline-flex items-center gap-2 text-base sm:text-lg px-8 py-4"
+                >
+                  Start Verification
+                  <ArrowRight size={20} />
+                </button>
               </div>
             ) : (
               <button
                 onClick={() => signIn('spotify', { callbackUrl: '/' })}
-                className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-lg font-bold text-white overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
+                className="btn-primary inline-flex items-center gap-2 text-base sm:text-lg px-8 py-4"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <Music className="relative z-10" size={24} />
-                <span className="relative z-10">Login with Spotify</span>
-                <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={20} />
+                <Music size={20} />
+                Connect with Spotify
+                <ArrowRight size={20} />
               </button>
             )}
 
+            {/* Error Message */}
             {error && (
-              <div className="mt-6 max-w-md mx-auto p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start gap-3">
-                <AlertCircle className="text-red-400 flex-shrink-0 mt-0.5" size={20} />
-                <div>
-                  <p className="text-red-200 font-semibold">Login Error</p>
-                  <p className="text-red-300 text-sm mt-1">
-                    {error === 'OAuthCallback' 
-                      ? 'Authentication failed. This might be a database connection issue. Please try again or contact support.'
-                      : `Error: ${error}`}
-                  </p>
-                </div>
+              <div className="mt-6 max-w-md mx-auto p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-left">
+                <p className="text-red-200 font-semibold text-sm mb-1">Login Error</p>
+                <p className="text-red-300/80 text-sm">
+                  {error === 'OAuthCallback' 
+                    ? 'Authentication failed. Please try again or contact support.'
+                    : `Error: ${error}`}
+                </p>
               </div>
             )}
 
-            <p className="text-sm text-gray-500 mt-6 flex items-center justify-center gap-2">
-              <Shield size={14} />
+            {/* Security Note */}
+            <p className="text-xs text-white/40 mt-8 flex items-center justify-center gap-2">
+              <Shield size={12} />
               Your data is encrypted and never shared
             </p>
+          </div>
+        </section>
 
-            <div className="grid grid-cols-3 gap-8 mt-20 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">70+</div>
-                <div className="text-sm text-gray-400">Fan Score Required</div>
+        {/* Scoring System Section */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-white/5">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+                Scoring System
+              </h2>
+              <p className="text-white/60 text-sm sm:text-base mb-2">
+                Complete transparency on how we calculate your fan score
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full mt-4">
+                <Info className="text-purple-400" size={14} />
+                <span className="text-xs sm:text-sm text-purple-300">
+                  Minimum score required: 70 points | Quiz: 10 questions (70% to pass)
+                </span>
               </div>
-              <div className="text-center border-x border-gray-800">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">10</div>
-                <div className="text-sm text-gray-400">Quiz Questions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">70%</div>
-                <div className="text-sm text-gray-400">Pass Rate</div>
+            </div>
+
+            <div className="space-y-4">
+              {getScoringBreakdown().categories.map((category, idx) => {
+                const iconMap: { [key: string]: any } = {
+                  topArtists: Music,
+                  soloMembers: TrendingUp,
+                  topTracks: Award,
+                  recentListening: Clock,
+                  accountAge: CheckCircle,
+                };
+                const Icon = iconMap[category.category] || Music;
+
+                return (
+                  <div key={idx} className="glass-effect p-5 sm:p-6 rounded-xl">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-lg flex items-center justify-center border border-purple-500/20">
+                        <Icon className="text-purple-400" size={24} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                          <h3 className="text-lg sm:text-xl font-bold text-white">
+                            {category.name}
+                          </h3>
+                          <div className="flex items-center gap-2">
+                            {'pointsPerTrack' in category || 'pointsPerArtist' in category ? (
+                              <span className="text-sm font-semibold text-purple-400">
+                                {('pointsPerTrack' in category ? category.pointsPerTrack : category.pointsPerArtist)} pts/{'pointsPerTrack' in category ? 'track' : 'artist'}
+                              </span>
+                            ) : (
+                              <span className="text-sm font-semibold text-purple-400">
+                                +{'points' in category ? category.points : 0} points
+                              </span>
+                            )}
+                            <span className="text-xs text-white/40">
+                              (max {category.maxPoints})
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-sm text-white/60 mb-2">{category.description}</p>
+                        <p className="text-xs text-white/50 mb-3">{category.requirement}</p>
+                        <div className="p-3 bg-white/2 rounded-lg border border-white/5">
+                          <p className="text-xs sm:text-sm text-purple-300 font-medium">
+                            💡 {category.example}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Summary */}
+            <div className="mt-8 glass-effect p-6 rounded-xl border-2 border-purple-500/20">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Award className="text-purple-400" size={20} />
+                Scoring Summary
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                    {getScoringBreakdown().summary.minimumScore}+
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/50">Min Score</div>
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                    {getScoringBreakdown().summary.quizQuestions}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/50">Quiz Questions</div>
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                    {getScoringBreakdown().summary.quizPassRate}%
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/50">Pass Rate</div>
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                    {getScoringBreakdown().summary.maxScore}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/50">Max Score</div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="features" className="container mx-auto px-6 py-20">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-              Why Fan Verification?
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              A fair system that rewards true fans and prevents scalpers
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <div className="group relative bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20 p-8 rounded-2xl hover:border-purple-500/50 transition-all hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-pink-600/0 group-hover:from-purple-600/10 group-hover:to-pink-600/10 rounded-2xl transition-all"></div>
-              <div className="relative">
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Shield className="text-white" size={28} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Fair Access</h3>
-                <p className="text-gray-400 leading-relaxed">
-                  Ensure real fans get priority access to limited concert tickets, not bots or scalpers
-                </p>
-              </div>
+        {/* How It Works Section */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-white/5">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+                How It Works
+              </h2>
+              <p className="text-white/60 text-sm sm:text-base">
+                Simple verification process to prove your ARMY status
+              </p>
             </div>
-
-            <div className="group relative bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20 p-8 rounded-2xl hover:border-purple-500/50 transition-all hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-pink-600/0 group-hover:from-purple-600/10 group-hover:to-pink-600/10 rounded-2xl transition-all"></div>
-              <div className="relative">
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Zap className="text-white" size={28} />
+            
+            <div className="space-y-4">
+              {[
+                { step: '1', title: 'Connect Spotify', desc: 'Login securely with your Spotify account' },
+                { step: '2', title: 'Listening Analysis', desc: 'We calculate your fan score based on BTS in your listening history' },
+                { step: '3', title: 'Take the Quiz', desc: 'Answer 10 BTS trivia questions (70% required to pass)' },
+                { step: '4', title: 'Get Access', desc: 'Receive your secure token for exclusive ticket access' },
+              ].map((item) => (
+                <div key={item.step} className="flex items-start gap-4 p-5 bg-white/2 border border-white/5 rounded-xl hover:bg-white/5 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                    {item.step}
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>
+                    <p className="text-sm text-white/60">{item.desc}</p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Beat the Bots</h3>
-                <p className="text-gray-400 leading-relaxed">
-                  Advanced verification prevents automated systems from gaming the ticket system
-                </p>
-              </div>
-            </div>
-
-            <div className="group relative bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20 p-8 rounded-2xl hover:border-purple-500/50 transition-all hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-pink-600/0 group-hover:from-purple-600/10 group-hover:to-pink-600/10 rounded-2xl transition-all"></div>
-              <div className="relative">
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Award className="text-white" size={28} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Rewarding Dedication</h3>
-                <p className="text-gray-400 leading-relaxed">
-                  Your passion for BTS music is recognized and celebrated with exclusive access
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="how-it-works" className="container mx-auto px-6 py-20">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-              How It Works
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              A simple 4-step process to verify your ARMY status
-            </p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto space-y-4">
-            <div className="group relative bg-gradient-to-r from-purple-500/10 to-transparent backdrop-blur-sm border border-purple-500/20 p-6 rounded-xl hover:border-purple-500/50 transition-all">
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                  1
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-2">Connect Spotify</h3>
-                  <p className="text-gray-400">
-                    Login securely with your Spotify account to analyze your listening history
-                  </p>
-                </div>
-                <ChevronRight className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* Footer */}
+        <footer className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16 border-t border-white/5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                <Music className="text-white" size={14} />
               </div>
+              <span className="text-sm text-white/40">&copy; 2024 FanGate</span>
             </div>
-
-            <div className="group relative bg-gradient-to-r from-purple-500/10 to-transparent backdrop-blur-sm border border-purple-500/20 p-6 rounded-xl hover:border-purple-500/50 transition-all">
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                  2
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-2">Listening Analysis</h3>
-                  <p className="text-gray-400">
-                    We calculate your fan score based on BTS in your top artists, tracks, and recent plays
-                  </p>
-                </div>
-                <ChevronRight className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-            </div>
-
-            <div className="group relative bg-gradient-to-r from-purple-500/10 to-transparent backdrop-blur-sm border border-purple-500/20 p-6 rounded-xl hover:border-purple-500/50 transition-all">
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                  3
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-2">Take the Quiz</h3>
-                  <p className="text-gray-400">
-                    Answer 10 BTS trivia questions to prove your knowledge (70% required to pass)
-                  </p>
-                </div>
-                <ChevronRight className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-            </div>
-
-            <div className="group relative bg-gradient-to-r from-purple-500/10 to-transparent backdrop-blur-sm border border-purple-500/20 p-6 rounded-xl hover:border-purple-500/50 transition-all">
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                  4
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-2">Get Access</h3>
-                  <p className="text-gray-400">
-                    Receive a secure token and redirect to the exclusive ticket purchase page
-                  </p>
-                </div>
-                <ChevronRight className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <footer className="container mx-auto px-6 py-12 mt-20 border-t border-gray-800">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <Music className="text-white" size={16} />
-              </div>
-              <span className="text-gray-400 text-sm">&copy; 2024 FanGate. Built for ARMY, by fans.</span>
-            </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-white transition">Privacy</a>
-              <a href="#" className="hover:text-white transition">Terms</a>
-              <a href="#" className="hover:text-white transition">Support</a>
+            <div className="flex items-center gap-6 text-sm text-white/40">
+              <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
+              <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
+              <a href="#" className="hover:text-white/60 transition-colors">Support</a>
             </div>
           </div>
         </footer>
