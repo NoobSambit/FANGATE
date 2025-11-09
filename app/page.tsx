@@ -1,9 +1,8 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-import { Music, Shield, Trophy, Sparkles, ChevronRight, Star, Zap, Award, AlertCircle } from 'lucide-react';
+import { Music, Shield, Trophy, ChevronRight, Star, Zap, Award, AlertCircle, LogOut, CheckCircle } from 'lucide-react';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -11,11 +10,9 @@ export default function Home() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      router.push('/verification');
-    }
-  }, [status, router]);
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' });
+  };
 
   if (status === 'loading') {
     return (
@@ -43,9 +40,35 @@ export default function Home() {
                 Fan<span className="text-purple-400">Gate</span>
               </div>
             </div>
-            <div className="hidden md:flex items-center gap-6 text-sm text-gray-400">
-              <a href="#how-it-works" className="hover:text-white transition">How it Works</a>
-              <a href="#features" className="hover:text-white transition">Features</a>
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-6 text-sm text-gray-400">
+                <a href="#how-it-works" className="hover:text-white transition">How it Works</a>
+                <a href="#features" className="hover:text-white transition">Features</a>
+              </div>
+              {session && (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full">
+                    {session.user?.image && (
+                      <img 
+                        src={session.user.image} 
+                        alt={session.user.name || 'User'} 
+                        className="w-8 h-8 rounded-full"
+                      />
+                    )}
+                    <span className="text-sm text-white hidden sm:inline">
+                      {session.user?.name || session.user?.email || 'User'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 hover:border-red-500/50 rounded-lg transition-colors"
+                    title="Disconnect Spotify"
+                  >
+                    <LogOut size={16} />
+                    <span className="hidden sm:inline">Disconnect</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </nav>
@@ -74,15 +97,35 @@ export default function Home() {
               to access exclusive concert ticket sales.
             </p>
 
-            <button
-              onClick={() => signIn('spotify', { callbackUrl: '/verification' })}
-              className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-lg font-bold text-white overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <Music className="relative z-10" size={24} />
-              <span className="relative z-10">Login with Spotify</span>
-              <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={20} />
-            </button>
+            {session ? (
+              <div className="flex flex-col items-center gap-4">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-500/20 border border-green-500/50 rounded-full backdrop-blur-sm">
+                  <CheckCircle className="text-green-400" size={20} />
+                  <span className="text-green-300 font-medium">Spotify Connected</span>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <button
+                    onClick={() => router.push('/verification')}
+                    className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-lg font-bold text-white overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <Trophy className="relative z-10" size={24} />
+                    <span className="relative z-10">Start Verification</span>
+                    <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={20} />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => signIn('spotify', { callbackUrl: '/' })}
+                className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-lg font-bold text-white overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <Music className="relative z-10" size={24} />
+                <span className="relative z-10">Login with Spotify</span>
+                <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={20} />
+              </button>
+            )}
 
             {error && (
               <div className="mt-6 max-w-md mx-auto p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start gap-3">
