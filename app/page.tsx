@@ -250,7 +250,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-xs text-purple-300/70 mt-4 italic">
-                💜 Remember: Even if you don't ace the quiz, your Spotify listening can help you pass! 
+                💜 Remember: Even if you don&apos;t ace the quiz, your Spotify listening can help you pass! 
                 Being a real ARMY is about your dedication, not just memorizing trivia!
               </p>
             </div>

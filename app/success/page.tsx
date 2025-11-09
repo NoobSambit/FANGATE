@@ -96,12 +96,15 @@ export default function SuccessPage() {
 
       loadQuizResults();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router]);
 
   useEffect(() => {
     if (passed && verificationId) {
       generateToken();
     }
+    // generateToken is stable and doesn't need to be in dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [passed, verificationId]);
 
   const generateToken = async () => {

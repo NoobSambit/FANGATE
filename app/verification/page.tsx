@@ -452,8 +452,8 @@ export default function VerificationPage() {
                       </div>
                     </div>
                     <p className="text-xs text-purple-300/70 mt-3 italic">
-                      💡 Tip: Even if you don't ace the quiz, your Spotify listening can help you pass! 
-                      An ARMY with good memory might struggle, but your playlist doesn't lie!
+                      💡 Tip: Even if you don&apos;t ace the quiz, your Spotify listening can help you pass! 
+                      An ARMY with good memory might struggle, but your playlist doesn&apos;t lie!
                     </p>
                   </div>
 
