@@ -553,6 +553,615 @@
     "question": "What is the name of J-Hope's second solo album released in 2022?",
     "options": ["Hope World", "Jack In The Box", "More", "Arson"],
     "correctIndex": 1
+  },
+  {
+    "question": "When is Jin's birthday?",
+    "options": ["December 4", "December 30", "September 1", "October 13"],
+    "correctIndex": 0
+  },
+  {
+    "question": "When is Suga's birthday?",
+    "options": ["March 9", "February 18", "September 12", "December 4"],
+    "correctIndex": 0
+  },
+  {
+    "question": "When is J-Hope's birthday?",
+    "options": ["September 12", "February 18", "March 9", "October 13"],
+    "correctIndex": 1
+  },
+  {
+    "question": "When is RM's birthday?",
+    "options": ["September 1", "October 13", "September 12", "December 30"],
+    "correctIndex": 2
+  },
+  {
+    "question": "When is Jimin's birthday?",
+    "options": ["October 13", "December 30", "September 1", "December 4"],
+    "correctIndex": 0
+  },
+  {
+    "question": "When is V's birthday?",
+    "options": ["December 4", "September 1", "December 30", "October 13"],
+    "correctIndex": 2
+  },
+  {
+    "question": "When is Jungkook's birthday?",
+    "options": ["September 1", "September 12", "October 13", "December 30"],
+    "correctIndex": 0
+  },
+  {
+    "question": "When did BTS officially debut with their first album '2 Cool 4 Skool'?",
+    "options": ["June 12, 2013", "June 13, 2013", "July 12, 2013", "June 10, 2013"],
+    "correctIndex": 0
+  },
+  {
+    "question": "How many times has BTS been nominated for Grammy Awards?",
+    "options": ["Two times", "Three times", "Four times", "Five times"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS song was their first to debut at #1 on the Billboard Hot 100?",
+    "options": ["Butter", "Dynamite", "Life Goes On", "Permission to Dance"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many #1 hits does BTS have on the Billboard Hot 100?",
+    "options": ["Four", "Five", "Six", "Seven"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which record-breaking award did BTS win at the 2021 American Music Awards?",
+    "options": ["Best Pop Group", "Artist of the Year", "New Artist of the Year", "Song of the Year"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS is the first Asian group to win which major AMA award?",
+    "options": ["Best Pop Song", "Collaboration of the Year", "Artist of the Year", "New Artist of the Year"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many Billboard Music Awards has BTS won in total (as of 2022)?",
+    "options": ["9", "10", "11", "12"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which group's record did BTS break at the Billboard Music Awards?",
+    "options": ["NSYNC", "Backstreet Boys", "Destiny's Child", "One Direction"],
+    "correctIndex": 2
+  },
+  {
+    "question": "In what year did BTS first receive a Grammy nomination?",
+    "options": ["2019", "2020", "2021", "2022"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song was nominated for a Grammy for Best Pop Duo/Group Performance in 2021?",
+    "options": ["Boy With Luv", "Dynamite", "Butter", "ON"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song was nominated for a Grammy for Best Pop Duo/Group Performance in 2022?",
+    "options": ["Dynamite", "Butter", "Permission to Dance", "Life Goes On"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS collaborated with which band on the Grammy-nominated song 'My Universe'?",
+    "options": ["Maroon 5", "Coldplay", "Imagine Dragons", "OneRepublic"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many consecutive years has BTS won Billboard Music Awards (as of 2022)?",
+    "options": ["Four years", "Five years", "Six years", "Seven years"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song won Top Selling Song at the 2022 Billboard Music Awards?",
+    "options": ["Dynamite", "Butter", "Permission to Dance", "Life Goes On"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What prestigious Korean award did BTS receive for their contributions to culture?",
+    "options": ["Presidential Medal", "Order of Cultural Merit", "National Treasure Award", "Korean Pride Award"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many American Music Awards has BTS won in total (as of 2021)?",
+    "options": ["Seven", "Eight", "Nine", "Ten"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS won Best Pop Song at which award for 'Fake Love'?",
+    "options": ["Grammy Awards", "Korean Music Awards", "Melon Music Awards", "MAMA Awards"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many times has BTS won the Top Duo/Group award at Billboard Music Awards?",
+    "options": ["Two times", "Three times", "Four times", "Five times"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which year did BTS become the first K-pop group to win a Billboard Music Award?",
+    "options": ["2015", "2016", "2017", "2018"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song was nominated for both Record of the Year and Best Pop Duo/Group Performance at the Grammys?",
+    "options": ["Dynamite", "Butter", "Boy With Luv", "Fake Love"],
+    "correctIndex": 0
+  },
+  {
+    "question": "BTS won 'Musician of the Year' at which Korean award show?",
+    "options": ["MAMA Awards", "Melon Music Awards", "Korean Music Awards", "Golden Disc Awards"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS member was born in the year 1992?",
+    "options": ["Jin", "Suga", "RM", "J-Hope"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which two BTS members were born in 1993?",
+    "options": ["Jin and Suga", "Suga only", "RM and J-Hope", "Suga and J-Hope"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which two BTS members were born in 1994?",
+    "options": ["RM and J-Hope", "J-Hope and Jimin", "Suga and RM", "Jin and Suga"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which two BTS members were born in 1995?",
+    "options": ["Jimin and V", "V and Jungkook", "Jimin and Jungkook", "RM and Jimin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member was born in 1997?",
+    "options": ["V", "Jimin", "Jungkook", "J-Hope"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many BTS songs have reached #1 on the Billboard Hot 100 in the 2020s decade?",
+    "options": ["Four", "Five", "Six", "Seven"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS has the most #1 hits on the Billboard Hot 100 in the decade 2020-2029, surpassing which artist?",
+    "options": ["Taylor Swift", "Drake", "Ariana Grande", "Justin Bieber"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song featuring Jason Derulo reached #1 on the Billboard Hot 100?",
+    "options": ["Boy With Luv", "Mic Drop", "Savage Love", "IDOL"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What unique achievement did BTS accomplish with 'Dynamite' on the Billboard Hot 100?",
+    "options": ["First K-pop act to reach #1", "Longest charting K-pop song", "Most streamed K-pop song", "First to debut at #10"],
+    "correctIndex": 0
+  },
+  {
+    "question": "How many weeks did 'Dynamite' spend at #1 on the Billboard Hot 100?",
+    "options": ["One week", "Two weeks", "Three weeks", "Four weeks"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song debuted at #1 but spent only one week at the top?",
+    "options": ["Butter", "Life Goes On", "Dynamite", "Permission to Dance"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS was nominated for Album of the Year at the Grammys as featured artists on which album?",
+    "options": ["Happier Than Ever", "Music of the Spheres", "30", "Harry's House"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS music video was nominated for Best Music Video at the Grammys?",
+    "options": ["Dynamite", "Butter", "Yet to Come", "Life Goes On"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS is the only act to be nominated for Best Pop Duo/Group Performance at the Grammys for how many consecutive years?",
+    "options": ["Two years", "Three years", "Four years", "Five years"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which award did BTS win for five consecutive years at the Billboard Music Awards?",
+    "options": ["Top Duo/Group", "Top Social Artist", "Top Song Sales Artist", "Top Selling Song"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many times did BTS win the Best Pop Group award at the American Music Awards consecutively (as of 2021)?",
+    "options": ["One time", "Two times", "Three times", "Four times"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS member shares a birthday month with another member?",
+    "options": ["Jin and V", "Jimin and Jungkook", "RM and Jungkook", "Suga and J-Hope"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many days apart are Jin and V's birthdays?",
+    "options": ["20 days", "24 days", "26 days", "30 days"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which month has the most BTS member birthdays?",
+    "options": ["September", "December", "October", "February"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS won World Performer at which award show?",
+    "options": ["Melon Music Awards", "MAMA Awards", "Golden Disc Awards", "Seoul Music Awards"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS album won the TikTok Most Popular Artist Award at the Golden Disc Awards?",
+    "options": ["BE", "Map of the Soul: 7", "Proof", "Love Yourself: Answer"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What unique record does BTS hold on Billboard's Global (Excl. U.S.) chart?",
+    "options": ["Most weeks at #1", "Most #1 songs overall", "#1 hit every year since chart's creation", "Longest charting song"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many songs has BTS sent to #1 on the Billboard Global (Excl. U.S.) chart?",
+    "options": ["Five", "Six", "Seven", "Eight"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which member is exactly one year younger than Jin?",
+    "options": ["RM", "Suga", "J-Hope", "Jimin"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the age gap between the oldest and youngest BTS members?",
+    "options": ["4 years", "5 years", "6 years", "7 years"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which two members have birthdays in February and March respectively?",
+    "options": ["Jin and Suga", "J-Hope and Suga", "Suga and J-Hope", "RM and Suga"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS's 'Dynamite' was the 43rd song in history to achieve what on the Billboard Hot 100?",
+    "options": ["Stay at #1 for 10 weeks", "Debut at #1", "Reach #1 in its first week", "Chart for 52 weeks"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which award show recognized BTS as the first K-pop group to win in their history?",
+    "options": ["Grammy Awards", "American Music Awards", "Billboard Music Awards", "MTV VMAs"],
+    "correctIndex": 2
+  },
+  {
+    "question": "In which category was 'DNA' nominated at the Korean Music Awards?",
+    "options": ["Song of the Year", "Best Pop Song", "Album of the Year", "Both A and B"],
+    "correctIndex": 3
+  },
+  {
+    "question": "BTS won the MAMA Award for Best New Male Artist in which year?",
+    "options": ["They were nominated but didn't win", "2013", "2014", "2015"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which company did BTS debut under?",
+    "options": ["Big Hit Entertainment", "HYBE", "Source Music", "Pledis Entertainment"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What was the lead single from BTS's debut album '2 Cool 4 Skool'?",
+    "options": ["No More Dream", "We Are Bulletproof Pt.2", "N.O", "Boy In Luv"],
+    "correctIndex": 0
+  },
+  {
+    "question": "On which music show did BTS make their official stage debut?",
+    "options": ["Music Bank", "M Countdown", "Inkigayo", "Music Core"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which achievement makes BTS the only band with this distinction in Billboard Music Awards history?",
+    "options": ["Most nominations in one year", "Most wins overall by a group", "Longest winning streak", "All of the above"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS's 'Butter' broke the record for the most weeks at #1 on which chart?",
+    "options": ["Billboard Hot 100", "Billboard Global 200", "Digital Song Sales", "Billboard Global Excl. U.S."],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many VMA Awards did BTS win for their song 'ON'?",
+    "options": ["One", "Two", "Three", "Four"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song won Song of the Year at the Melon Music Awards in 2020?",
+    "options": ["ON", "Dynamite", "Life Goes On", "Black Swan"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS is the first Korean artist to be nominated for which British award?",
+    "options": ["BRIT Award", "Mercury Prize", "Ivor Novello Award", "NME Award"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS achievement is recognized by the Guinness World Records?",
+    "options": ["Most Twitter engagements", "Most viewed YouTube video in 24 hours", "Most Nickelodeon Kids' Choice Awards won", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "What song gave BTS their first win on a Korean music show?",
+    "options": ["No More Dream", "Boy In Luv", "Danger", "I Need U"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which member's birthday falls closest to BTS's debut anniversary?",
+    "options": ["Jungkook", "RM", "Jin", "Jimin"],
+    "correctIndex": 0
+  },
+  {
+    "question": "BTS's collaboration 'My Universe' with Coldplay debuted at what position on the Billboard Hot 100?",
+    "options": ["#1", "#2", "#3", "#5"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS member shares the same birth month as the group's debut month?",
+    "options": ["None", "Jungkook", "Jin", "V"],
+    "correctIndex": 0
+  },
+  {
+    "question": "How many months did BTS train together before their debut?",
+    "options": ["They trained for different lengths of time individually", "12 months", "24 months", "36 months"],
+    "correctIndex": 0
+  },
+  {
+    "question": "How many consecutive years did BTS win Best Group at the MTV Video Music Awards?",
+    "options": ["Two years", "Three years", "Four years", "Five years"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS made VMA history by being the first act to win Best Group for how many consecutive years?",
+    "options": ["Two", "Three", "Four", "Five"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many total VMA awards has BTS won, making them the most awarded K-pop act in VMA history?",
+    "options": ["Eight", "Nine", "Ten", "Eleven"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS is the most awarded group in which award show's history with 14 wins?",
+    "options": ["MTV EMA", "MTV VMA", "AMA", "Billboard Music Awards"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS music video broke the record for most YouTube views in 24 hours with 108.2 million views?",
+    "options": ["Dynamite", "Butter", "Boy With Luv", "Permission to Dance"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is BTS's most streamed song on Spotify?",
+    "options": ["Butter", "Boy With Luv", "Dynamite", "Permission to Dance"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many billion streams does BTS's 'Dynamite' have on Spotify?",
+    "options": ["1.2 billion", "1.4 billion", "1.6 billion", "1.8 billion"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song has over 1 billion streams on Spotify featuring Halsey?",
+    "options": ["Mic Drop", "Make It Right", "Boy With Luv", "IDOL"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many billion total streams did BTS reach on Spotify as of March 2023?",
+    "options": ["25 billion", "28 billion", "31 billion", "35 billion"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS song won Song of Summer at the 2021 MTV VMAs?",
+    "options": ["Dynamite", "Butter", "Permission to Dance", "Life Goes On"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many consecutive years did BTS win Best K-Pop at the MTV VMAs?",
+    "options": ["Two years", "Three years", "Four years", "Five years"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which years did BTS win Best K-Pop consecutively at the MTV VMAs?",
+    "options": ["2018-2020", "2019-2021", "2020-2022", "2019-2022"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What record did BTS set with their 'Butter' music video premiere on YouTube?",
+    "options": ["Most likes", "Most comments", "Most concurrent viewers - 3.9 million", "Longest premiere"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS album has the most streams on Spotify?",
+    "options": ["Map of the Soul: 7", "Love Yourself: Answer", "Proof", "BE"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS tied with which group for most wins in the VMA Group category before surpassing them?",
+    "options": ["No Doubt", "Maroon 5", "One Direction", "NSYNC"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS music video previously held the 24-hour YouTube view record before 'Butter'?",
+    "options": ["DNA", "Fake Love", "Boy With Luv", "Dynamite"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many million views did 'Boy With Luv' achieve in its first 24 hours on YouTube?",
+    "options": ["64.6 million", "74.6 million", "84.6 million", "94.6 million"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS song has approximately 1.08 billion streams on Spotify?",
+    "options": ["Dynamite", "Butter", "Permission to Dance", "Life Goes On"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the total view count on BTS's official YouTube channel (as of 2023)?",
+    "options": ["25 billion", "30 billion", "35 billion", "40 billion"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS won Best Group at the MTV VMAs from 2019 to which year?",
+    "options": ["2021", "2022", "2023", "2024"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which streaming platform recognized BTS as the most streamed group?",
+    "options": ["Apple Music", "YouTube Music", "Spotify", "Amazon Music"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many BTS songs have surpassed 1 billion streams on Spotify?",
+    "options": ["One", "Two", "Three", "Four"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which female K-pop group did BTS surpass in total Spotify streams?",
+    "options": ["TWICE", "BLACKPINK", "Red Velvet", "ITZY"],
+    "correctIndex": 1
+  },
+  {
+    "question": "At which award show did BTS perform 'Butter' for the first time?",
+    "options": ["MTV VMAs", "AMAs", "Billboard Music Awards", "Grammy Awards"],
+    "correctIndex": 2
+  },
+  {
+    "question": "How many Billboard Music Award nominations did BTS receive in 2021?",
+    "options": ["Two", "Three", "Four", "Five"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS album features the song 'Intro: Persona'?",
+    "options": ["Map of the Soul: 7", "Map of the Soul: Persona", "Love Yourself: Answer", "BE"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the name of BTS's first full Korean studio album?",
+    "options": ["2 Cool 4 Skool", "O!RUL8,2?", "Dark & Wild", "Skool Luv Affair"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS Japanese album was released in 2018?",
+    "options": ["Wake Up", "Youth", "Face Yourself", "Map of the Soul: 7 - The Journey"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS's 'Wings' album features how many solo songs from each member?",
+    "options": ["One solo song per member", "Two solo songs per member", "Three solo songs per member", "No solo songs"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which BTS album series has 'Pt. 1', 'Pt. 2', and 'Young Forever'?",
+    "options": ["Love Yourself", "Map of the Soul", "The Most Beautiful Moment in Life", "Wings"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What was BTS's first repackage album?",
+    "options": ["You Never Walk Alone", "Love Yourself: Answer", "Young Forever", "Skool Luv Affair Special Addition"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS album was released during the COVID-19 pandemic in November 2020?",
+    "options": ["Map of the Soul: 7", "BE", "Proof", "Dynamite"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many studio albums (Korean) had BTS released by 2022?",
+    "options": ["Six", "Seven", "Eight", "Nine"],
+    "correctIndex": 3
+  },
+  {
+    "question": "Which BTS album features the unit song 'Dimple/Illegal'?",
+    "options": ["Wings", "Love Yourself: Her", "Love Yourself: Tear", "You Never Walk Alone"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the subtitle of the album 'Love Yourself: Her'?",
+    "options": ["承", "轉", "結", "起"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What is the subtitle of the album 'Love Yourself: Tear'?",
+    "options": ["承", "轉", "結", "起"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the subtitle of the album 'Love Yourself: Answer'?",
+    "options": ["承", "轉", "結", "起"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS album debuted at #1 on the Billboard 200 chart?",
+    "options": ["Wings", "Love Yourself: Tear", "Map of the Soul: 7", "All of the above"],
+    "correctIndex": 3
+  },
+  {
+    "question": "BTS's 'Map of the Soul: 7' refers to what?",
+    "options": ["7 continents", "7 members and 7 years since debut", "7 songs on the album", "7th album"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS album features the song 'Black Swan'?",
+    "options": ["Map of the Soul: Persona", "Map of the Soul: 7", "BE", "Proof"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What type of album is BTS's 'Proof'?",
+    "options": ["Studio album", "Repackage album", "Anthology album", "Compilation album"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS album features the solo song 'Seesaw' by Suga?",
+    "options": ["Wings", "Love Yourself: Answer", "Map of the Soul: 7", "BE"],
+    "correctIndex": 1
+  },
+  {
+    "question": "BTS's debut album '2 Cool 4 Skool' is what type of release?",
+    "options": ["Full album", "Mini album", "Single album", "Digital single"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS album features the outro 'Wings'?",
+    "options": ["Wings", "You Never Walk Alone", "Love Yourself: Her", "Dark & Wild"],
+    "correctIndex": 0
+  },
+  {
+    "question": "What was the lead single from BTS's 'Love Yourself: Tear' album?",
+    "options": ["DNA", "Fake Love", "IDOL", "Mic Drop"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS album broke the record for highest first-week sales in South Korea?",
+    "options": ["Wings", "Love Yourself: Tear", "Map of the Soul: 7", "Map of the Soul: Persona"],
+    "correctIndex": 2
+  },
+  {
+    "question": "BTS's 'You Never Walk Alone' is a repackage of which album?",
+    "options": ["Dark & Wild", "The Most Beautiful Moment in Life: Young Forever", "Wings", "Love Yourself: Her"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which BTS album features the hidden track 'Sea'?",
+    "options": ["Wings", "Love Yourself: Her", "Love Yourself: Tear", "You Never Walk Alone"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What was the first BTS album to debut at #1 on the Billboard 200?",
+    "options": ["Wings", "Love Yourself: Tear", "Love Yourself: Her", "Map of the Soul: Persona"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which BTS Japanese album was released in 2020?",
+    "options": ["Face Yourself", "Map of the Soul: 7 - The Journey", "Youth", "BTS, The Best"],
+    "correctIndex": 1
   }
 ]
-

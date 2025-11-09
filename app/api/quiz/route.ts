@@ -92,14 +92,23 @@ export async function POST(req: NextRequest) {
     // Create a map of question ID to question for quick lookup
     const questionMap = new Map(questions.map(q => [q.id, q]));
 
-    let correctCount = 0;
-    questionIds.forEach((questionId: string, index: number) => {
+    // Build result with questions, user answers, and correctness
+    const questionResults = questionIds.map((questionId: string, index: number) => {
       const question = questionMap.get(questionId);
-      if (question && question.correctIndex === answers[index]) {
-        correctCount++;
-      }
+      const userAnswer = answers[index];
+      const isCorrect = question ? question.correctIndex === userAnswer : false;
+      
+      return {
+        id: questionId,
+        question: question?.question || '',
+        options: question?.options || [],
+        correctIndex: question?.correctIndex ?? -1,
+        userAnswer: userAnswer,
+        isCorrect: isCorrect,
+      };
     });
 
+    const correctCount = questionResults.filter(r => r.isCorrect).length;
     const score = correctCount;
     const passed = score >= 7;
 
@@ -125,6 +134,7 @@ export async function POST(req: NextRequest) {
       passed,
       correctCount,
       totalQuestions: 10,
+      questions: questionResults,
     });
   } catch (error: any) {
     console.error('Quiz submission error:', error);
