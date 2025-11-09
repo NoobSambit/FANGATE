@@ -109,30 +109,61 @@ export async function POST(req: NextRequest) {
     });
 
     const correctCount = questionResults.filter(r => r.isCorrect).length;
-    const score = correctCount;
-    const passed = score >= 7;
+    const quizScore = correctCount;
+    const quizPercentage = (quizScore / 10) * 100;
+    const quizPassed = quizScore >= 7; // Quiz itself passed (7/10)
+
+    // Get Spotify fan score and breakdown from verification
+    let spotifyScore = 0;
+    let spotifyBreakdown = null;
+    if (verificationId) {
+      const verification = await prisma.verification.findUnique({
+        where: { id: verificationId },
+        select: { 
+          fanScore: true,
+          // We'll need to fetch the breakdown from the verification data
+          // For now, we'll calculate it or store it separately
+        },
+      });
+      if (verification) {
+        spotifyScore = verification.fanScore;
+      }
+      
+      // Fetch verification details to get breakdown
+      // We need to get this from the verification API response that was stored
+      // For now, we'll return spotifyScore and let frontend handle it
+    }
+
+    // Calculate combined score: Spotify (40%) + Quiz (60%)
+    // Quiz score is weighted more as requested
+    const combinedScore = Math.round((spotifyScore * 0.4) + (quizPercentage * 0.6));
+    const overallPassed = combinedScore >= 70;
 
     await prisma.quizAttempt.create({
       data: {
         userId: user.id,
-        score,
+        score: quizScore,
       },
     });
 
-    // Update verification status
+    // Update verification status based on combined score
     if (verificationId) {
       await prisma.verification.update({
         where: { id: verificationId },
         data: {
-          quizPassed: passed,
-          verifiedAt: passed ? new Date() : undefined,
+          quizPassed: overallPassed, // Use combined score result
+          verifiedAt: overallPassed ? new Date() : undefined,
         },
       });
     }
 
     return NextResponse.json({
-      score,
-      passed,
+      score: quizScore,
+      quizPassed, // Whether quiz itself passed (7/10)
+      overallPassed, // Whether combined score passed (>=70)
+      spotifyScore,
+      quizPercentage,
+      combinedScore,
       correctCount,
       totalQuestions: 10,
       questions: questionResults,

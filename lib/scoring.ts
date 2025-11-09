@@ -56,6 +56,10 @@ export const SCORING_SUMMARY = {
   quizPassRate: 70, // 70% = 7/10 questions correct
   maxScore: 200, // Maximum possible score (capped)
   totalPossiblePoints: 750, // Theoretical maximum (50 + 140 + 500 + 50 + 10)
+  // Combined scoring weights
+  spotifyWeight: 0.4, // 40% weight for Spotify score
+  quizWeight: 0.6, // 60% weight for quiz score (quiz is weighted more)
+  combinedMinimum: 70, // Minimum combined score to pass
 } as const;
 
 /**

@@ -57,6 +57,15 @@ export default function VerificationPage() {
       }
 
       setResult(data);
+      
+      // Store verification breakdown in sessionStorage for scorecard display
+      if (typeof window !== 'undefined' && data.breakdown) {
+        sessionStorage.setItem('verificationBreakdown', JSON.stringify({
+          fanScore: data.fanScore,
+          breakdown: data.breakdown,
+          details: data.details,
+        }));
+      }
     } catch (err: any) {
       console.error('Verification error:', err);
       setError(err.message || 'Failed to verify. Please check your connection and try again.');
@@ -411,18 +420,47 @@ export default function VerificationPage() {
                     <div className="flex items-center gap-2 mb-2">
                       <CheckCircle className="text-green-400 flex-shrink-0" size={18} />
                       <p className="text-green-200 font-semibold text-sm sm:text-base">
-                        Great! You passed the listening analysis
+                        Ready for the Quiz!
                       </p>
                     </div>
                     <p className="text-green-300/80 text-xs sm:text-sm">
-                      You can now proceed to the quiz. You need to score 70% or higher (7 out of 10 questions correct) to pass.
+                      Your Spotify score is {result.fanScore} points. Now take the quiz to complete your verification!
                     </p>
                   </div>
                   
+                  <div className="mb-6 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                    <h3 className="font-semibold text-white mb-3 flex items-center gap-2 text-sm sm:text-base">
+                      <Trophy className="text-purple-400 flex-shrink-0" size={16} />
+                      Combined Scoring System
+                    </h3>
+                    <p className="text-xs sm:text-sm text-white/70 mb-3">
+                      Your final score combines your Spotify listening (40%) and quiz performance (60%). 
+                      Quiz score is weighted more, but your Spotify dedication can help!
+                    </p>
+                    <div className="space-y-2 text-xs sm:text-sm text-white/60">
+                      <div className="flex items-center justify-between">
+                        <span>Your Spotify Score:</span>
+                        <span className="font-semibold text-purple-400">{result.fanScore} points (40%)</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Quiz Score:</span>
+                        <span className="font-semibold text-white">0-100% (60%)</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                        <span>Minimum Combined Score:</span>
+                        <span className="font-semibold text-green-400">70/100</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-purple-300/70 mt-3 italic">
+                      💡 Tip: Even if you don't ace the quiz, your Spotify listening can help you pass! 
+                      An ARMY with good memory might struggle, but your playlist doesn't lie!
+                    </p>
+                  </div>
+
                   <div className="mb-6 p-4 bg-white/2 border border-white/10 rounded-lg">
                     <h3 className="font-semibold text-white mb-3 flex items-center gap-2 text-sm sm:text-base">
                       <Trophy className="text-purple-400 flex-shrink-0" size={16} />
-                      Quiz Requirements
+                      Quiz Details
                     </h3>
                     <div className="space-y-2 text-xs sm:text-sm text-white/60">
                       <div className="flex items-center justify-between">
@@ -430,12 +468,8 @@ export default function VerificationPage() {
                         <span className="font-semibold text-white">10</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span>Required Score:</span>
-                        <span className="font-semibold text-green-400">70% (7/10)</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Your Fan Score:</span>
-                        <span className="font-semibold text-purple-400">{result.fanScore} points</span>
+                        <span>Time Limit:</span>
+                        <span className="font-semibold text-white">10 minutes</span>
                       </div>
                     </div>
                   </div>

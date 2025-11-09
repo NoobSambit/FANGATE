@@ -158,9 +158,16 @@ export default function QuizPage() {
 
       if (result.questions && typeof window !== 'undefined') {
         sessionStorage.setItem('quizResults', JSON.stringify(result.questions));
+        // Store additional data for success page
+        sessionStorage.setItem('quizData', JSON.stringify({
+          quizScore: result.score,
+          quizPassed: result.quizPassed,
+          spotifyScore: result.spotifyScore,
+          combinedScore: result.combinedScore,
+        }));
       }
 
-      router.push(`/success?passed=${result.passed}&score=${result.score}&verificationId=${verificationId}`);
+      router.push(`/success?passed=${result.overallPassed}&score=${result.score}&verificationId=${verificationId}&quizPassed=${result.quizPassed}&combinedScore=${result.combinedScore}&spotifyScore=${result.spotifyScore}`);
     } catch (error) {
       console.error('Quiz submission error:', error);
       setSubmitting(false);

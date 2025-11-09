@@ -208,18 +208,33 @@ export default function Home() {
               })}
             </div>
 
-            {/* Summary */}
+            {/* Combined Scoring Explanation */}
             <div className="mt-8 glass-effect p-6 rounded-xl border-2 border-purple-500/20">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <Award className="text-purple-400" size={20} />
-                Scoring Summary
+                Final Verification Score
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <p className="text-sm text-white/70 mb-4">
+                Your final verification uses a <span className="font-semibold text-purple-400">combined scoring system</span> that 
+                averages your Spotify listening history (40%) and quiz performance (60%). 
+                The quiz is weighted more, but your Spotify dedication can help boost your score!
+              </p>
+              <div className="p-4 bg-white/2 rounded-lg mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-white/60">Spotify Score:</span>
+                  <span className="text-sm font-semibold text-purple-400">40% weight</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-white/60">Quiz Score:</span>
+                  <span className="text-sm font-semibold text-pink-400">60% weight</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div>
                   <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
-                    {getScoringBreakdown().summary.minimumScore}+
+                    {getScoringBreakdown().summary.combinedMinimum}+
                   </div>
-                  <div className="text-xs sm:text-sm text-white/50">Min Score</div>
+                  <div className="text-xs sm:text-sm text-white/50">Min Combined</div>
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
@@ -229,17 +244,15 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
-                    {getScoringBreakdown().summary.quizPassRate}%
-                  </div>
-                  <div className="text-xs sm:text-sm text-white/50">Pass Rate</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
                     {getScoringBreakdown().summary.maxScore}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/50">Max Score</div>
+                  <div className="text-xs sm:text-sm text-white/50">Max Spotify</div>
                 </div>
               </div>
+              <p className="text-xs text-purple-300/70 mt-4 italic">
+                💜 Remember: Even if you don't ace the quiz, your Spotify listening can help you pass! 
+                Being a real ARMY is about your dedication, not just memorizing trivia!
+              </p>
             </div>
           </div>
         </section>
@@ -259,9 +272,9 @@ export default function Home() {
             <div className="space-y-4">
               {[
                 { step: '1', title: 'Connect Spotify', desc: 'Login securely with your Spotify account' },
-                { step: '2', title: 'Listening Analysis', desc: 'We calculate your fan score based on BTS in your listening history' },
-                { step: '3', title: 'Take the Quiz', desc: 'Answer 10 BTS trivia questions (70% required to pass)' },
-                { step: '4', title: 'Get Access', desc: 'Receive your secure token for exclusive ticket access' },
+                { step: '2', title: 'Listening Analysis', desc: 'We calculate your Spotify fan score based on BTS in your listening history' },
+                { step: '3', title: 'Take the Quiz', desc: 'Answer 10 BTS trivia questions. Final score combines Spotify (40%) + Quiz (60%)' },
+                { step: '4', title: 'Get Access', desc: 'If your combined score is 70+, receive your secure token for exclusive ticket access' },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-4 p-5 bg-white/2 border border-white/5 rounded-xl hover:bg-white/5 transition-colors">
                   <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
