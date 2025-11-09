@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
       verificationId: verification.id,
       fanScore: fanScoreResult.totalScore,
       breakdown: fanScoreResult.breakdown,
+      details: fanScoreResult.details,
       canTakeQuiz: fanScoreResult.totalScore >= 70,
     });
   } catch (error: any) {

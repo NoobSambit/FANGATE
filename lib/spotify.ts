@@ -49,21 +49,45 @@ export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
     accountAge: 0,
   };
   
-  const topArtistIds = spotifyData.topArtists.map((artist: any) => artist.id);
-  const hasBTS = topArtistIds.some((id: string) => BTS_ARTIST_IDS.includes(id));
+  // Detailed data for display
+  const details = {
+    btsArtist: null as any,
+    soloArtists: [] as any[],
+    topTracks: [] as any[],
+    recentTracks: [] as any[],
+  };
   
-  if (hasBTS) {
+  const topArtistIds = spotifyData.topArtists.map((artist: any) => artist.id);
+  const btsArtist = spotifyData.topArtists.find((artist: any) => 
+    BTS_ARTIST_IDS.includes(artist.id)
+  );
+  
+  if (btsArtist) {
     score += 50;
     breakdown.topArtists = 50;
+    details.btsArtist = {
+      id: btsArtist.id,
+      name: btsArtist.name,
+      image: btsArtist.images?.[0]?.url || btsArtist.images?.[1]?.url || null,
+      external_urls: btsArtist.external_urls,
+    };
   }
   
-  const soloMembersCount = topArtistIds.filter((id: string) => 
-    BTS_SOLO_ARTIST_IDS.includes(id)
-  ).length;
+  const soloArtists = spotifyData.topArtists.filter((artist: any) => 
+    BTS_SOLO_ARTIST_IDS.includes(artist.id)
+  );
+  const soloMembersCount = soloArtists.length;
   const soloMembersPoints = soloMembersCount * 20;
   score += soloMembersPoints;
   breakdown.soloMembers = soloMembersPoints;
   breakdown.soloMembersCount = soloMembersCount;
+  
+  details.soloArtists = soloArtists.map((artist: any) => ({
+    id: artist.id,
+    name: artist.name,
+    image: artist.images?.[0]?.url || artist.images?.[1]?.url || null,
+    external_urls: artist.external_urls,
+  }));
   
   const btsTracks = spotifyData.topTracks.filter((track: any) =>
     track.artists.some((artist: any) => 
@@ -75,18 +99,37 @@ export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
   breakdown.topTracks = topTracksPoints;
   breakdown.topTracksCount = btsTracks.length;
   
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  details.topTracks = btsTracks.slice(0, 10).map((track: any) => ({
+    id: track.id,
+    name: track.name,
+    artists: track.artists.map((a: any) => a.name).join(', '),
+    album: track.album.name,
+    image: track.album.images?.[0]?.url || track.album.images?.[1]?.url || null,
+    external_urls: track.external_urls,
+    preview_url: track.preview_url,
+  }));
   
-  const recentBTSListening = spotifyData.recentlyPlayed.some((item: any) =>
+  const recentBTSItems = spotifyData.recentlyPlayed.filter((item: any) =>
     item.track.artists.some((artist: any) =>
       BTS_ARTIST_IDS.includes(artist.id) || BTS_SOLO_ARTIST_IDS.includes(artist.id)
     )
   );
   
+  const recentBTSListening = recentBTSItems.length > 0;
+  
   if (recentBTSListening) {
     score += 30;
     breakdown.recentListening = 30;
+    details.recentTracks = recentBTSItems.slice(0, 10).map((item: any) => ({
+      id: item.track.id,
+      name: item.track.name,
+      artists: item.track.artists.map((a: any) => a.name).join(', '),
+      album: item.track.album.name,
+      image: item.track.album.images?.[0]?.url || item.track.album.images?.[1]?.url || null,
+      external_urls: item.track.external_urls,
+      preview_url: item.track.preview_url,
+      played_at: item.played_at,
+    }));
   }
   
   const sixtyDaysAgo = new Date();
@@ -102,5 +145,6 @@ export function calculateFanScore(spotifyData: any, accountCreatedAt: Date) {
   return {
     totalScore,
     breakdown,
+    details,
   };
 }
