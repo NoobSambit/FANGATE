@@ -498,7 +498,7 @@ export default function VerificationPage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span>Time Limit:</span>
-                        <span className="font-semibold text-white">10 minutes</span>
+                        <span className="font-semibold text-white">5 minutes</span>
                       </div>
                     </div>
                   </div>
