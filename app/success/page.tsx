@@ -155,17 +155,14 @@ export default function SuccessPage() {
     setShowTicketCard(true);
   };
 
-  const getTweetUrl = () => {
-    const base =
+  const getTweetUrl = (didPass: boolean) => {
+    const baseUrl =
       typeof window !== 'undefined'
         ? window.location.origin
         : process.env.NEXT_PUBLIC_SITE_URL || 'https://fangate.army';
-    const text =
-      `I'm a Verified ARMY on FanGate! 🎟️💜` +
-      `\n` +
-      `Verify yourself as ARMY to access the BTS concert ticketing page.` +
-      `\n` +
-      `${base} @Boy_With_Code`;
+    const text = didPass
+      ? `I just got verified as ARMY and unlocked the BTS concert ticket sale! 🎟️💜 Prove you deserve your seat with FanGate:\n${baseUrl}\nCreator: @Boy_With_Code`
+      : `FanGate just roasted me 😂 Failed the ARMY check but I'm sprinting back to stream BTS until I pass. Try your luck:\n${baseUrl}\nCreator: @Boy_With_Code`;
     return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   };
 
@@ -303,7 +300,7 @@ export default function SuccessPage() {
                       Download ARMY Pass
                     </button>
                     <a
-                      href={getTweetUrl()}
+                      href={getTweetUrl(true)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
@@ -444,7 +441,7 @@ export default function SuccessPage() {
                       This token expires in 10 minutes. Click below to access the ticket sale page.
                     </p>
                     <a
-                      href={getTweetUrl()}
+                      href={getTweetUrl(true)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-primary w-full inline-flex items-center justify-center gap-2"
@@ -655,6 +652,33 @@ export default function SuccessPage() {
                 <p className="text-sm text-white/50">
                   Review the correct answers below and try to improve your score
                 </p>
+              </div>
+
+              <div className="glass-effect p-5 sm:p-6 rounded-xl mb-6">
+                <h3 className="text-lg font-semibold text-white mb-3 text-center">
+                  Share the Chaos
+                </h3>
+                <p className="text-xs sm:text-sm text-white/60 text-center mb-4">
+                  Let Twitter know FanGate roasted you. Download the card or post a sarcastic tweet (attach the JPG manually if you want the receipts).
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <button
+                    onClick={handleShowTicketCard}
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-red-400/40 bg-red-500/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-500/30"
+                  >
+                    <Download size={18} />
+                    Download ARMY Pass
+                  </button>
+                  <a
+                    href={getTweetUrl(false)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-500 via-purple-500 to-pink-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                  >
+                    Post on Twitter
+                    <ExternalLink size={18} />
+                  </a>
+                </div>
               </div>
 
               {/* Quiz Results */}
@@ -1008,24 +1032,28 @@ export default function SuccessPage() {
                     </div>
                   </div>
                   <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-purple-200/80">
-                    Verified Army Pass
+                    {passed ? 'Verified ARMY Pass' : 'Stream-Till-You-Pass Pass'}
                   </span>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/20">
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 ${passed ? 'bg-white/10' : 'bg-red-500/20'}`}>
                     <Sparkles size={16} className="text-purple-200" />
                     <p className="text-sm font-semibold text-white">
-                      Congratulations, you&apos;re cleared for BTS tickets!
+                      {passed
+                        ? 'Congratulations, you’re cleared for BTS tickets!'
+                        : 'Oof—FanGate just told you to stream harder.'}
                     </p>
                   </div>
                   <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight">
-                    🎟️ You can access the BTS concert ticket sale right now.
+                    {passed
+                      ? '🎟️ You can access the BTS concert ticket sale right now.'
+                      : '🚫 No ticket... yet. Time to binge BTS and come back swinging.'}
                   </h2>
                   <p className="text-base sm:text-lg text-purple-100/90 max-w-2xl">
-                    Show off your dedication—share this pass and let the world
-                    know you&apos;re officially a verified ARMY. See you at the
-                    show!
+                    {passed
+                      ? "Show off your dedication—share this pass and let the world know you're officially a verified ARMY. See you at the show!"
+                      : "Tell the timeline you flunked, then fire up those playlists. Every stream gets you closer to the ticket booth."}
                   </p>
                 </div>
 
@@ -1034,7 +1062,11 @@ export default function SuccessPage() {
                     <p className="text-xs text-white/60 uppercase tracking-widest">
                       Combined Score
                     </p>
-                    <p className="mt-2 text-3xl font-bold text-green-300">
+                    <p
+                      className={`mt-2 text-3xl font-bold ${
+                        passed ? 'text-green-300' : 'text-red-300'
+                      }`}
+                    >
                       {Number.isNaN(combinedPoints) ? '—' : combinedPoints}
                     </p>
                     <p className="text-xs text-white/50 mt-1">Needed: 70+</p>
@@ -1043,7 +1075,11 @@ export default function SuccessPage() {
                     <p className="text-xs text-white/60 uppercase tracking-widest">
                       Spotify Dedication
                     </p>
-                    <p className="mt-2 text-3xl font-bold text-purple-200">
+                    <p
+                      className={`mt-2 text-3xl font-bold ${
+                        passed ? 'text-purple-200' : 'text-purple-200'
+                      }`}
+                    >
                       {Number.isNaN(spotifyPoints) ? '—' : spotifyPoints}
                     </p>
                     <p className="text-xs text-white/50 mt-1">Weight: 40%</p>
@@ -1052,7 +1088,11 @@ export default function SuccessPage() {
                     <p className="text-xs text-white/60 uppercase tracking-widest">
                       Quiz Mastery
                     </p>
-                    <p className="mt-2 text-3xl font-bold text-pink-200">
+                    <p
+                      className={`mt-2 text-3xl font-bold ${
+                        passed ? 'text-pink-200' : 'text-orange-300'
+                      }`}
+                    >
                       {Number.isNaN(quizPercentage) ? '—' : `${quizPercentage}%`}
                     </p>
                     <p className="text-xs text-white/50 mt-1">Weight: 60%</p>
@@ -1062,10 +1102,10 @@ export default function SuccessPage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="text-sm text-white/70">
                     <p className="font-semibold text-white">
-                      Verified ARMY: {verifiedDisplayName}
+                      {passed ? 'Verified ARMY' : 'ARMY-in-training'}: {verifiedDisplayName}
                     </p>
                     <p className="text-white/60">
-                      Token ID: {truncatedToken}
+                      {passed ? `Ticket Token: ${truncatedToken}` : 'Ticket Token: 🔒 still locked'}
                     </p>
                     <p className="text-white/60 mt-2">
                       SamBiT⁷@Boy_With_Code
@@ -1087,18 +1127,34 @@ export default function SuccessPage() {
               <button
                 onClick={handleDownloadCard}
                 disabled={downloadingCard}
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-purple-400/40 bg-purple-500/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-500/30 disabled:opacity-60"
+                className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white transition disabled:opacity-60 ${
+                  passed
+                    ? 'border border-purple-400/40 bg-purple-500/20 hover:bg-purple-500/30'
+                    : 'border border-red-400/40 bg-red-500/20 hover:bg-red-500/30'
+                }`}
               >
                 <Download size={18} />
                 {downloadingCard ? 'Preparing JPG...' : 'Download ARMY Pass'}
               </button>
-              <button
-                onClick={handleRedirect}
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
-              >
-                Enter Ticket Sale
-                <ExternalLink size={18} />
-              </button>
+              {passed ? (
+                <button
+                  onClick={handleRedirect}
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                >
+                  Enter Ticket Sale
+                  <ExternalLink size={18} />
+                </button>
+              ) : (
+                <a
+                  href={getTweetUrl(false)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-500 via-purple-500 to-pink-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                >
+                  Post the Roast
+                  <ExternalLink size={18} />
+                </a>
+              )}
             </div>
           </div>
         </div>
