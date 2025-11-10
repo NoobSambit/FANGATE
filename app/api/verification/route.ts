@@ -3,6 +3,64 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { getSpotifyData, calculateFanScore } from '@/lib/spotify';
+import axios from 'axios';
+
+const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
+
+async function refreshSpotifyAccessToken(account: any) {
+  if (!account?.refresh_token) {
+    throw new Error('Spotify access token expired and no refresh token is available. Please reconnect Spotify.');
+  }
+
+  const basicAuth = Buffer.from(
+    `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+  ).toString('base64');
+
+  const params = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: account.refresh_token,
+  });
+
+  const response = await axios.post(
+    SPOTIFY_TOKEN_ENDPOINT,
+    params.toString(),
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${basicAuth}`,
+      },
+    }
+  );
+
+  const data = response.data;
+  const expiresAt = Math.floor(Date.now() / 1000) + (data.expires_in || 3600);
+
+  await prisma.account.update({
+    where: {
+      provider_providerAccountId: {
+        provider: 'spotify',
+        providerAccountId: account.providerAccountId,
+      },
+    },
+    data: {
+      access_token: data.access_token,
+      expires_at: expiresAt,
+      ...(data.refresh_token ? { refresh_token: data.refresh_token } : {}),
+      token_type: data.token_type ?? account.token_type,
+      scope: data.scope ?? account.scope,
+    },
+  });
+
+  return {
+    accessToken: data.access_token as string,
+    refreshToken: (data.refresh_token || account.refresh_token) as string,
+    expiresAt,
+  };
+}
+
+function isSpotifyUnauthorized(error: unknown) {
+  return axios.isAxiosError(error) && error.response?.status === 401;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,7 +107,49 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Spotify account not connected' }, { status: 400 });
     }
 
-    const spotifyData = await getSpotifyData(account.access_token);
+    let accessToken = account.access_token;
+    const nowSeconds = Math.floor(Date.now() / 1000);
+
+    if (account.expires_at && account.expires_at <= nowSeconds + 60) {
+      try {
+        const refreshed = await refreshSpotifyAccessToken(account);
+        accessToken = refreshed.accessToken;
+      } catch (refreshError) {
+        console.error('Spotify token refresh failed (pre-fetch):', refreshError);
+        return NextResponse.json(
+          {
+            error: 'Spotify session expired',
+            details: 'Please reconnect your Spotify account.',
+          },
+          { status: 401 }
+        );
+      }
+    }
+
+    let spotifyData;
+    try {
+      spotifyData = await getSpotifyData(accessToken);
+    } catch (error) {
+      if (isSpotifyUnauthorized(error)) {
+        try {
+          const refreshed = await refreshSpotifyAccessToken(account);
+          accessToken = refreshed.accessToken;
+          spotifyData = await getSpotifyData(accessToken);
+        } catch (refreshError) {
+          console.error('Spotify token refresh failed (after 401):', refreshError);
+          return NextResponse.json(
+            {
+              error: 'Spotify session expired',
+              details: 'Please reconnect your Spotify account.',
+            },
+            { status: 401 }
+          );
+        }
+      } else {
+        throw error;
+      }
+    }
+
     const fanScoreResult = calculateFanScore(spotifyData, user.createdAt);
 
     const verification = await prisma.verification.create({
