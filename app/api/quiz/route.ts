@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+const ENABLE_SPOTIFY_VERIFICATION =
+  process.env.ENABLE_SPOTIFY_VERIFICATION === 'true';
+
 export async function GET() {
   try {
     // Get all question IDs first
@@ -43,20 +46,23 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const mockMode = !ENABLE_SPOTIFY_VERIFICATION;
+
+    let user: any = null;
+    if (session?.user?.email) {
+      user = await prisma.user.findFirst({
+        where: { email: session.user.email },
+      });
     }
 
-    const user = await prisma.user.findFirst({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
+    if (!user && ENABLE_SPOTIFY_VERIFICATION) {
+      if (!session?.user?.email) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { answers, questionIds, verificationId } = await req.json();
+    const { answers, questionIds, verificationId, spotifyScore: providedSpotifyScore } = await req.json();
 
     if (!questionIds || !Array.isArray(questionIds) || questionIds.length !== 10) {
       return NextResponse.json({ error: 'Invalid question IDs' }, { status: 400 });
@@ -66,7 +72,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid answers' }, { status: 400 });
     }
 
-    if (verificationId) {
+    if (verificationId && ENABLE_SPOTIFY_VERIFICATION) {
       const verification = await prisma.verification.findUnique({
         where: { id: verificationId },
       });
@@ -75,7 +81,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Verification not found' }, { status: 404 });
       }
 
-      if (verification.userId !== user.id) {
+      if (!user || verification.userId !== user.id) {
         return NextResponse.json({ error: 'Forbidden: Verification does not belong to you' }, { status: 403 });
       }
     }
@@ -115,8 +121,7 @@ export async function POST(req: NextRequest) {
 
     // Get Spotify fan score and breakdown from verification
     let spotifyScore = 0;
-    let spotifyBreakdown = null;
-    if (verificationId) {
+    if (ENABLE_SPOTIFY_VERIFICATION && verificationId) {
       const verification = await prisma.verification.findUnique({
         where: { id: verificationId },
         select: { 
@@ -128,10 +133,8 @@ export async function POST(req: NextRequest) {
       if (verification) {
         spotifyScore = verification.fanScore;
       }
-      
-      // Fetch verification details to get breakdown
-      // We need to get this from the verification API response that was stored
-      // For now, we'll return spotifyScore and let frontend handle it
+    } else if (!ENABLE_SPOTIFY_VERIFICATION) {
+      spotifyScore = Number(providedSpotifyScore) || 0;
     }
 
     // Calculate combined score: Spotify (40%) + Quiz (60%)
@@ -139,22 +142,24 @@ export async function POST(req: NextRequest) {
     const combinedScore = Math.round((spotifyScore * 0.4) + (quizPercentage * 0.6));
     const overallPassed = combinedScore >= 70;
 
-    await prisma.quizAttempt.create({
-      data: {
-        userId: user.id,
-        score: quizScore,
-      },
-    });
-
-    // Update verification status based on combined score
-    if (verificationId) {
-      await prisma.verification.update({
-        where: { id: verificationId },
+    if (ENABLE_SPOTIFY_VERIFICATION && user) {
+      await prisma.quizAttempt.create({
         data: {
-          quizPassed: overallPassed, // Use combined score result
-          verifiedAt: overallPassed ? new Date() : undefined,
+          userId: user.id,
+          score: quizScore,
         },
       });
+
+      // Update verification status based on combined score
+      if (verificationId) {
+        await prisma.verification.update({
+          where: { id: verificationId },
+          data: {
+            quizPassed: overallPassed, // Use combined score result
+            verifiedAt: overallPassed ? new Date() : undefined,
+          },
+        });
+      }
     }
 
     return NextResponse.json({
@@ -167,6 +172,7 @@ export async function POST(req: NextRequest) {
       correctCount,
       totalQuestions: 10,
       questions: questionResults,
+      mocked: !ENABLE_SPOTIFY_VERIFICATION,
     });
   } catch (error: any) {
     console.error('Quiz submission error:', error);

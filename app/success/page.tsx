@@ -39,6 +39,9 @@ export default function SuccessPage() {
   const quizPassed = searchParams.get('quizPassed') === 'true';
   const combinedScore = searchParams.get('combinedScore');
   const spotifyScore = searchParams.get('spotifyScore');
+  const enableSpotifyVerification =
+    process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
+  const mockedQuery = searchParams.get('mocked') === 'true';
 
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,15 +55,18 @@ export default function SuccessPage() {
     spotifyScore?: number;
     combinedScore?: number;
     spotifyBreakdown?: any;
+    mocked?: boolean;
   }>({});
   const [showScorecard, setShowScorecard] = useState(true);
   const [showTicketCard, setShowTicketCard] = useState(false);
   const [siteOrigin, setSiteOrigin] = useState('fangate.army');
   const [downloadingCard, setDownloadingCard] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const isMockFlow =
+    mockedQuery || quizData.mocked || !enableSpotifyVerification;
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (enableSpotifyVerification && status === 'unauthenticated') {
       router.push('/');
       return;
     }
@@ -86,7 +92,13 @@ export default function SuccessPage() {
           const storedQuizData = sessionStorage.getItem('quizData');
           if (storedQuizData) {
             const data = JSON.parse(storedQuizData);
-            setQuizData(data);
+            setQuizData({
+              ...data,
+              mocked:
+                typeof data.mocked === 'boolean'
+                  ? data.mocked
+                  : mockedQuery,
+            });
           } else if (combinedScore && spotifyScore && score) {
             // Fallback to URL params if sessionStorage not available
             setQuizData({
@@ -94,6 +106,7 @@ export default function SuccessPage() {
               quizPassed: quizPassed,
               spotifyScore: parseInt(spotifyScore),
               combinedScore: parseInt(combinedScore),
+              mocked: mockedQuery,
             });
           }
           
@@ -116,15 +129,14 @@ export default function SuccessPage() {
       loadQuizResults();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, router]);
+  }, [status, router, enableSpotifyVerification, combinedScore, spotifyScore, score, quizPassed, mockedQuery]);
 
   useEffect(() => {
-    if (passed && verificationId) {
+    if (enableSpotifyVerification && !isMockFlow && passed && verificationId) {
       generateToken();
     }
-    // generateToken is stable and doesn't need to be in dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [passed, verificationId]);
+  }, [enableSpotifyVerification, isMockFlow, passed, verificationId]);
 
   const generateToken = async () => {
     setLoading(true);
@@ -209,7 +221,7 @@ export default function SuccessPage() {
   const verifiedDisplayName =
     session?.user?.name || session?.user?.email || 'Verified ARMY';
 
-  if (status === 'loading') {
+  if (enableSpotifyVerification && status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
         <div className="flex items-center gap-3">
@@ -430,28 +442,34 @@ export default function SuccessPage() {
               {/* Access Token */}
               <div className="glass-effect p-6 sm:p-8 rounded-xl mb-6">
                 <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-center text-white">Your Access Token</h2>
-                {loading ? (
-                  <div className="text-purple-400 text-center">Generating token...</div>
-                ) : token ? (
-                  <>
-                    <div className="bg-black/40 p-3 sm:p-4 rounded-lg mb-4 break-all font-mono text-xs sm:text-sm border border-white/10">
-                      {token}
-                    </div>
-                    <p className="text-xs sm:text-sm text-white/50 mb-4 text-center">
-                      This token expires in 10 minutes. Click below to access the ticket sale page.
-                    </p>
-                    <a
-                      href={getTweetUrl(true)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-primary w-full inline-flex items-center justify-center gap-2"
-                    >
-                      Post on Twitter
-                      <ExternalLink size={18} />
-                    </a>
-                  </>
+                {enableSpotifyVerification && !isMockFlow ? (
+                  loading ? (
+                    <div className="text-purple-400 text-center">Generating token...</div>
+                  ) : token ? (
+                    <>
+                      <div className="bg-black/40 p-3 sm:p-4 rounded-lg mb-4 break-all font-mono text-xs sm:text-sm border border-white/10">
+                        {token}
+                      </div>
+                      <p className="text-xs sm:text-sm text-white/50 mb-4 text-center">
+                        This token expires in 10 minutes. Click below to access the ticket sale page.
+                      </p>
+                      <a
+                        href={getTweetUrl(true)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-primary w-full inline-flex items-center justify-center gap-2"
+                      >
+                        Post on Twitter
+                        <ExternalLink size={18} />
+                      </a>
+                    </>
+                  ) : (
+                    <div className="text-red-400 text-center">Failed to generate token</div>
+                  )
                 ) : (
-                  <div className="text-red-400 text-center">Failed to generate token</div>
+                  <div className="text-xs sm:text-sm text-white/60 text-center">
+                    Ticket tokens are paused while we run the mock verification experience. You can still download your ARMY pass and share it with the world!
+                  </div>
                 )}
               </div>
 
@@ -1105,7 +1123,11 @@ export default function SuccessPage() {
                       {passed ? 'Verified ARMY' : 'ARMY-in-training'}: {verifiedDisplayName}
                     </p>
                     <p className="text-white/60">
-                      {passed ? `Ticket Token: ${truncatedToken}` : 'Ticket Token: 🔒 still locked'}
+                      {passed
+                        ? isMockFlow
+                          ? 'Ticket Token: Mock mode (not generated)'
+                          : `Ticket Token: ${truncatedToken}`
+                        : 'Ticket Token: 🔒 still locked'}
                     </p>
                     <p className="text-white/60 mt-2">
                       SamBiT⁷@Boy_With_Code
@@ -1137,13 +1159,25 @@ export default function SuccessPage() {
                 {downloadingCard ? 'Preparing JPG...' : 'Download ARMY Pass'}
               </button>
               {passed ? (
-                <button
-                  onClick={handleRedirect}
-                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
-                >
-                  Enter Ticket Sale
-                  <ExternalLink size={18} />
-                </button>
+                enableSpotifyVerification && !isMockFlow ? (
+                  <button
+                    onClick={handleRedirect}
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                  >
+                    Enter Ticket Sale
+                    <ExternalLink size={18} />
+                  </button>
+                ) : (
+                  <a
+                    href={getTweetUrl(true)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                  >
+                    Post the Win
+                    <ExternalLink size={18} />
+                  </a>
+                )
               ) : (
                 <a
                   href={getTweetUrl(false)}

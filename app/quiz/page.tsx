@@ -6,10 +6,15 @@ import { useEffect, useState, useRef } from 'react';
 import { Clock, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function QuizPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const verificationId = searchParams.get('verificationId');
+  const initialSpotifyScore = Number(searchParams.get('fanScore') || '0');
+  const envEnableSpotify =
+    process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
+  const isMockFlow =
+    searchParams.get('mocked') === 'true' || !envEnableSpotify;
 
   const [questions, setQuestions] = useState<any[]>([]);
   const [questionIds, setQuestionIds] = useState<string[]>([]);
@@ -23,7 +28,7 @@ export default function QuizPage() {
   const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (envEnableSpotify && status === 'unauthenticated') {
       router.push('/');
       return;
     }
@@ -34,7 +39,7 @@ export default function QuizPage() {
     }
 
     fetchQuestions();
-  }, [status, verificationId, router]);
+  }, [status, verificationId, router, envEnableSpotify]);
 
   useEffect(() => {
     if (timeLeft <= 0 && !hasSubmittedRef.current) {
@@ -145,6 +150,7 @@ export default function QuizPage() {
           answers: submittedAnswers,
           questionIds: questionIds,
           verificationId,
+          spotifyScore: initialSpotifyScore,
         }),
       });
 
@@ -167,14 +173,20 @@ export default function QuizPage() {
         }));
       }
 
-      router.push(`/success?passed=${result.overallPassed}&score=${result.score}&verificationId=${verificationId}&quizPassed=${result.quizPassed}&combinedScore=${result.combinedScore}&spotifyScore=${result.spotifyScore}`);
+      const mockedParam =
+        typeof result.mocked === 'boolean'
+          ? result.mocked
+          : isMockFlow;
+      router.push(
+        `/success?passed=${result.overallPassed}&score=${result.score}&verificationId=${verificationId}&quizPassed=${result.quizPassed}&combinedScore=${result.combinedScore}&spotifyScore=${result.spotifyScore}&mocked=${mockedParam}`,
+      );
     } catch (error) {
       console.error('Quiz submission error:', error);
       setSubmitting(false);
     }
   };
 
-  if (status === 'loading' || loading) {
+  if ((envEnableSpotify && status === 'loading') || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
         <div className="flex items-center gap-3">

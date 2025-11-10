@@ -33,12 +33,14 @@ export default function VerificationPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
+  const enableSpotifyVerification =
+    process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (enableSpotifyVerification && status === 'unauthenticated') {
       router.push('/');
     }
-  }, [status, router]);
+  }, [status, router, enableSpotifyVerification]);
 
   const handleVerification = async () => {
     setLoading(true);
@@ -74,7 +76,7 @@ export default function VerificationPage() {
     }
   };
 
-  if (status === 'loading') {
+  if (enableSpotifyVerification && status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
         <div className="flex items-center gap-3">
@@ -88,7 +90,11 @@ export default function VerificationPage() {
 
   const handleProceedToQuiz = () => {
     if (result?.canTakeQuiz && result?.verificationId) {
-      router.push(`/quiz?verificationId=${result.verificationId}`);
+      const fanScore = result.fanScore ?? 0;
+      const mockedFlag = result.mocked ? 'true' : 'false';
+      router.push(
+        `/quiz?verificationId=${encodeURIComponent(result.verificationId)}&fanScore=${fanScore}&mocked=${mockedFlag}`,
+      );
     }
   };
 

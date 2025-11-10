@@ -157,38 +157,37 @@ function buildMockSpotifyData() {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const mockMode = !ENABLE_SPOTIFY_VERIFICATION;
 
     // With JWT strategy, session.user.id is the spotifyId or user id
     // Try to find user by email first, then by id (which might be spotifyId)
-    let user = null;
-    
-    if (session.user.email) {
+    let user: any = null;
+
+    if (session?.user?.email) {
       user = await prisma.user.findFirst({
         where: { email: session.user.email },
       });
     }
-    
-    // If not found by email, try by ID (which might be spotifyId in JWT strategy)
-    if (!user && session.user.id) {
+
+    if (!user && session?.user?.id) {
       user = await prisma.user.findFirst({
-        where: { 
-          OR: [
-            { id: session.user.id },
-            { spotifyId: session.user.id },
-          ],
+        where: {
+          OR: [{ id: session.user.id }, { spotifyId: session.user.id }],
         },
       });
     }
 
-    if (!user) {
-      return NextResponse.json({ 
-        error: 'User not found. Please try logging in again.',
-        details: 'User account may not have been created in database'
-      }, { status: 404 });
+    if (!user && ENABLE_SPOTIFY_VERIFICATION) {
+      if (!session?.user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      return NextResponse.json(
+        {
+          error: 'User not found. Please try logging in again.',
+          details: 'User account may not have been created in database',
+        },
+        { status: 404 },
+      );
     }
 
     let spotifyData;
@@ -256,16 +255,20 @@ export async function POST(req: NextRequest) {
       fanScoreResult = calculateFanScore(spotifyData, user.createdAt);
     }
 
-    const verification = await prisma.verification.create({
-      data: {
-        userId: user.id,
-        fanScore: fanScoreResult.totalScore,
-        quizPassed: false,
-      },
-    });
+    let verificationId = `mock-${Date.now()}`;
+    if (!mockMode && user) {
+      const verification = await prisma.verification.create({
+        data: {
+          userId: user.id,
+          fanScore: fanScoreResult.totalScore,
+          quizPassed: false,
+        },
+      });
+      verificationId = verification.id;
+    }
 
     return NextResponse.json({
-      verificationId: verification.id,
+      verificationId,
       fanScore: fanScoreResult.totalScore,
       breakdown: fanScoreResult.breakdown,
       details: fanScoreResult.details,

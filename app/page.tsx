@@ -10,6 +10,8 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
+  const enableSpotifyVerification =
+    process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: '/' });
@@ -114,7 +116,13 @@ export default function Home() {
               </div>
             ) : (
               <button
-                onClick={() => signIn('spotify', { callbackUrl: '/' })}
+                onClick={() => {
+                  if (enableSpotifyVerification) {
+                    signIn('spotify', { callbackUrl: '/' });
+                  } else {
+                    router.push('/verification');
+                  }
+                }}
                 className="btn-primary inline-flex items-center gap-2 text-base sm:text-lg px-8 py-4"
               >
                 <Music size={20} />
