@@ -183,33 +183,47 @@ export default function SuccessPage() {
       return;
     }
 
+    let container: HTMLDivElement | null = null;
+
     try {
       setDownloadingCard(true);
-      
-      // Scroll the card into view and ensure it's fully visible
-      cardRef.current.scrollIntoView({ behavior: 'instant', block: 'center' });
-      
-      // Small delay to ensure rendering is complete
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
+
       const html2canvasModule = await import('html2canvas');
       const rect = cardRef.current.getBoundingClientRect();
-      
-      const canvas = await html2canvasModule.default(cardRef.current, {
+
+      // Clone the card into an off-screen container to avoid viewport clipping
+      const clone = cardRef.current.cloneNode(true) as HTMLElement;
+      clone.style.margin = '0';
+      clone.style.width = `${rect.width}px`;
+      clone.style.height = `${rect.height}px`;
+      clone.style.maxHeight = 'none';
+      clone.style.overflow = 'visible';
+
+      container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.top = '0';
+      container.style.left = '0';
+      container.style.zIndex = '-1';
+      container.style.opacity = '0';
+      container.style.pointerEvents = 'none';
+      container.style.background = '#140022';
+      container.style.padding = '0';
+      container.style.width = `${rect.width}px`;
+      container.style.height = `${rect.height}px`;
+      container.appendChild(clone);
+      document.body.appendChild(container);
+
+      // Wait for next frame so styles apply
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+      const canvas = await html2canvasModule.default(clone, {
         backgroundColor: '#140022',
         scale: 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
-        width: rect.width,
-        height: rect.height,
-        x: 0,
-        y: 0,
-        scrollX: -rect.left,
-        scrollY: -rect.top,
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight,
       });
+
       const link = document.createElement('a');
       link.href = canvas.toDataURL('image/jpeg', 0.95);
       link.download = 'fangate-verified-army-pass.jpg';
@@ -217,6 +231,9 @@ export default function SuccessPage() {
     } catch (error) {
       console.error('Failed to download card:', error);
     } finally {
+      if (container) {
+        document.body.removeChild(container);
+      }
       setDownloadingCard(false);
     }
   };
