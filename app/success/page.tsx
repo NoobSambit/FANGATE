@@ -185,10 +185,30 @@ export default function SuccessPage() {
 
     try {
       setDownloadingCard(true);
+      
+      // Scroll the card into view and ensure it's fully visible
+      cardRef.current.scrollIntoView({ behavior: 'instant', block: 'center' });
+      
+      // Small delay to ensure rendering is complete
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
       const html2canvasModule = await import('html2canvas');
+      const rect = cardRef.current.getBoundingClientRect();
+      
       const canvas = await html2canvasModule.default(cardRef.current, {
         backgroundColor: '#140022',
         scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        width: rect.width,
+        height: rect.height,
+        x: 0,
+        y: 0,
+        scrollX: -rect.left,
+        scrollY: -rect.top,
+        windowWidth: window.innerWidth,
+        windowHeight: window.innerHeight,
       });
       const link = document.createElement('a');
       link.href = canvas.toDataURL('image/jpeg', 0.95);
@@ -1028,13 +1048,13 @@ export default function SuccessPage() {
             </button>
             <div
               ref={cardRef}
-              className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-purple-400/40 bg-gradient-to-br from-purple-900/80 via-fuchsia-900/70 to-slate-900/80 px-4 py-6 sm:px-8 sm:py-10 shadow-[0_20px_70px_rgba(168,85,247,0.45)]"
+              className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-purple-400/40 bg-gradient-to-br from-purple-900/80 via-fuchsia-900/70 to-slate-900/80 px-4 pt-8 pb-6 sm:px-8 sm:pt-10 sm:pb-10 shadow-[0_20px_70px_rgba(168,85,247,0.45)]"
             >
               <div className="absolute inset-0 opacity-60">
                 <div className="absolute -top-32 -right-10 h-64 w-64 rounded-full bg-purple-500/40 blur-3xl" />
                 <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-pink-500/30 blur-3xl" />
               </div>
-              <div className="relative z-10 space-y-4 sm:space-y-6">
+              <div className="relative z-10 space-y-4 sm:space-y-6 pt-1">
                 <div className="flex items-center justify-between gap-2 sm:gap-4">
                   <div className="flex items-center gap-2 sm:gap-4">
                     <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl border border-white/20 bg-black/20 overflow-hidden flex-shrink-0">
