@@ -2,9 +2,23 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Confetti from 'react-confetti';
-import { Trophy, XCircle, ExternalLink, CheckCircle, X, ArrowLeft, Music, TrendingUp, Clock, Award, FileText } from 'lucide-react';
+import {
+  Trophy,
+  XCircle,
+  ExternalLink,
+  CheckCircle,
+  X,
+  ArrowLeft,
+  Music,
+  TrendingUp,
+  Clock,
+  Award,
+  FileText,
+  Download,
+  Sparkles,
+} from 'lucide-react';
 
 interface QuestionResult {
   id: string;
@@ -40,6 +54,10 @@ export default function SuccessPage() {
     spotifyBreakdown?: any;
   }>({});
   const [showScorecard, setShowScorecard] = useState(true);
+  const [showTicketCard, setShowTicketCard] = useState(false);
+  const [siteOrigin, setSiteOrigin] = useState('fangate.army');
+  const [downloadingCard, setDownloadingCard] = useState(false);
+  const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -48,6 +66,7 @@ export default function SuccessPage() {
     }
 
     if (typeof window !== 'undefined') {
+      setSiteOrigin(window.location.origin);
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
@@ -132,6 +151,53 @@ export default function SuccessPage() {
     window.location.href = `${redirectUrl}?token=${token}`;
   };
 
+  const handleShowTicketCard = () => {
+    setShowTicketCard(true);
+  };
+
+  const handleDownloadCard = async () => {
+    if (!cardRef.current || downloadingCard) {
+      return;
+    }
+
+    try {
+      setDownloadingCard(true);
+      const html2canvasModule = await import('html2canvas');
+      const canvas = await html2canvasModule.default(cardRef.current, {
+        backgroundColor: '#140022',
+        scale: 2,
+      });
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
+      link.download = 'fangate-verified-army-pass.jpg';
+      link.click();
+    } catch (error) {
+      console.error('Failed to download card:', error);
+    } finally {
+      setDownloadingCard(false);
+    }
+  };
+
+  const spotifyPoints = Number(
+    quizData.spotifyBreakdown?.fanScore ??
+      quizData.spotifyScore ??
+      spotifyScore ??
+      0,
+  );
+
+  const quizCorrect = Number(quizData.quizScore ?? score ?? 0);
+  const quizPercentage = Math.round((quizCorrect / 10) * 100);
+  const combinedPoints = Number(
+    quizData.combinedScore ?? combinedScore ?? 0,
+  );
+  const sanitizedOrigin = siteOrigin.replace(/^https?:\/\//, '');
+  const truncatedToken =
+    token && token.length > 12
+      ? `${token.slice(0, 6)}...${token.slice(-6)}`
+      : token || 'N/A';
+  const verifiedDisplayName =
+    session?.user?.name || session?.user?.email || 'Verified ARMY';
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
@@ -167,6 +233,9 @@ export default function SuccessPage() {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
                   You&apos;re a Verified ARMY!
                 </h1>
+                <p className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                  You can access the concert ticket now! 🎟️
+                </p>
                 
                 {/* Show different messages based on quiz performance */}
                 {!quizPassed && (quizData.spotifyScore || spotifyScore) && (
@@ -335,7 +404,7 @@ export default function SuccessPage() {
                       This token expires in 10 minutes. Click below to access the ticket sale page.
                     </p>
                     <button
-                      onClick={handleRedirect}
+                      onClick={handleShowTicketCard}
                       className="btn-primary w-full inline-flex items-center justify-center gap-2"
                     >
                       Access Ticket Sale
@@ -863,6 +932,135 @@ export default function SuccessPage() {
           )}
         </div>
       </div>
+
+      {showTicketCard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-black/80 backdrop-blur">
+          <div className="relative w-full max-w-2xl">
+            <button
+              onClick={() => setShowTicketCard(false)}
+              className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
+            <div
+              ref={cardRef}
+              className="relative overflow-hidden rounded-3xl border border-purple-400/40 bg-gradient-to-br from-purple-900/80 via-fuchsia-900/70 to-slate-900/80 px-8 py-10 shadow-[0_20px_70px_rgba(168,85,247,0.45)]"
+            >
+              <div className="absolute inset-0 opacity-60">
+                <div className="absolute -top-32 -right-10 h-64 w-64 rounded-full bg-purple-500/40 blur-3xl" />
+                <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-pink-500/30 blur-3xl" />
+              </div>
+              <div className="relative z-10 space-y-8">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-2xl border border-white/20 bg-black/20 overflow-hidden">
+                      <img
+                        src="/fangate-logo.png"
+                        alt="FanGate logo"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold text-white">FanGate</p>
+                      <p className="text-sm text-white/70">{sanitizedOrigin}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-purple-200/80">
+                    Verified Army Pass
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/20">
+                    <Sparkles size={16} className="text-purple-200" />
+                    <p className="text-sm font-semibold text-white">
+                      Congratulations, you&apos;re cleared for BTS tickets!
+                    </p>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight">
+                    🎟️ You can access the BTS concert ticket sale right now.
+                  </h2>
+                  <p className="text-base sm:text-lg text-purple-100/90 max-w-2xl">
+                    Show off your dedication—share this pass and let the world
+                    know you&apos;re officially a verified ARMY. See you at the
+                    show!
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-5">
+                    <p className="text-xs text-white/60 uppercase tracking-widest">
+                      Combined Score
+                    </p>
+                    <p className="mt-2 text-3xl font-bold text-green-300">
+                      {Number.isNaN(combinedPoints) ? '—' : combinedPoints}
+                    </p>
+                    <p className="text-xs text-white/50 mt-1">Needed: 70+</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-5">
+                    <p className="text-xs text-white/60 uppercase tracking-widest">
+                      Spotify Dedication
+                    </p>
+                    <p className="mt-2 text-3xl font-bold text-purple-200">
+                      {Number.isNaN(spotifyPoints) ? '—' : spotifyPoints}
+                    </p>
+                    <p className="text-xs text-white/50 mt-1">Weight: 40%</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-5">
+                    <p className="text-xs text-white/60 uppercase tracking-widest">
+                      Quiz Mastery
+                    </p>
+                    <p className="mt-2 text-3xl font-bold text-pink-200">
+                      {Number.isNaN(quizPercentage) ? '—' : `${quizPercentage}%`}
+                    </p>
+                    <p className="text-xs text-white/50 mt-1">Weight: 60%</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="text-sm text-white/70">
+                    <p className="font-semibold text-white">
+                      Verified ARMY: {verifiedDisplayName}
+                    </p>
+                    <p className="text-white/60">
+                      Token ID: {truncatedToken}
+                    </p>
+                    <p className="text-white/60 mt-2">
+                      SamBiT⁷@Boy_With_Code
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs uppercase tracking-widest text-white/50">
+                      Powered by
+                    </p>
+                    <p className="text-base font-semibold text-white">
+                      FanGate Verification
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                onClick={handleDownloadCard}
+                disabled={downloadingCard}
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-purple-400/40 bg-purple-500/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-500/30 disabled:opacity-60"
+              >
+                <Download size={18} />
+                {downloadingCard ? 'Preparing JPG...' : 'Download ARMY Pass'}
+              </button>
+              <button
+                onClick={handleRedirect}
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+              >
+                Enter Ticket Sale
+                <ExternalLink size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

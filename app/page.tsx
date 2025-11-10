@@ -37,8 +37,12 @@ export default function Home() {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                <Music className="text-white" size={18} />
+              <div className="w-9 h-9 rounded-lg border border-purple-500/40 overflow-hidden bg-white/5">
+                <img
+                  src="/fangate-logo.png"
+                  alt="FanGate logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <span className="text-xl font-bold text-white">
                 Fan<span className="text-purple-400">Gate</span>
@@ -294,8 +298,12 @@ export default function Home() {
         <footer className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16 border-t border-white/5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                <Music className="text-white" size={14} />
+              <div className="w-7 h-7 rounded-lg border border-purple-500/30 overflow-hidden bg-white/5">
+                <img
+                  src="/fangate-logo.png"
+                  alt="FanGate logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <span className="text-sm text-white/40">&copy; 2024 FanGate</span>
             </div>
