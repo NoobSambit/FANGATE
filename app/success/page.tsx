@@ -1018,126 +1018,126 @@ export default function SuccessPage() {
       </div>
 
       {showTicketCard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-black/80 backdrop-blur">
-          <div className="relative w-full max-w-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur overflow-y-auto overscroll-contain">
+          <div className="relative w-full max-w-2xl mx-auto my-auto px-4 py-4 sm:py-6 min-h-0">
             <button
               onClick={() => setShowTicketCard(false)}
-              className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors"
+              className="fixed top-4 right-4 sm:absolute sm:-top-12 sm:right-0 z-50 text-white/70 hover:text-white transition-colors bg-black/50 rounded-full p-2 sm:bg-transparent sm:p-0"
             >
               <X size={24} />
             </button>
             <div
               ref={cardRef}
-              className="relative overflow-hidden rounded-3xl border border-purple-400/40 bg-gradient-to-br from-purple-900/80 via-fuchsia-900/70 to-slate-900/80 px-8 py-10 shadow-[0_20px_70px_rgba(168,85,247,0.45)]"
+              className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-purple-400/40 bg-gradient-to-br from-purple-900/80 via-fuchsia-900/70 to-slate-900/80 px-4 py-6 sm:px-8 sm:py-10 shadow-[0_20px_70px_rgba(168,85,247,0.45)]"
             >
               <div className="absolute inset-0 opacity-60">
                 <div className="absolute -top-32 -right-10 h-64 w-64 rounded-full bg-purple-500/40 blur-3xl" />
                 <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-pink-500/30 blur-3xl" />
               </div>
-              <div className="relative z-10 space-y-8">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl border border-white/20 bg-black/20 overflow-hidden">
+              <div className="relative z-10 space-y-4 sm:space-y-6">
+                <div className="flex items-center justify-between gap-2 sm:gap-4">
+                  <div className="flex items-center gap-2 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl border border-white/20 bg-black/20 overflow-hidden flex-shrink-0">
                       <img
                         src="/fangate-logo.png"
                         alt="FanGate logo"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div>
-                      <p className="text-lg font-semibold text-white">FanGate</p>
-                      <p className="text-sm text-white/70">{sanitizedOrigin}</p>
+                    <div className="min-w-0">
+                      <p className="text-sm sm:text-lg font-semibold text-white truncate">FanGate</p>
+                      <p className="text-xs sm:text-sm text-white/70 truncate">{sanitizedOrigin}</p>
                     </div>
                   </div>
-                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-purple-200/80">
+                  <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider sm:tracking-[0.35em] text-purple-200/80 text-right flex-shrink-0">
                     {passed ? 'Verified ARMY Pass' : 'Stream-Till-You-Pass Pass'}
                   </span>
                 </div>
 
-                <div className="space-y-4">
-                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 ${passed ? 'bg-white/10' : 'bg-red-500/20'}`}>
-                    <Sparkles size={16} className="text-purple-200" />
-                    <p className="text-sm font-semibold text-white">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/20 ${passed ? 'bg-white/10' : 'bg-red-500/20'}`}>
+                    <Sparkles size={14} className="text-purple-200 flex-shrink-0" />
+                    <p className="text-xs sm:text-sm font-semibold text-white">
                       {passed
-                        ? 'Congratulations, you’re cleared for BTS tickets!'
+                        ? "Congratulations, you're cleared for BTS tickets!"
                         : 'Oof—FanGate just told you to stream harder.'}
                     </p>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight">
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-white leading-tight">
                     {passed
                       ? '🎟️ You can access the BTS concert ticket sale right now.'
                       : '🚫 No ticket... yet. Time to binge BTS and come back swinging.'}
                   </h2>
-                  <p className="text-base sm:text-lg text-purple-100/90 max-w-2xl">
+                  <p className="text-sm sm:text-base md:text-lg text-purple-100/90">
                     {passed
                       ? "Show off your dedication—share this pass and let the world know you're officially a verified ARMY. See you at the show!"
                       : "Tell the timeline you flunked, then fire up those playlists. Every stream gets you closer to the ticket booth."}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-5">
-                    <p className="text-xs text-white/60 uppercase tracking-widest">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  <div className="rounded-xl sm:rounded-2xl border border-white/15 bg-white/10 px-3 py-4 sm:px-4 sm:py-5">
+                    <p className="text-[10px] sm:text-xs text-white/60 uppercase tracking-widest">
                       Combined Score
                     </p>
                     <p
-                      className={`mt-2 text-3xl font-bold ${
+                      className={`mt-1 sm:mt-2 text-2xl sm:text-3xl font-bold ${
                         passed ? 'text-green-300' : 'text-red-300'
                       }`}
                     >
                       {Number.isNaN(combinedPoints) ? '—' : combinedPoints}
                     </p>
-                    <p className="text-xs text-white/50 mt-1">Needed: 70+</p>
+                    <p className="text-[10px] sm:text-xs text-white/50 mt-1">Needed: 70+</p>
                   </div>
-                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-5">
-                    <p className="text-xs text-white/60 uppercase tracking-widest">
+                  <div className="rounded-xl sm:rounded-2xl border border-white/15 bg-white/10 px-3 py-4 sm:px-4 sm:py-5">
+                    <p className="text-[10px] sm:text-xs text-white/60 uppercase tracking-widest">
                       Spotify Dedication
                     </p>
                     <p
-                      className={`mt-2 text-3xl font-bold ${
+                      className={`mt-1 sm:mt-2 text-2xl sm:text-3xl font-bold ${
                         passed ? 'text-purple-200' : 'text-purple-200'
                       }`}
                     >
                       {Number.isNaN(spotifyPoints) ? '—' : spotifyPoints}
                     </p>
-                    <p className="text-xs text-white/50 mt-1">Weight: 40%</p>
+                    <p className="text-[10px] sm:text-xs text-white/50 mt-1">Weight: 40%</p>
                   </div>
-                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-5">
-                    <p className="text-xs text-white/60 uppercase tracking-widest">
+                  <div className="rounded-xl sm:rounded-2xl border border-white/15 bg-white/10 px-3 py-4 sm:px-4 sm:py-5">
+                    <p className="text-[10px] sm:text-xs text-white/60 uppercase tracking-widest">
                       Quiz Mastery
                     </p>
                     <p
-                      className={`mt-2 text-3xl font-bold ${
+                      className={`mt-1 sm:mt-2 text-2xl sm:text-3xl font-bold ${
                         passed ? 'text-pink-200' : 'text-orange-300'
                       }`}
                     >
                       {Number.isNaN(quizPercentage) ? '—' : `${quizPercentage}%`}
                     </p>
-                    <p className="text-xs text-white/50 mt-1">Weight: 60%</p>
+                    <p className="text-[10px] sm:text-xs text-white/50 mt-1">Weight: 60%</p>
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="text-sm text-white/70">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 pt-2">
+                  <div className="text-xs sm:text-sm text-white/70">
                     <p className="font-semibold text-white">
                       {passed ? 'Verified ARMY' : 'ARMY-in-training'}: {verifiedDisplayName}
                     </p>
-                    <p className="text-white/60">
+                    <p className="text-white/60 text-xs sm:text-sm">
                       {passed
                         ? isMockFlow
                           ? 'Ticket Token: Mock mode (not generated)'
                           : `Ticket Token: ${truncatedToken}`
                         : 'Ticket Token: 🔒 still locked'}
                     </p>
-                    <p className="text-white/60 mt-2">
+                    <p className="text-white/60 mt-1 sm:mt-2 text-xs sm:text-sm">
                       SamBiT⁷@Boy_With_Code
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs uppercase tracking-widest text-white/50">
+                  <div className="text-left sm:text-right">
+                    <p className="text-[10px] sm:text-xs uppercase tracking-widest text-white/50">
                       Powered by
                     </p>
-                    <p className="text-base font-semibold text-white">
+                    <p className="text-sm sm:text-base font-semibold text-white">
                       FanGate Verification
                     </p>
                   </div>
@@ -1145,37 +1145,37 @@ export default function SuccessPage() {
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3">
               <button
                 onClick={handleDownloadCard}
                 disabled={downloadingCard}
-                className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white transition disabled:opacity-60 ${
+                className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg sm:rounded-xl px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-white transition disabled:opacity-60 ${
                   passed
                     ? 'border border-purple-400/40 bg-purple-500/20 hover:bg-purple-500/30'
                     : 'border border-red-400/40 bg-red-500/20 hover:bg-red-500/30'
                 }`}
               >
-                <Download size={18} />
+                <Download size={16} />
                 {downloadingCard ? 'Preparing JPG...' : 'Download ARMY Pass'}
               </button>
               {passed ? (
                 enableSpotifyVerification && !isMockFlow ? (
                   <button
                     onClick={handleRedirect}
-                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
                   >
                     Enter Ticket Sale
-                    <ExternalLink size={18} />
+                    <ExternalLink size={16} />
                   </button>
                 ) : (
                   <a
                     href={getTweetUrl(true)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
                   >
                     Post the Win
-                    <ExternalLink size={18} />
+                    <ExternalLink size={16} />
                   </a>
                 )
               ) : (
@@ -1183,10 +1183,10 @@ export default function SuccessPage() {
                   href={getTweetUrl(false)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-500 via-purple-500 to-pink-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-red-500 via-purple-500 to-pink-500 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
                 >
                   Post the Roast
-                  <ExternalLink size={18} />
+                  <ExternalLink size={16} />
                 </a>
               )}
             </div>
