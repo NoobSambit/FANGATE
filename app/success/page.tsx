@@ -155,6 +155,20 @@ export default function SuccessPage() {
     setShowTicketCard(true);
   };
 
+  const getTweetUrl = () => {
+    const base =
+      typeof window !== 'undefined'
+        ? window.location.origin
+        : process.env.NEXT_PUBLIC_SITE_URL || 'https://fangate.army';
+    const text =
+      `I'm a Verified ARMY on FanGate! 🎟️💜` +
+      `\n` +
+      `Verify yourself as ARMY to access the BTS concert ticketing page.` +
+      `\n` +
+      `${base} @Boy_With_Code`;
+    return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  };
+
   const handleDownloadCard = async () => {
     if (!cardRef.current || downloadingCard) {
       return;
@@ -273,6 +287,32 @@ export default function SuccessPage() {
                     </p>
                   </div>
                 )}
+
+                {/* Share First (Download or Tweet) */}
+                <div className="mt-6 glass-effect p-5 sm:p-6 rounded-xl max-w-2xl mx-auto">
+                  <h3 className="text-lg font-semibold text-white mb-3 text-center">Share Your Verification</h3>
+                  <p className="text-xs sm:text-sm text-white/60 text-center mb-4">
+                    Download your BTS-themed ARMY Pass or post a tweet. You can attach the JPG in Twitter manually.
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button
+                      onClick={handleShowTicketCard}
+                      className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-purple-400/40 bg-purple-500/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-500/30"
+                    >
+                      <Download size={18} />
+                      Download ARMY Pass
+                    </button>
+                    <a
+                      href={getTweetUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/30 transition hover:shadow-purple-500/50"
+                    >
+                      Post on Twitter
+                      <ExternalLink size={18} />
+                    </a>
+                  </div>
+                </div>
               </div>
 
               {/* Quiz Results */}
@@ -403,13 +443,15 @@ export default function SuccessPage() {
                     <p className="text-xs sm:text-sm text-white/50 mb-4 text-center">
                       This token expires in 10 minutes. Click below to access the ticket sale page.
                     </p>
-                    <button
-                      onClick={handleShowTicketCard}
+                    <a
+                      href={getTweetUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="btn-primary w-full inline-flex items-center justify-center gap-2"
                     >
-                      Access Ticket Sale
+                      Post on Twitter
                       <ExternalLink size={18} />
-                    </button>
+                    </a>
                   </>
                 ) : (
                   <div className="text-red-400 text-center">Failed to generate token</div>
