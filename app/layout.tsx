@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://fangate.army";
 const ogImage =
-  "https://res.cloudinary.com/dtamgk7i5/image/upload/v1762777066/fangate_hrnkge.png";
+  "/og";
 
 export const metadata: Metadata = {
   title: "FanGate - BTS Fan Verification",
