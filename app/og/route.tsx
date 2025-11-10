@@ -10,10 +10,12 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ??
   'https://fangate.army';
 
-const logoUrl =
+const logoRemoteUrl =
   'https://res.cloudinary.com/dtamgk7i5/image/upload/v1762777066/fangate_hrnkge.png';
 
 export async function GET(_req: NextRequest) {
+  const logoImage = await fetch(logoRemoteUrl).then((res) => res.arrayBuffer());
+
   return new ImageResponse(
     (
       <div
@@ -23,11 +25,11 @@ export async function GET(_req: NextRequest) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '72px 80px',
+          padding: '72px 88px 66px 88px',
           background:
-            'radial-gradient(circle at 20% 20%, rgba(168,85,247,0.35), transparent 45%), radial-gradient(circle at 80% 30%, rgba(236,72,153,0.35), transparent 40%), #0b0616',
-          color: '#f8f5ff',
-          fontFamily: 'Inter, Segoe UI, Helvetica Neue, Arial, sans-serif',
+            'radial-gradient(circle at 20% 17%, rgba(168,85,247,0.4), transparent 45%), radial-gradient(circle at 82% 25%, rgba(236,72,153,0.35), transparent 45%), radial-gradient(circle at 50% 80%, rgba(59,130,246,0.18), transparent 50%), #0a0516',
+          color: '#f6f3ff',
+          fontFamily: 'Inter, "Helvetica Neue", Arial, sans-serif',
         }}
       >
         <div
@@ -35,28 +37,29 @@ export async function GET(_req: NextRequest) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: 48,
+            gap: 40,
           }}
         >
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 32,
+              gap: 28,
             }}
           >
             <div
               style={{
-                width: 110,
-                height: 110,
-                borderRadius: 28,
+                width: 120,
+                height: 120,
+                borderRadius: 32,
                 overflow: 'hidden',
-                border: '2px solid rgba(255,255,255,0.2)',
-                boxShadow: '0 22px 50px rgba(168,85,247,0.35)',
+                border: '2px solid rgba(255,255,255,0.25)',
+                boxShadow:
+                  '0 22px 55px rgba(168,85,247,0.45), inset 0 0 0 8px rgba(10,5,22,0.6)',
               }}
             >
               <img
-                src={logoUrl}
+                src={logoImage as unknown as string}
                 alt="FanGate logo"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
@@ -65,60 +68,64 @@ export async function GET(_req: NextRequest) {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 8,
+                gap: 6,
               }}
             >
               <span
                 style={{
-                  fontSize: 48,
-                  fontWeight: 800,
-                  letterSpacing: '-1px',
+                  fontSize: 56,
+                  fontWeight: 900,
+                  letterSpacing: '-1.4px',
                 }}
               >
                 FanGate
               </span>
               <span
                 style={{
-                  fontSize: 26,
-                  color: 'rgba(236, 233, 255, 0.75)',
+                  fontSize: 28,
+                  color: 'rgba(233, 228, 255, 0.75)',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
                 }}
               >
-                BTS Fan Verification Portal
+                BTS Fan Verification
               </span>
             </div>
           </div>
           <div
             style={{
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: 600,
-              color: '#d6c7ff',
+              color: '#d9ccff',
             }}
           >
             Creator: @Boy_With_Code
           </div>
         </div>
 
-        <div style={{ marginTop: 32, maxWidth: 880 }}>
+        <div style={{ marginTop: 36, maxWidth: 900 }}>
           <p
             style={{
-              fontSize: 70,
+              fontSize: 74,
               fontWeight: 900,
-              lineHeight: 1.1,
-              marginBottom: 24,
+              lineHeight: 1.08,
+              marginBottom: 28,
+              letterSpacing: '-1.8px',
             }}
           >
-            Verify your ARMY status to unlock exclusive BTS concert tickets.
+            Unlock the BTS concert ticket drop by proving you’re a real ARMY.
           </p>
           <p
             style={{
-              fontSize: 30,
-              color: 'rgba(229,225,255,0.78)',
-              lineHeight: 1.4,
-              maxWidth: 760,
+              fontSize: 32,
+              color: 'rgba(232,228,255,0.82)',
+              lineHeight: 1.45,
+              maxWidth: 780,
             }}
           >
-            Spotify listening analysis + ARMY quiz. Earn your spot, grab your
-            token, flex your dedication.
+            Spotify listening analysis + 10-question ARMY quiz. Stream hard,
+            ace the trivia, score 70+, and secure your ticket access token.
           </p>
         </div>
 
@@ -128,26 +135,26 @@ export async function GET(_req: NextRequest) {
             justifyContent: 'space-between',
             alignItems: 'center',
             background:
-              'linear-gradient(135deg, rgba(168,85,247,0.35), rgba(236,72,153,0.35))',
-            padding: '26px 32px',
-            borderRadius: 28,
-            border: '1px solid rgba(255,255,255,0.25)',
-            backdropFilter: 'blur(6px)',
+              'linear-gradient(135deg, rgba(168,85,247,0.38), rgba(236,72,153,0.33))',
+            padding: '28px 34px',
+            borderRadius: 32,
+            border: '1px solid rgba(255,255,255,0.28)',
+            boxShadow: '0 18px 40px rgba(168,85,247,0.35)',
           }}
         >
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: 6,
+              gap: 10,
             }}
           >
             <span
               style={{
                 fontSize: 22,
                 textTransform: 'uppercase',
-                letterSpacing: '0.2em',
-                color: 'rgba(248,245,255,0.8)',
+                letterSpacing: '0.22em',
+                color: 'rgba(246,242,255,0.78)',
               }}
             >
               Combined Scoring
@@ -155,8 +162,8 @@ export async function GET(_req: NextRequest) {
             <div
               style={{
                 display: 'flex',
-                gap: 28,
-                fontSize: 30,
+                gap: 30,
+                fontSize: 32,
                 fontWeight: 700,
               }}
             >
@@ -173,13 +180,13 @@ export async function GET(_req: NextRequest) {
           </div>
           <div
             style={{
-              padding: '14px 26px',
-              borderRadius: 18,
-              border: '1px solid rgba(255,255,255,0.35)',
-              fontSize: 24,
+              padding: '16px 30px',
+              borderRadius: 20,
+              border: '1px solid rgba(255,255,255,0.45)',
+              fontSize: 26,
               fontWeight: 600,
               color: '#f5f3ff',
-              background: 'rgba(11,6,22,0.45)',
+              background: 'rgba(11,6,22,0.55)',
             }}
           >
             {siteUrl.replace(/^https?:\/\//, '')}
