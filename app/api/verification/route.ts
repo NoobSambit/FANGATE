@@ -6,6 +6,8 @@ import { getSpotifyData, calculateFanScore } from '@/lib/spotify';
 import axios from 'axios';
 
 const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
+const ENABLE_SPOTIFY_VERIFICATION =
+  process.env.ENABLE_SPOTIFY_VERIFICATION === 'true';
 
 async function refreshSpotifyAccessToken(account: any) {
   if (!account?.refresh_token) {
@@ -62,10 +64,100 @@ function isSpotifyUnauthorized(error: unknown) {
   return axios.isAxiosError(error) && error.response?.status === 401;
 }
 
+function buildMockSpotifyData() {
+  const btsArtistImage =
+    'https://i.scdn.co/image/ab6761610000e5eb0b68b0b3c3890c4f05d4953a';
+  const jungkookImage =
+    'https://i.scdn.co/image/ab6761610000e5eb63b4c6ebe97ed9869965e5c7';
+  const mockAlbumImage =
+    'https://i.scdn.co/image/ab67616d0000b2737b7b3898e0b0c12c643b8c07';
+
+  return {
+    topArtists: [
+      {
+        id: '3Nrfpe0tUJi4K4DXYWgMUX',
+        name: 'BTS',
+        images: [{ url: btsArtistImage }],
+        external_urls: { spotify: 'https://open.spotify.com/artist/3Nrfpe0tUJi4K4DXYWgMUX' },
+      },
+      {
+        id: '5KNNVgR6LBIABRIomyCEDJ',
+        name: 'Jungkook',
+        images: [{ url: jungkookImage }],
+        external_urls: { spotify: 'https://open.spotify.com/artist/5KNNVgR6LBIABRIomyCEDJ' },
+      },
+      {
+        id: '1uNFoZAHBGtllmzznpCI3s',
+        name: 'Justin Bieber',
+        images: [{ url: 'https://i.scdn.co/image/ab6761610000e5eba1767a8c163d4b9b82d40b8f' }],
+        external_urls: { spotify: 'https://open.spotify.com/artist/1uNFoZAHBGtllmzznpCI3s' },
+      },
+    ],
+    topTracks: [
+      {
+        id: '4saklk6nie3yiGePpBwUoc',
+        name: 'Dynamite',
+        artists: [
+          { id: '3Nrfpe0tUJi4K4DXYWgMUX', name: 'BTS' },
+        ],
+        album: {
+          name: 'Dynamite (DayTime Version)',
+          images: [{ url: mockAlbumImage }],
+        },
+        external_urls: { spotify: 'https://open.spotify.com/track/4saklk6nie3yiGePpBwUoc' },
+        preview_url: null,
+      },
+      {
+        id: '2tRsMl4eGxwoNabM08Dm4I',
+        name: 'Seven (feat. Latto)',
+        artists: [
+          { id: '5KNNVgR6LBIABRIomyCEDJ', name: 'Jungkook' },
+          { id: '6S2OmqARrzebs0tKUEyXyp', name: 'Latto' },
+        ],
+        album: {
+          name: 'Seven (feat. Latto)',
+          images: [{ url: 'https://i.scdn.co/image/ab67616d0000b2730622346642f0eef0c64b69ec' }],
+        },
+        external_urls: { spotify: 'https://open.spotify.com/track/2tRsMl4eGxwoNabM08Dm4I' },
+        preview_url: null,
+      },
+      {
+        id: '2cZsWl3dFAgZ4KqA7E0Y2K',
+        name: 'Take Two',
+        artists: [
+          { id: '3Nrfpe0tUJi4K4DXYWgMUX', name: 'BTS' },
+        ],
+        album: {
+          name: 'Take Two',
+          images: [{ url: 'https://i.scdn.co/image/ab67616d0000b273cb670c00a44b35de2b3287d3' }],
+        },
+        external_urls: { spotify: 'https://open.spotify.com/track/2cZsWl3dFAgZ4KqA7E0Y2K' },
+        preview_url: null,
+      },
+    ],
+    recentlyPlayed: Array.from({ length: 16 }).map((_, idx) => ({
+      track: {
+        id: `mock-track-${idx}`,
+        name: idx % 2 === 0 ? 'Butter' : 'Life Goes On',
+        artists: [
+          { id: '3Nrfpe0tUJi4K4DXYWgMUX', name: 'BTS' },
+        ],
+        album: {
+          name: 'BE',
+          images: [{ url: mockAlbumImage }],
+        },
+        external_urls: { spotify: 'https://open.spotify.com/album/6nY6wLPXds3TyIeQQIviR6' },
+        preview_url: null,
+      },
+      played_at: new Date(Date.now() - idx * 3600_000).toISOString(),
+    })),
+  };
+}
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -99,44 +191,35 @@ export async function POST(req: NextRequest) {
       }, { status: 404 });
     }
 
-    const account = await prisma.account.findFirst({
-      where: { userId: user.id, provider: 'spotify' },
-    });
-
-    if (!account || !account.access_token) {
-      return NextResponse.json({ error: 'Spotify account not connected' }, { status: 400 });
-    }
-
-    let accessToken = account.access_token;
-    const nowSeconds = Math.floor(Date.now() / 1000);
-
-    if (account.expires_at && account.expires_at <= nowSeconds + 60) {
-      try {
-        const refreshed = await refreshSpotifyAccessToken(account);
-        accessToken = refreshed.accessToken;
-      } catch (refreshError) {
-        console.error('Spotify token refresh failed (pre-fetch):', refreshError);
-        return NextResponse.json(
-          {
-            error: 'Spotify session expired',
-            details: 'Please reconnect your Spotify account.',
-          },
-          { status: 401 }
-        );
-      }
-    }
-
     let spotifyData;
-    try {
-      spotifyData = await getSpotifyData(accessToken);
-    } catch (error) {
-      if (isSpotifyUnauthorized(error)) {
+    let fanScoreResult;
+    let mockNotice: string | undefined;
+    let usedMock = false;
+
+    if (!ENABLE_SPOTIFY_VERIFICATION) {
+      spotifyData = buildMockSpotifyData();
+      fanScoreResult = calculateFanScore(spotifyData, new Date());
+      usedMock = true;
+      mockNotice =
+        '⚠️ Spotify temporarily limits new apps. We’re showing a sample verification so you can keep going—thanks for understanding!';
+    } else {
+      const account = await prisma.account.findFirst({
+        where: { userId: user.id, provider: 'spotify' },
+      });
+
+      if (!account || !account.access_token) {
+        return NextResponse.json({ error: 'Spotify account not connected' }, { status: 400 });
+      }
+
+      let accessToken = account.access_token;
+      const nowSeconds = Math.floor(Date.now() / 1000);
+
+      if (account.expires_at && account.expires_at <= nowSeconds + 60) {
         try {
           const refreshed = await refreshSpotifyAccessToken(account);
           accessToken = refreshed.accessToken;
-          spotifyData = await getSpotifyData(accessToken);
         } catch (refreshError) {
-          console.error('Spotify token refresh failed (after 401):', refreshError);
+          console.error('Spotify token refresh failed (pre-fetch):', refreshError);
           return NextResponse.json(
             {
               error: 'Spotify session expired',
@@ -145,12 +228,33 @@ export async function POST(req: NextRequest) {
             { status: 401 }
           );
         }
-      } else {
-        throw error;
       }
-    }
 
-    const fanScoreResult = calculateFanScore(spotifyData, user.createdAt);
+      try {
+        spotifyData = await getSpotifyData(accessToken);
+      } catch (error) {
+        if (isSpotifyUnauthorized(error)) {
+          try {
+            const refreshed = await refreshSpotifyAccessToken(account);
+            accessToken = refreshed.accessToken;
+            spotifyData = await getSpotifyData(accessToken);
+          } catch (refreshError) {
+            console.error('Spotify token refresh failed (after 401):', refreshError);
+            return NextResponse.json(
+              {
+                error: 'Spotify session expired',
+                details: 'Please reconnect your Spotify account.',
+              },
+              { status: 401 }
+            );
+          }
+        } else {
+          throw error;
+        }
+      }
+
+      fanScoreResult = calculateFanScore(spotifyData, user.createdAt);
+    }
 
     const verification = await prisma.verification.create({
       data: {
@@ -167,6 +271,8 @@ export async function POST(req: NextRequest) {
       details: fanScoreResult.details,
       canTakeQuiz: fanScoreResult.totalScore >= 70,
       recentListeningCount: fanScoreResult.breakdown.recentListeningCount || 0,
+      mocked: usedMock,
+      notice: mockNotice,
     });
   } catch (error: any) {
     console.error('Verification error:', error);

@@ -111,6 +111,16 @@ export default function VerificationPage() {
 
           {!result && (
             <div className="glass-effect p-6 sm:p-8 rounded-xl">
+              <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                <p className="text-amber-200 font-semibold text-sm mb-1">
+                  Spotify API Status
+                </p>
+                <p className="text-amber-100/80 text-xs sm:text-sm leading-relaxed">
+                  Spotify currently limits new apps, so we&apos;ll show a sample verification breakdown to help you continue to the quiz. 
+                  💜 Sorry for the detour—we&apos;ll switch back as soon as they approve us!
+                </p>
+              </div>
+
               <div className="mb-6 p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                 <div className="flex items-start gap-3">
                   <Info className="text-purple-400 flex-shrink-0 mt-0.5" size={18} />
@@ -179,6 +189,17 @@ export default function VerificationPage() {
 
           {result && (
             <div className="space-y-6">
+              {result.notice && (
+                <div className="p-4 sm:p-5 rounded-xl border border-amber-500/30 bg-amber-500/10">
+                  <p className="text-amber-200 font-semibold text-sm sm:text-base mb-1 flex items-center gap-2">
+                    <span>Heads up!</span>
+                  </p>
+                  <p className="text-amber-100/80 text-xs sm:text-sm leading-relaxed">
+                    {result.notice}
+                  </p>
+                </div>
+              )}
+
               {/* Total Score */}
               <div className="glass-effect p-6 sm:p-8 rounded-xl text-center">
                 <div className="text-5xl sm:text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mb-2">
@@ -424,7 +445,9 @@ export default function VerificationPage() {
                       </p>
                     </div>
                     <p className="text-green-300/80 text-xs sm:text-sm">
-                      Your Spotify score is {result.fanScore} points. Now take the quiz to complete your verification!
+                      {result.mocked
+                        ? `We’re using a sample Spotify score of ${result.fanScore} points while we wait on Spotify’s approvals. Jump into the quiz to finish your verification!`
+                        : `Your Spotify score is ${result.fanScore} points. Now take the quiz to complete your verification!`}
                     </p>
                   </div>
                   
