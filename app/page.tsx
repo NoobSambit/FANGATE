@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Music, Shield, CheckCircle, LogOut, ArrowRight, Sparkles, TrendingUp, Clock, Award, Info } from 'lucide-react';
 import { getScoringBreakdown } from '@/lib/scoring';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -115,20 +116,27 @@ export default function Home() {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => {
-                  if (enableSpotifyVerification) {
-                    signIn('spotify', { callbackUrl: '/' });
-                  } else {
-                    router.push('/verification');
-                  }
-                }}
-                className="btn-primary inline-flex items-center gap-2 text-base sm:text-lg px-8 py-4"
-              >
-                <Music size={20} />
-                Connect with Spotify
-                <ArrowRight size={20} />
-              </button>
+              <div className="flex flex-col items-center gap-3">
+                <button
+                  onClick={() => {
+                    if (enableSpotifyVerification) {
+                      signIn('spotify', { callbackUrl: '/' });
+                    } else {
+                      router.push('/verification');
+                    }
+                  }}
+                  className="btn-primary inline-flex items-center gap-2 text-base sm:text-lg px-8 py-4"
+                >
+                  <Music size={20} />
+                  Connect with Spotify
+                  <ArrowRight size={20} />
+                </button>
+                {!enableSpotifyVerification && (
+                  <p className="text-xs sm:text-sm text-amber-300/90 max-w-md text-center px-4">
+                    <span className="font-semibold">Note:</span> Spotify analysis is currently turned off due to Spotify restrictions, but you can still proceed. An average score will be provided for the verification process.
+                  </p>
+                )}
+              </div>
             )}
 
             {/* Error Message */}
@@ -303,25 +311,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16 border-t border-white/5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg border border-purple-500/30 overflow-hidden bg-white/5">
-                <img
-                  src="/fangate-logo.png"
-                  alt="FanGate logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="text-sm text-white/40">&copy; 2024 FanGate</span>
-            </div>
-            <div className="flex items-center gap-6 text-sm text-white/40">
-              <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
-              <a href="#" className="hover:text-white/60 transition-colors">Support</a>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ import {
   Download,
   Sparkles,
 } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 interface QuestionResult {
   id: string;
@@ -1230,6 +1231,9 @@ export default function SuccessPage() {
           </div>
         </div>
       )}
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

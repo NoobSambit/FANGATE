@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { Clock, ArrowRight, ArrowLeft } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 export default function QuizPage() {
   const { status } = useSession();
@@ -330,6 +331,9 @@ export default function QuizPage() {
           )}
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

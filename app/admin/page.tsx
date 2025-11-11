@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Download, Shield, ArrowLeft } from 'lucide-react';
 import Papa from 'papaparse';
+import Footer from '@/components/Footer';
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
@@ -201,6 +202,9 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

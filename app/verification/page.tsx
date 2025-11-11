@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Music, TrendingUp, Clock, CheckCircle, ArrowRight, Trophy, XCircle, ListMusic, Info } from 'lucide-react';
 import { getScoringBreakdown } from '@/lib/scoring';
+import Footer from '@/components/Footer';
 
 const ImageWithFallback = ({ src, alt, className, fallbackIcon: FallbackIcon, fallbackSize = 20 }: any) => {
   const [imgError, setImgError] = useState(false);
@@ -534,6 +535,9 @@ export default function VerificationPage() {
           )}
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

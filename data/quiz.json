@@ -2,7 +2,7 @@
   {
     "question": "What color did BTS wear at the 2019 Grammy Awards?",
     "options": ["Black", "Blue", "Red", "White"],
-    "correctIndex": 1
+    "correctIndex": 0
   },
   {
     "question": "Which BTS member is the oldest?",
@@ -82,7 +82,7 @@
   {
     "question": "What is the name of Jin's solo song released in 2019?",
     "options": ["Epiphany", "Moon", "Awake", "Tonight"],
-    "correctIndex": 1
+    "correctIndex": 3
   },
   {
     "question": "Which member is known for his deep voice?",
@@ -182,7 +182,7 @@
   {
     "question": "Which BTS song was released in 2021 and became their third number one on Billboard Hot 100?",
     "options": ["Dynamite", "Butter", "Permission to Dance", "My Universe"],
-    "correctIndex": 2
+    "correctIndex": 1
   },
   {
     "question": "What is Suga's solo album series called?",
@@ -222,7 +222,7 @@
   {
     "question": "Which BTS song was their first to chart on Billboard Hot 100?",
     "options": ["DNA", "Mic Drop", "Boy With Luv", "Fake Love"],
-    "correctIndex": 1
+    "correctIndex": 0
   },
   {
     "question": "What color represents BTS and ARMY?",
@@ -262,7 +262,7 @@
   {
     "question": "Which BTS member's birthday is December 4?",
     "options": ["Jin", "RM", "V", "Suga"],
-    "correctIndex": 2
+    "correctIndex": 0
   },
   {
     "question": "What is the name of BTS's 2023 anthology album?",
@@ -272,7 +272,7 @@
   {
     "question": "Which BTS member's birthday is December 30?",
     "options": ["V", "Jungkook", "Jin", "Suga"],
-    "correctIndex": 2
+    "correctIndex": 0
   },
   {
     "question": "What was BTS's first single released entirely in English?",
@@ -356,7 +356,7 @@
   },
   {
     "question": "Which BTS song features the line 'So show me, I'll show you'?",
-    "options": ["Mic Drop", "DNA", "Fire", "Save Me"],
+    "options": ["Mic Drop", "Magic Shop", "Fire", "Save Me"],
     "correctIndex": 1
   },
   {
@@ -372,7 +372,7 @@
   {
     "question": "What was BTS's first award win?",
     "options": ["Rookie of the Year", "Best New Artist", "New Artist Award", "Rising Star Award"],
-    "correctIndex": 2
+    "correctIndex": 0
   },
   {
     "question": "Which BTS song was used in a Hyundai commercial?",
@@ -457,7 +457,7 @@
   {
     "question": "Which BTS song features the lyric 'I'm the one I should love'?",
     "options": ["Answer: Love Myself", "Epiphany", "Magic Shop", "All of the above"],
-    "correctIndex": 3
+    "correctIndex": 0
   },
   {
     "question": "What is RM's mixtape 'Mono' subtitle?",
@@ -482,7 +482,7 @@
   {
     "question": "What is Jungkook's nickname given by fans?",
     "options": ["Golden Maknae", "Muscle Pig", "Justin Seagull", "All of the above"],
-    "correctIndex": 3
+    "correctIndex": 1
   },
   {
     "question": "Which BTS album features the song 'House of Cards'?",
@@ -635,7 +635,7 @@
     "correctIndex": 1
   },
   {
-    "question": "Which BTS song was nominated for a Grammy for Best Pop Duo/Group Performance in 2021?",
+    "question": "Which BTS song was nominated for a Grammy for Best Pop Duo/Group Performance in 2021 ( performed in 2022 ) ?",
     "options": ["Boy With Luv", "Dynamite", "Butter", "ON"],
     "correctIndex": 1
   },
@@ -776,7 +776,7 @@
   },
   {
     "question": "Which BTS member shares a birthday month with another member?",
-    "options": ["Jin and V", "Jimin and Jungkook", "RM and Jungkook", "Suga and J-Hope"],
+    "options": ["Jin and Jimin", "Jimin and Jungkook", "RM and Jungkook", "Suga and J-Hope"],
     "correctIndex": 2
   },
   {
@@ -786,7 +786,7 @@
   },
   {
     "question": "Which month has the most BTS member birthdays?",
-    "options": ["September", "December", "October", "February"],
+    "options": ["January", "December", "October", "February"],
     "correctIndex": 1
   },
   {
@@ -1132,7 +1132,7 @@
   {
     "question": "Which BTS album features the outro 'Wings'?",
     "options": ["Wings", "You Never Walk Alone", "Love Yourself: Her", "Dark & Wild"],
-    "correctIndex": 0
+    "correctIndex": 1
   },
   {
     "question": "What was the lead single from BTS's 'Love Yourself: Tear' album?",
