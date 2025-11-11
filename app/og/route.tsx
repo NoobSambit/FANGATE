@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
+// Use nodejs runtime for better compatibility with image processing
+export const runtime = 'nodejs';
 
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
@@ -14,6 +15,7 @@ const logoRemoteUrl =
   'https://res.cloudinary.com/dtamgk7i5/image/upload/v1762777066/fangate_hrnkge.png';
 
 export async function GET(_req: NextRequest) {
+  // Fetch logo - consider optimizing by using a smaller image or data URL
   const logoImage = await fetch(logoRemoteUrl).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
@@ -26,9 +28,10 @@ export async function GET(_req: NextRequest) {
           flexDirection: 'column',
           justifyContent: 'space-between',
           padding: '72px 88px 66px 88px',
-          background: 'radial-gradient(ellipse at center, rgba(168,85,247,0.15) 0%, rgba(236,72,153,0.12) 35%, rgba(59,130,246,0.08) 70%, #0a0516 100%)',
+          // Simple linear gradient - more memory efficient than complex radial gradients
+          background: 'linear-gradient(135deg, #0a0516 0%, #1a0d2e 100%)',
           color: '#f6f3ff',
-          fontFamily: 'Inter, "Helvetica Neue", Arial, sans-serif',
+          fontFamily: 'system-ui, -apple-system, sans-serif', // System fonts - no download needed
         }}
       >
         <div
@@ -46,15 +49,15 @@ export async function GET(_req: NextRequest) {
               gap: 28,
             }}
           >
-            <div
+              <div
               style={{
                 width: 120,
                 height: 120,
                 borderRadius: 32,
                 overflow: 'hidden',
                 border: '2px solid rgba(255,255,255,0.25)',
-                boxShadow:
-                  '0 22px 55px rgba(168,85,247,0.45), inset 0 0 0 8px rgba(10,5,22,0.6)',
+                // Simplified shadow to reduce rendering complexity
+                boxShadow: '0 10px 30px rgba(168,85,247,0.3)',
               }}
             >
               <img
@@ -138,7 +141,8 @@ export async function GET(_req: NextRequest) {
             padding: '28px 34px',
             borderRadius: 32,
             border: '1px solid rgba(255,255,255,0.28)',
-            boxShadow: '0 18px 40px rgba(168,85,247,0.35)',
+            // Simplified shadow
+            boxShadow: '0 8px 24px rgba(168,85,247,0.25)',
           }}
         >
           <div
