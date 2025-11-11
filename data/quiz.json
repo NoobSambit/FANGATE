@@ -372,7 +372,7 @@
   {
     "question": "What was BTS's first award win?",
     "options": ["Rookie of the Year", "Best New Artist", "New Artist Award", "Rising Star Award"],
-    "correctIndex": 0
+    "correctIndex": 1
   },
   {
     "question": "Which BTS song was used in a Hyundai commercial?",
@@ -457,7 +457,7 @@
   {
     "question": "Which BTS song features the lyric 'I'm the one I should love'?",
     "options": ["Answer: Love Myself", "Epiphany", "Magic Shop", "All of the above"],
-    "correctIndex": 0
+    "correctIndex": 1
   },
   {
     "question": "What is RM's mixtape 'Mono' subtitle?",

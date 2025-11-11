@@ -174,8 +174,8 @@ export default function SuccessPage() {
         ? window.location.origin
         : process.env.NEXT_PUBLIC_SITE_URL || 'https://fangate.army';
     const text = didPass
-      ? `I just got verified as ARMY and unlocked the BTS concert ticket sale! 🎟️💜 Prove you deserve your seat with FanGate:\n${baseUrl}\nCreator: @Boy_With_Code`
-      : `FanGate just roasted me 😂 Failed the ARMY check but I'm sprinting back to stream BTS until I pass. Try your luck:\n${baseUrl}\nCreator: @Boy_With_Code`;
+      ? `Just got verified as ARMY in the FanGate game! 🎟️💜 Unlocked my "concert ticket" - it's a fun quiz challenge to see if you "deserve" your seat (all just for fun, not serious!)\n${baseUrl}\nCreator: @Boy_With_Code`
+      : `FanGate just roasted me 😂 Failed the ARMY verification game but had fun anyway! It's just a silly quiz to "prove you deserve your concert ticket" - try your luck:\n${baseUrl}\nCreator: @Boy_With_Code`;
     return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   };
 

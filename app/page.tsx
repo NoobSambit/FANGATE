@@ -83,7 +83,7 @@ export default function Home() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 bg-purple-500/10 border border-purple-500/20 rounded-full">
               <Sparkles className="text-purple-400" size={14} />
-              <span className="text-sm text-purple-300 font-medium">Exclusive BTS Access</span>
+              <span className="text-sm text-purple-300 font-medium">Fun ARMY Game Challenge</span>
             </div>
             
             {/* Main Heading */}
@@ -97,7 +97,8 @@ export default function Home() {
             
             {/* Description */}
             <p className="text-lg sm:text-xl text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Verify your BTS fandom through Spotify listening history and quiz knowledge to access exclusive concert ticket sales.
+              Play the FanGate game! Take a fun quiz challenge to see if you &quot;deserve&quot; your concert ticket. 
+              Get verified as ARMY and unlock your &quot;ticket&quot; - it&apos;s all just for fun, not serious! 🎟️💜
             </p>
 
             {/* CTA Button */}
@@ -167,7 +168,7 @@ export default function Home() {
                 Scoring System
               </h2>
               <p className="text-white/60 text-sm sm:text-base mb-2">
-                Complete transparency on how we calculate your fan score
+                Complete transparency on how we calculate your fan score in this fun game
               </p>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full mt-4">
                 <Info className="text-purple-400" size={14} />
@@ -235,9 +236,9 @@ export default function Home() {
                 Final Verification Score
               </h3>
               <p className="text-sm text-white/70 mb-4">
-                Your final verification uses a <span className="font-semibold text-purple-400">combined scoring system</span> that 
+                Your final verification in this fun game uses a <span className="font-semibold text-purple-400">combined scoring system</span> that 
                 averages your Spotify listening history (40%) and quiz performance (60%). 
-                The quiz is weighted more, but your Spotify dedication can help boost your score!
+                The quiz is weighted more, but your Spotify dedication can help boost your score! Remember - it&apos;s all just for fun! 🎮
               </p>
               <div className="p-4 bg-white/2 rounded-lg mb-4">
                 <div className="flex items-center justify-between mb-2">
@@ -270,8 +271,8 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-xs text-purple-300/70 mt-4 italic">
-                💜 Remember: Even if you don&apos;t ace the quiz, your Spotify listening can help you pass! 
-                Being a real ARMY is about your dedication, not just memorizing trivia!
+                💜 Remember: This is just a fun game! Even if you don&apos;t ace the quiz, your Spotify listening can help you pass! 
+                Being a real ARMY is about your love for BTS, not just memorizing trivia - so have fun and don&apos;t take it too seriously!
               </p>
             </div>
           </div>
@@ -285,16 +286,16 @@ export default function Home() {
                 How It Works
               </h2>
               <p className="text-white/60 text-sm sm:text-base">
-                Simple verification process to prove your ARMY status
+                Play the fun ARMY verification game - see if you &quot;deserve&quot; your concert ticket!
               </p>
             </div>
             
             <div className="space-y-4">
               {[
-                { step: '1', title: 'Connect Spotify', desc: 'Login securely with your Spotify account' },
-                { step: '2', title: 'Listening Analysis', desc: 'We calculate your Spotify fan score based on BTS in your listening history' },
+                { step: '1', title: 'Connect Spotify', desc: 'Login securely with your Spotify account (or skip if analysis is disabled)' },
+                { step: '2', title: 'Listening Analysis', desc: 'We calculate your Spotify fan score based on BTS in your listening history (average score provided if analysis is off)' },
                 { step: '3', title: 'Take the Quiz', desc: 'Answer 10 BTS trivia questions. Final score combines Spotify (40%) + Quiz (60%)' },
-                { step: '4', title: 'Get Access', desc: 'If your combined score is 70+, receive your secure token for exclusive ticket access' },
+                { step: '4', title: 'Get Verified', desc: 'If your combined score is 70+, get verified and unlock your &quot;concert ticket&quot; - it&apos;s all just for fun!' },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-4 p-5 bg-white/2 border border-white/5 rounded-xl hover:bg-white/5 transition-colors">
                   <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
