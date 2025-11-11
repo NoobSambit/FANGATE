@@ -8,8 +8,6 @@ import SessionProvider from "@/components/SessionProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://fangate.army";
-const ogImage =
-  "/og";
 
 export const metadata: Metadata = {
   title: "FanGate - BTS Fan Verification",
@@ -22,21 +20,12 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "FanGate",
     type: "website",
-    images: [
-      {
-        url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: "FanGate - Verified ARMY Access",
-      },
-    ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "FanGate - BTS Fan Verification",
     description:
       "Verify yourself as ARMY to get access to BTS concert ticketing page.",
-    images: [ogImage],
   },
   icons: {
     icon: "/fangate-logo.png",
