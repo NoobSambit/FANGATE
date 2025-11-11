@@ -30,11 +30,8 @@ export async function GET() {
       },
     });
 
-    // Shuffle the order of questions again for extra randomization
-    const randomizedQuestions = questions.sort(() => Math.random() - 0.5);
-
     // Remove correctIndex before sending to client
-    const sanitizedQuestions = randomizedQuestions.map(({ correctIndex, ...q }) => q);
+    const sanitizedQuestions = questions.map(({ correctIndex, ...q }) => q);
 
     return NextResponse.json(sanitizedQuestions);
   } catch (error) {
@@ -46,7 +43,6 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const mockMode = !ENABLE_SPOTIFY_VERIFICATION;
 
     let user: any = null;
     if (session?.user?.email) {

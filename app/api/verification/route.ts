@@ -278,8 +278,8 @@ export async function POST(req: NextRequest) {
       notice: mockNotice,
     });
   } catch (error: any) {
-    console.error('Verification error:', error);
-    console.error('Error details:', {
+    console.error('Verification error:', {
+      error,
       message: error?.message,
       name: error?.name,
       code: error?.code,

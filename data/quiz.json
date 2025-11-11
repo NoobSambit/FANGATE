@@ -476,8 +476,8 @@
   },
   {
     "question": "Which BTS song was performed at the 2019 Grammy Awards?",
-    "options": ["IDOL", "Fake Love", "Boy With Luv", "Mic Drop"],
-    "correctIndex": 0
+    "options": ["IDOL", "Old Town Road", "Boy With Luv", "Mic Drop"],
+    "correctIndex": 1
   },
   {
     "question": "What is Jungkook's nickname given by fans?",
@@ -637,7 +637,7 @@
   {
     "question": "Which BTS song was nominated for a Grammy for Best Pop Duo/Group Performance in 2021 ( performed in 2022 ) ?",
     "options": ["Boy With Luv", "Dynamite", "Butter", "ON"],
-    "correctIndex": 1
+    "correctIndex": 2
   },
   {
     "question": "Which BTS song was nominated for a Grammy for Best Pop Duo/Group Performance in 2022?",

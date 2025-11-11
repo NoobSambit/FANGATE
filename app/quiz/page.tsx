@@ -43,15 +43,14 @@ export default function QuizPage() {
   }, [status, verificationId, router, envEnableSpotify]);
 
   useEffect(() => {
-    if (timeLeft <= 0 && !hasSubmittedRef.current) {
-      hasSubmittedRef.current = true;
-      const submitTimer = setTimeout(() => {
-        handleSubmit();
-      }, 100);
-      return () => clearTimeout(submitTimer);
-    }
-
     if (timeLeft <= 0) {
+      if (!hasSubmittedRef.current) {
+        hasSubmittedRef.current = true;
+        const submitTimer = setTimeout(() => {
+          handleSubmit();
+        }, 100);
+        return () => clearTimeout(submitTimer);
+      }
       return;
     }
 
@@ -119,14 +118,6 @@ export default function QuizPage() {
       setSelectedAnswer(newAnswers[prevQuestion] >= 0 ? newAnswers[prevQuestion] : null);
     }
   };
-
-  useEffect(() => {
-    if (answers[currentQuestion] >= 0) {
-      setSelectedAnswer(answers[currentQuestion]);
-    } else {
-      setSelectedAnswer(null);
-    }
-  }, [currentQuestion, answers]);
 
   const handleSubmit = async (finalAnswers?: number[]) => {
     // Prevent multiple submissions
