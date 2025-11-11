@@ -26,8 +26,7 @@ export async function GET(_req: NextRequest) {
           flexDirection: 'column',
           justifyContent: 'space-between',
           padding: '72px 88px 66px 88px',
-          background:
-            'radial-gradient(circle at 20% 17%, rgba(168,85,247,0.4), transparent 45%), radial-gradient(circle at 82% 25%, rgba(236,72,153,0.35), transparent 45%), radial-gradient(circle at 50% 80%, rgba(59,130,246,0.18), transparent 50%), #0a0516',
+          background: 'radial-gradient(ellipse at center, rgba(168,85,247,0.15) 0%, rgba(236,72,153,0.12) 35%, rgba(59,130,246,0.08) 70%, #0a0516 100%)',
           color: '#f6f3ff',
           fontFamily: 'Inter, "Helvetica Neue", Arial, sans-serif',
         }}
