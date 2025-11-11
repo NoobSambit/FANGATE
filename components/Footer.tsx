@@ -15,7 +15,7 @@ export default function Footer() {
             <p className="text-xs sm:text-sm text-white/70 leading-relaxed text-center">
               <strong className="text-white/90">Important Disclaimer:</strong> This site is a fun, fan-made activity for entertainment purposes only. 
               It is <strong className="text-white/90">NOT affiliated with HYBE Corporation or BTS</strong>, and is created by a BTS fan. 
-              This verification system does not determine whether anyone is "deserving" or not, and should not be taken seriously. 
+              This verification system does not determine whether anyone is &quot;deserving&quot; or not, and should not be taken seriously. 
               All scores and results are for entertainment purposes only.
             </p>
           </div>
@@ -99,7 +99,7 @@ export default function Footer() {
                 <h3 className="font-bold text-white mb-2 text-base sm:text-lg">Purpose & Nature</h3>
                 <p>
                   FanGate is a fun, fan-created activity designed for entertainment purposes only. 
-                  This verification system is <strong>not meant to be taken seriously</strong> and does not determine whether anyone is "deserving" of anything, 
+                  This verification system is <strong>not meant to be taken seriously</strong> and does not determine whether anyone is &quot;deserving&quot; of anything, 
                   including concert tickets, fan status, or any other privileges. The scoring system and quiz are purely for entertainment and should be enjoyed as such.
                 </p>
               </div>
@@ -141,7 +141,7 @@ export default function Footer() {
               <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
                 <p className="text-sm sm:text-base">
                   <strong className="text-purple-300">Remember:</strong> This is all in good fun! 
-                  Enjoy the quiz, share your results with friends, but please don't take it too seriously. 
+                  Enjoy the quiz, share your results with friends, but please don&apos;t take it too seriously. 
                   Being an ARMY is about love for BTS and their music, not about passing a quiz or getting a high score on a fan-made website. 💜
                 </p>
               </div>
