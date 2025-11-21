@@ -6,29 +6,46 @@ import { prisma } from '@/lib/prisma';
 const ENABLE_SPOTIFY_VERIFICATION =
   process.env.ENABLE_SPOTIFY_VERIFICATION === 'true';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    // Get all question IDs first
-    const allQuestions = await prisma.quizQuestion.findMany({
-      select: { id: true },
-    });
+    const { searchParams } = new URL(req.url);
+    const questionIdsParam = searchParams.get('questionIds');
 
-    if (allQuestions.length === 0) {
-      return NextResponse.json({ error: 'No questions available' }, { status: 404 });
-    }
+    let questions;
 
-    // Shuffle and select 10 random questions
-    const shuffled = allQuestions.sort(() => Math.random() - 0.5);
-    const selectedIds = shuffled.slice(0, Math.min(10, allQuestions.length)).map(q => q.id);
-
-    // Fetch the selected questions
-    const questions = await prisma.quizQuestion.findMany({
-      where: {
-        id: {
-          in: selectedIds,
+    if (questionIdsParam) {
+      // Fetch specific questions by IDs
+      const questionIds = questionIdsParam.split(',');
+      questions = await prisma.quizQuestion.findMany({
+        where: {
+          id: {
+            in: questionIds,
+          },
         },
-      },
-    });
+      });
+    } else {
+      // Get all question IDs first
+      const allQuestions = await prisma.quizQuestion.findMany({
+        select: { id: true },
+      });
+
+      if (allQuestions.length === 0) {
+        return NextResponse.json({ error: 'No questions available' }, { status: 404 });
+      }
+
+      // Shuffle and select 10 random questions
+      const shuffled = allQuestions.sort(() => Math.random() - 0.5);
+      const selectedIds = shuffled.slice(0, Math.min(10, allQuestions.length)).map(q => q.id);
+
+      // Fetch the selected questions
+      questions = await prisma.quizQuestion.findMany({
+        where: {
+          id: {
+            in: selectedIds,
+          },
+        },
+      });
+    }
 
     // Remove correctIndex before sending to client
     const sanitizedQuestions = questions.map(({ correctIndex, ...q }) => q);
