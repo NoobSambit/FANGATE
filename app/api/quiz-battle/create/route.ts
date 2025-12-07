@@ -11,6 +11,16 @@ function generateAccessCode(): string {
   return code;
 }
 
+// Fisher-Yates shuffle algorithm for proper randomization
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { hostId, nickname } = await req.json();
@@ -58,8 +68,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const shuffled = allQuestions.sort(() => Math.random() - 0.5);
+    const shuffled = shuffleArray(allQuestions);
     const questionIds = shuffled.slice(0, 15).map((q) => q.id);
+
+    console.log('[CREATE] Selected question IDs:', questionIds);
 
     // Create battle
     const battle = await prisma.quizBattle.create({

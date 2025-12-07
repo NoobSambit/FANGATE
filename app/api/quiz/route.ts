@@ -14,15 +14,26 @@ export async function GET(req: NextRequest) {
     let questions;
 
     if (questionIdsParam) {
-      // Fetch specific questions by IDs
+      // Fetch specific questions by IDs and preserve order
       const questionIds = questionIdsParam.split(',');
-      questions = await prisma.quizQuestion.findMany({
+      const fetchedQuestions = await prisma.quizQuestion.findMany({
         where: {
           id: {
             in: questionIds,
           },
         },
       });
+
+      // Create a map for quick lookup
+      const questionMap = new Map(fetchedQuestions.map(q => [q.id, q]));
+
+      // Preserve the order of the input questionIds
+      questions = questionIds
+        .map(id => questionMap.get(id))
+        .filter((q): q is NonNullable<typeof q> => q !== undefined);
+
+      console.log('[QUIZ GET] Requested IDs:', questionIds);
+      console.log('[QUIZ GET] Returned IDs:', questions.map(q => q.id));
     } else {
       // Get all question IDs first
       const allQuestions = await prisma.quizQuestion.findMany({
@@ -33,18 +44,27 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'No questions available' }, { status: 404 });
       }
 
-      // Shuffle and select 10 random questions
-      const shuffled = allQuestions.sort(() => Math.random() - 0.5);
+      // Shuffle using Fisher-Yates algorithm for proper randomization
+      const shuffled = [...allQuestions];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
       const selectedIds = shuffled.slice(0, Math.min(10, allQuestions.length)).map(q => q.id);
 
-      // Fetch the selected questions
-      questions = await prisma.quizQuestion.findMany({
+      // Fetch the selected questions and preserve order
+      const fetchedQuestions = await prisma.quizQuestion.findMany({
         where: {
           id: {
             in: selectedIds,
           },
         },
       });
+
+      const questionMap = new Map(fetchedQuestions.map(q => [q.id, q]));
+      questions = selectedIds
+        .map(id => questionMap.get(id))
+        .filter((q): q is NonNullable<typeof q> => q !== undefined);
     }
 
     // Remove correctIndex before sending to client

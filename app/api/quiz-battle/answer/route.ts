@@ -5,6 +5,8 @@ export async function POST(req: NextRequest) {
   try {
     const { battleId, participantId, questionId, answerIndex } = await req.json();
 
+    console.log('[ANSWER] Submitting:', { battleId, participantId, questionId, answerIndex });
+
     if (battleId === undefined || participantId === undefined ||
         questionId === undefined || answerIndex === undefined) {
       return NextResponse.json(

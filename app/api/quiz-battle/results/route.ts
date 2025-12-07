@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get all questions for this battle
-    const questions = await prisma.quizQuestion.findMany({
+    // Get all questions for this battle and preserve order
+    const fetchedQuestions = await prisma.quizQuestion.findMany({
       where: {
         id: {
           in: battle.questionIds,
@@ -44,10 +44,13 @@ export async function POST(req: NextRequest) {
     });
 
     // Create a map of question ID to question
-    const questionMap = new Map(questions.map((q) => [q.id, q]));
+    const questionMap = new Map(fetchedQuestions.map((q) => [q.id, q]));
+
+    console.log('[RESULTS] Battle question IDs:', battle.questionIds);
 
     // Build detailed results for each participant
     const participantResults = battle.participants.map((participant) => {
+      console.log(`[RESULTS] Building results for ${participant.nickname}, answers count:`, participant.answers.length);
       const questionResults = battle.questionIds.map((questionId) => {
         const answer = participant.answers.find((a) => a.questionId === questionId);
         const question = questionMap.get(questionId);
