@@ -320,7 +320,7 @@ export default function PlayPage() {
                   {battleStatus.participants.map((p, index) => {
                     const isCurrentPlayer = p.participantId === participantId;
                     const playerFinishStatus = battleStatus.participantsFinishStatus?.find(
-                      status => status.participantId === p.id
+                      status => status.participantId === p.participantId
                     );
                     const hasPlayerFinished = playerFinishStatus?.finished || false;
 

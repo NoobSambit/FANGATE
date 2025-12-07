@@ -121,14 +121,14 @@ export async function POST(req: NextRequest) {
         data: { score: correctCount },
       });
 
-      return { answer, correctCount };
+      return { answer, correctCount, wasUpdate: !!existingAnswer };
     });
 
     return NextResponse.json({
       answer: result.answer,
       isCorrect,
       currentScore: result.correctCount,
-      message: existingAnswer ? 'Answer updated' : 'Answer submitted',
+      message: result.wasUpdate ? 'Answer updated' : 'Answer submitted',
     });
   } catch (error: any) {
     console.error('Submit answer error:', error);

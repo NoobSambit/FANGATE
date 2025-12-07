@@ -467,7 +467,7 @@ export default function Home() {
             {/* Content */}
             <div className="space-y-4 text-white/80 mb-6">
               <p>
-                I'm a student developer running this site entirely on my own, with no income source to cover server and platform costs.
+                I&apos;m a student developer running this site entirely on my own, with no income source to cover server and platform costs.
               </p>
               <p>
                 Hosting services often go above their free limits, and keeping the site online typically costs around $20/month (excluding costs of other services like database). Without support, I may not be able to keep the servers running once the free tier is exhausted.
