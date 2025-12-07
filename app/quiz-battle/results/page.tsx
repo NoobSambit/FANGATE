@@ -246,9 +246,10 @@ export default function ResultsPage() {
                       const score = myResult.score;
                       const totalQuestions = myResult.totalQuestions;
                       const percentage = myResult.percentage;
+                      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fangate.army';
 
                       // Create share text under 280 characters
-                      const shareText = `🎯 Just completed a Quiz Battle on FANGATE!\n\n📊 Ranked #${rank}/${totalPlayers}\n✅ Score: ${score}/${totalQuestions} (${percentage}%)\n\n🎮 Challenge me: https://fangate.netlify.app/quiz-battle\n\n🚀 by @boy_with_code`;
+                      const shareText = `🎯 Just completed a Quiz Battle on FANGATE!\n\n📊 Ranked #${rank}/${totalPlayers}\n✅ Score: ${score}/${totalQuestions} (${percentage}%)\n\n🎮 Challenge me: ${siteUrl}/quiz-battle\n\n🚀 by @boy_with_code`;
 
                       const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
                       window.open(twitterUrl, '_blank', 'noopener,noreferrer');
