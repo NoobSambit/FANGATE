@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String         @id @default(uuid())
+  spotifyId     String         @unique
+  email         String?        @unique
+  emailVerified DateTime?
+  displayName   String?
+  image         String?
+  createdAt     DateTime       @default(now())
+  accounts      Account[]
+  sessions      Session[]
+  verifications Verification[]
+  quizAttempts  QuizAttempt[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Verification {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fanScore        Int
+  quizPassed      Boolean   @default(false)
+  verifiedAt      DateTime?
+  passToken       String?
+  tokenExpiresAt  DateTime?
+  createdAt       DateTime  @default(now())
+}
+
+model QuizQuestion {
+  id            String   @id @default(uuid())
+  question      String
+  options       String[]
+  correctIndex  Int
+  createdAt     DateTime @default(now())
+}
+
+model QuizAttempt {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score     Int
+  createdAt DateTime @default(now())
+}
+
+model QuizBattle {
+  id            String                   @id @default(uuid())
+  accessCode    String                   @unique
+  hostId        String
+  status        String                   @default("waiting") // waiting, active, completed
+  questionIds   String[]                 // Array of 15 question IDs
+  maxPlayers    Int                      @default(5)
+  startedAt     DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime                 @default(now())
+  participants  QuizBattleParticipant[]
+  answers       QuizBattleAnswer[]
+}
+
+model QuizBattleParticipant {
+  id          String       @id @default(uuid())
+  battleId    String
+  battle      QuizBattle   @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  participantId String     // Client-generated UUID (no login required)
+  nickname    String
+  isHost      Boolean      @default(false)
+  score       Int          @default(0)
+  joinedAt    DateTime     @default(now())
+  answers     QuizBattleAnswer[]
+
+  @@unique([battleId, participantId])
+}
+
+model QuizBattleAnswer {
+  id            String                @id @default(uuid())
+  battleId      String
+  battle        QuizBattle            @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  participantId String
+  participant   QuizBattleParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  questionId    String
+  answerIndex   Int
+  isCorrect     Boolean
+  answeredAt    DateTime              @default(now())
+
+  @@unique([battleId, participantId, questionId])
+}

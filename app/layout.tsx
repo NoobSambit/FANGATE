@@ -1,0 +1,53 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import SessionProvider from "@/components/SessionProvider";
+
+const inter = Inter({ subsets: ["latin"] });
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://fangate.army";
+
+export const metadata: Metadata = {
+  title: "FanGate - BTS Fan Verification",
+  description: "Verify yourself as ARMY to get access to BTS concert ticketing page.",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "FanGate - BTS Fan Verification",
+    description:
+      "Verify yourself as ARMY to get access to BTS concert ticketing page.",
+    url: siteUrl,
+    siteName: "FanGate",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "FanGate - BTS Fan Verification",
+    description:
+      "Verify yourself as ARMY to get access to BTS concert ticketing page.",
+  },
+  icons: {
+    icon: "/fangate-logo.png",
+    shortcut: "/fangate-logo.png",
+    apple: "/fangate-logo.png",
+  },
+};
+
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await getServerSession(authOptions);
+
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <SessionProvider session={session}>
+          {children}
+        </SessionProvider>
+      </body>
+    </html>
+  );
+}
