@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
   try {
-    const { battleId } = await req.json();
+    const { battleId, minimal } = await req.json();
 
     if (!battleId) {
       return NextResponse.json(
@@ -12,7 +12,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Find battle
+    // Find battle (fetch participants only if not minimal, or if needed for "allFinished" check)
+    // Actually we need participants for "allFinished" check.
+    // But we can optimize what we RETURN.
     const battle = await prisma.quizBattle.findUnique({
       where: { id: battleId },
       include: {
@@ -36,9 +38,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if time has expired (60 seconds = 1:00)
-    const startedAt = battle.startedAt ? new Date(battle.startedAt).getTime() : Date.now();
-    const elapsed = Math.floor((Date.now() - startedAt) / 1000);
-    const timeExpired = elapsed >= 60;
+    // Use actualStartTime if set (when all players ready), otherwise don't count time yet
+    const actualStart = battle.actualStartTime ? new Date(battle.actualStartTime).getTime() : null;
+    const elapsed = actualStart ? Math.floor((Date.now() - actualStart) / 1000) : 0;
+    const timeExpired = actualStart ? elapsed >= 60 : false;
 
     // Complete battle if time expired or all participants finished
     // Note: We consider a participant finished if they have 15 answers
@@ -94,12 +97,24 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({
-      battle,
+    const responsePayload: any = {
       completed: false,
       timeRemaining: Math.max(0, 60 - elapsed),
       participantsFinishStatus,
-    });
+    };
+
+    if (!minimal) {
+      responsePayload.battle = battle;
+    } else {
+      // Return minimal battle info needed for status check
+      responsePayload.battle = {
+        id: battle.id,
+        status: battle.status,
+        actualStartTime: battle.actualStartTime,
+      };
+    }
+
+    return NextResponse.json(responsePayload);
   } catch (error: any) {
     console.error('Complete battle error:', error);
     return NextResponse.json(

@@ -30,18 +30,38 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if battle is active
-    if (battle.status !== 'active') {
+    // Check if battle is active or recently completed (allow answers during the transition period)
+    if (battle.status !== 'active' && battle.status !== 'completed') {
       return NextResponse.json(
         { error: 'Battle is not active' },
         { status: 400 }
       );
     }
 
+    // If battle is completed but was completed very recently (within last 5 seconds), allow submission
+    if (battle.status === 'completed') {
+      const completedAt = battle.completedAt ? new Date(battle.completedAt).getTime() : 0;
+      const now = Date.now();
+      const timeSinceCompletion = (now - completedAt) / 1000;
+
+      if (timeSinceCompletion > 30) {
+        console.log('[ANSWER] Battle completed', timeSinceCompletion, 'seconds ago, rejecting');
+        return NextResponse.json(
+          { error: 'Battle is not active' },
+          { status: 400 }
+        );
+      }
+      console.log('[ANSWER] Battle recently completed, allowing answer submission');
+    }
+
     // Verify participant is in the battle
     const participant = battle.participants.find(
       (p) => p.participantId === participantId
     );
+
+    console.log('[ANSWER] Battle participants:', battle.participants.map(p => p.participantId));
+    console.log('[ANSWER] Looking for participant:', participantId);
+    console.log('[ANSWER] Found participant:', participant ? participant.id : 'NOT FOUND');
 
     if (!participant) {
       return NextResponse.json(
@@ -50,8 +70,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log('[ANSWER] Battle questionIds:', battle.questionIds);
+    console.log('[ANSWER] Checking for questionId:', questionId);
+    console.log('[ANSWER] Question in battle?', battle.questionIds.includes(questionId));
+
     // Verify question is part of this battle
     if (!battle.questionIds.includes(questionId)) {
+      console.error('[ANSWER] Question not in battle! Battle IDs:', battle.questionIds, 'Received:', questionId);
       return NextResponse.json(
         { error: 'Question not part of this battle' },
         { status: 400 }
@@ -71,6 +96,15 @@ export async function POST(req: NextRequest) {
     }
 
     const isCorrect = question.correctIndex === answerIndex;
+
+    console.log('[ANSWER] About to save answer:', {
+      battleId,
+      participantInternalId: participant.id,
+      participantUUID: participant.participantId,
+      questionId,
+      answerIndex,
+      isCorrect
+    });
 
     // Use transaction to prevent race conditions in concurrent answer submissions
     const result = await prisma.$transaction(async (tx) => {
@@ -124,6 +158,12 @@ export async function POST(req: NextRequest) {
       });
 
       return { answer, correctCount, wasUpdate: !!existingAnswer };
+    });
+
+    console.log('[ANSWER] Answer saved successfully:', {
+      answerId: result.answer.id,
+      wasUpdate: result.wasUpdate,
+      newScore: result.correctCount
     });
 
     return NextResponse.json({

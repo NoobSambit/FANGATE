@@ -1,59 +1,42 @@
 'use client';
 
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Music, Shield, CheckCircle, ArrowRight, Sparkles, TrendingUp, Clock, Award, Info, Swords, Users, Trophy, Heart, X } from 'lucide-react';
+import { Music, Shield, CheckCircle, LogOut, ArrowRight, Sparkles, TrendingUp, Clock, Award, Info, Swords, Users, Trophy, Heart, X } from 'lucide-react';
 import { getScoringBreakdown } from '@/lib/scoring';
 import Footer from '@/components/Footer';
 import { useState } from 'react';
 
 export default function Home() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
-  const [username, setUsername] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [connected, setConnected] = useState(false);
+  const enableSpotifyVerification =
+    process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
   const [showDonationModal, setShowDonationModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLastfmConnect = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorMessage('');
-
-    try {
-      const response = await fetch('/api/auth/lastfm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to connect Last.fm account');
-      }
-
-      // Store user info in localStorage for session management
-      localStorage.setItem('lastfm_user', JSON.stringify(data.user));
-      setConnected(true);
-
-      // Redirect to verification after 1 second
-      setTimeout(() => {
-        router.push('/verification');
-      }, 1000);
-    } catch (error: any) {
-      setErrorMessage(error.message || 'Failed to connect Last.fm account');
-    } finally {
-      setLoading(false);
-    }
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' });
   };
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse delay-75" />
+          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse delay-150" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
       {/* Subtle background gradient */}
       <div className="fixed inset-0 bg-gradient-to-b from-purple-950/20 via-transparent to-pink-950/20 pointer-events-none" />
-
+      
       <div className="relative z-10">
         {/* Navigation */}
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -84,6 +67,29 @@ export default function Home() {
               >
                 <span>DONATE</span>
               </button>
+              {session && (
+                <>
+                  <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg">
+                    {session.user?.image && (
+                      <img
+                        src={session.user.image}
+                        alt={session.user.name || 'User'}
+                        className="w-6 h-6 rounded-full"
+                      />
+                    )}
+                    <span className="text-sm text-white/90">
+                      {session.user?.name || session.user?.email?.split('@')[0] || 'User'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 text-white/60 hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-colors"
+                    title="Disconnect Spotify"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -112,12 +118,12 @@ export default function Home() {
               Get verified as ARMY and unlock your &quot;ticket&quot; - it&apos;s all just for fun, not serious! 🎟️💜
             </p>
 
-            {/* CTA Section */}
-            {connected ? (
+            {/* CTA Button */}
+            {session ? (
               <div className="flex flex-col items-center gap-4">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-lg mb-2">
                   <CheckCircle className="text-green-400" size={18} />
-                  <span className="text-sm text-green-300 font-medium">Last.fm Connected</span>
+                  <span className="text-sm text-green-300 font-medium">Spotify Connected</span>
                 </div>
                 <button
                   onClick={() => router.push('/verification')}
@@ -128,79 +134,63 @@ export default function Home() {
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
-                <form onSubmit={handleLastfmConnect} className="w-full space-y-4">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Enter your Last.fm username"
-                      className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500/50 transition-colors"
-                      required
-                    />
-                    <Music className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400/50" size={20} />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={loading || !username.trim()}
-                    className="btn-primary w-full inline-flex items-center justify-center gap-2 text-base sm:text-lg px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                        Connecting...
-                      </>
-                    ) : (
-                      <>
-                        <Music size={20} />
-                        Connect with Last.fm
-                        <ArrowRight size={20} />
-                      </>
-                    )}
-                  </button>
-                </form>
-
-                {errorMessage && (
-                  <div className="w-full p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-left">
-                    <p className="text-red-200 font-semibold text-sm mb-1">Connection Error</p>
-                    <p className="text-red-300/80 text-sm">{errorMessage}</p>
-                  </div>
+              <div className="flex flex-col items-center gap-3">
+                <button
+                  onClick={() => {
+                    if (enableSpotifyVerification) {
+                      signIn('spotify', { callbackUrl: '/' });
+                    } else {
+                      router.push('/verification');
+                    }
+                  }}
+                  className="btn-primary inline-flex items-center gap-2 text-base sm:text-lg px-8 py-4"
+                >
+                  <Music size={20} />
+                  Connect with Spotify
+                  <ArrowRight size={20} />
+                </button>
+                {!enableSpotifyVerification && (
+                  <p className="text-xs sm:text-sm text-amber-300/90 max-w-md text-center px-4">
+                    <span className="font-semibold">Note:</span> Spotify analysis is currently turned off due to Spotify restrictions, but you can still proceed. An average score will be provided for the verification process.
+                  </p>
                 )}
-
-                <p className="text-xs sm:text-sm text-white/50 max-w-md text-center px-4">
-                  We&apos;ll analyze your public Last.fm listening history to calculate your BTS fan score.
-                  Make sure your profile is public!
-                </p>
               </div>
             )}
 
             {/* Error Message */}
             {error && (
               <div className="mt-6 max-w-md mx-auto p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-left">
-                <p className="text-red-200 font-semibold text-sm mb-1">Error</p>
-                <p className="text-red-300/80 text-sm">{error}</p>
+                <p className="text-red-200 font-semibold text-sm mb-1">Login Error</p>
+                <p className="text-red-300/80 text-sm">
+                  {error === 'OAuthCallback' 
+                    ? 'Authentication failed. Please try again or contact support.'
+                    : `Error: ${error}`}
+                </p>
               </div>
             )}
 
             {/* Security Note */}
             <p className="text-xs text-white/40 mt-8 flex items-center justify-center gap-2">
               <Shield size={12} />
-              We only read public data - no password required
+              Your data is encrypted and never shared
             </p>
           </div>
         </section>
 
-        {/* Quiz Battle Section - Same as before */}
+        {/* Quiz Battle Section */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 border-t border-white/5">
           <div className="max-w-7xl mx-auto">
             <div className="relative overflow-hidden rounded-[2rem] bg-zinc-900/50 border border-white/10 shadow-2xl group">
+              {/* Abstract Background Elements */}
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-blue-500/5 opacity-50" />
               <div className="absolute top-0 right-0 p-12 bg-purple-500/10 blur-[120px] rounded-full w-96 h-96 pointer-events-none" />
               <div className="absolute bottom-0 left-0 p-12 bg-indigo-500/10 blur-[120px] rounded-full w-96 h-96 pointer-events-none" />
-
+              
               <div className="relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-16 p-6 sm:p-12 lg:p-16 items-center">
+                
+                {/* Left Column: Content */}
                 <div className="flex flex-col items-center text-center lg:items-start lg:text-left space-y-6 sm:space-y-8">
+                  {/* Live Badge */}
                   <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-full">
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -209,6 +199,7 @@ export default function Home() {
                     <span className="text-sm font-semibold tracking-wider text-emerald-100 uppercase">Live Now</span>
                   </div>
 
+                  {/* Main Title */}
                   <div className="space-y-2">
                     <h2 className="text-4xl sm:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter">
                       QUIZ
@@ -220,6 +211,7 @@ export default function Home() {
                     </p>
                   </div>
 
+                  {/* CTA Button */}
                   <button
                     onClick={() => router.push('/quiz-battle')}
                     className="group relative inline-flex items-center justify-center gap-4 px-8 py-4 bg-white text-black rounded-xl font-bold text-lg tracking-wide hover:scale-105 transition-all duration-300 overflow-hidden w-full sm:w-auto"
@@ -232,25 +224,30 @@ export default function Home() {
                   </button>
                 </div>
 
+                {/* Right Column: Visual Stats Grid */}
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full">
+                  {/* Stat Card 1 */}
                   <div className="bg-black/40 backdrop-blur-md border border-white/5 p-4 sm:p-6 rounded-2xl hover:border-purple-500/30 transition-colors duration-300">
                     <Users className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400 mb-2 sm:mb-4" />
                     <div className="text-2xl sm:text-3xl font-bold text-white mb-1">5</div>
                     <div className="text-xs sm:text-sm text-zinc-500 font-medium uppercase tracking-wider">Players Max</div>
                   </div>
 
+                  {/* Stat Card 2 */}
                   <div className="bg-black/40 backdrop-blur-md border border-white/5 p-4 sm:p-6 rounded-2xl hover:border-purple-500/30 transition-colors duration-300 lg:mt-8">
                     <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-400 mb-2 sm:mb-4" />
                     <div className="text-2xl sm:text-3xl font-bold text-white mb-1">150s</div>
                     <div className="text-xs sm:text-sm text-zinc-500 font-medium uppercase tracking-wider">Time Limit</div>
                   </div>
 
+                  {/* Stat Card 3 */}
                   <div className="bg-black/40 backdrop-blur-md border border-white/5 p-4 sm:p-6 rounded-2xl hover:border-purple-500/30 transition-colors duration-300 lg:-mt-8">
                     <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400 mb-2 sm:mb-4" />
                     <div className="text-2xl sm:text-3xl font-bold text-white mb-1">15</div>
                     <div className="text-xs sm:text-sm text-zinc-500 font-medium uppercase tracking-wider">Questions</div>
                   </div>
 
+                  {/* Stat Card 4 */}
                   <div className="bg-gradient-to-br from-purple-900/40 to-indigo-900/40 backdrop-blur-md border border-white/10 p-4 sm:p-6 rounded-2xl flex flex-col justify-between group cursor-pointer" onClick={() => router.push('/quiz-battle')}>
                     <div className="flex justify-between items-start">
                       <Swords className="w-6 h-6 sm:w-8 sm:h-8 text-white mb-2 sm:mb-4" />
@@ -262,12 +259,13 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
         </section>
 
-        {/* Scoring System Section - Update to mention Last.fm instead of Spotify */}
+        {/* Scoring System Section */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-white/5">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -343,13 +341,13 @@ export default function Home() {
                 Final Verification Score
               </h3>
               <p className="text-sm text-white/70 mb-4">
-                Your final verification in this fun game uses a <span className="font-semibold text-purple-400">combined scoring system</span> that
-                averages your Last.fm listening history (40%) and quiz performance (60%).
-                The quiz is weighted more, but your Last.fm dedication can help boost your score! Remember - it&apos;s all just for fun! 🎮
+                Your final verification in this fun game uses a <span className="font-semibold text-purple-400">combined scoring system</span> that 
+                averages your Spotify listening history (40%) and quiz performance (60%). 
+                The quiz is weighted more, but your Spotify dedication can help boost your score! Remember - it&apos;s all just for fun! 🎮
               </p>
               <div className="p-4 bg-white/2 rounded-lg mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-white/60">Last.fm Score:</span>
+                  <span className="text-sm text-white/60">Spotify Score:</span>
                   <span className="text-sm font-semibold text-purple-400">40% weight</span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -374,11 +372,11 @@ export default function Home() {
                   <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
                     {getScoringBreakdown().summary.maxScore}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/50">Max Last.fm</div>
+                  <div className="text-xs sm:text-sm text-white/50">Max Spotify</div>
                 </div>
               </div>
               <p className="text-xs text-purple-300/70 mt-4 italic">
-                💜 Remember: This is just a fun game! Even if you don&apos;t ace the quiz, your Last.fm listening can help you pass!
+                💜 Remember: This is just a fun game! Even if you don&apos;t ace the quiz, your Spotify listening can help you pass! 
                 Being a real ARMY is about your love for BTS, not just memorizing trivia - so have fun and don&apos;t take it too seriously!
               </p>
             </div>
@@ -396,12 +394,12 @@ export default function Home() {
                 Play the fun ARMY verification game - see if you &quot;deserve&quot; your concert ticket!
               </p>
             </div>
-
+            
             <div className="space-y-4">
               {[
-                { step: '1', title: 'Connect Last.fm', desc: 'Enter your Last.fm username - no password needed!' },
-                { step: '2', title: 'Listening Analysis', desc: 'We analyze your public Last.fm history to calculate your BTS fan score' },
-                { step: '3', title: 'Take the Quiz', desc: 'Answer 10 BTS trivia questions. Final score combines Last.fm (40%) + Quiz (60%)' },
+                { step: '1', title: 'Connect Spotify', desc: 'Login securely with your Spotify account (or skip if analysis is disabled)' },
+                { step: '2', title: 'Listening Analysis', desc: 'We calculate your Spotify fan score based on BTS in your listening history (average score provided if analysis is off)' },
+                { step: '3', title: 'Take the Quiz', desc: 'Answer 10 BTS trivia questions. Final score combines Spotify (40%) + Quiz (60%)' },
                 { step: '4', title: 'Get Verified', desc: 'If your combined score is 70+, get verified and unlock your &quot;concert ticket&quot; - it&apos;s all just for fun!' },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-4 p-5 bg-white/2 border border-white/5 rounded-xl hover:bg-white/5 transition-colors">
@@ -426,6 +424,7 @@ export default function Home() {
       {showDonationModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="relative w-full max-w-lg bg-gradient-to-br from-[#1a1a2e] to-[#16213e] border border-purple-500/30 rounded-3xl p-8 shadow-2xl">
+            {/* Close button */}
             <button
               onClick={() => setShowDonationModal(false)}
               className="absolute top-4 right-4 p-2 text-white/60 hover:text-white transition-colors"
@@ -433,6 +432,7 @@ export default function Home() {
               <X size={24} />
             </button>
 
+            {/* Header */}
             <div className="mb-6">
               <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text mb-2">
                 Support FANGATE
@@ -440,6 +440,7 @@ export default function Home() {
               <div className="h-1 w-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
             </div>
 
+            {/* Content */}
             <div className="space-y-4 text-white/80 mb-6">
               <p>
                 I&apos;m a student developer running this site entirely on my own, with no income source to cover server and platform costs.
@@ -455,6 +456,7 @@ export default function Home() {
               </p>
             </div>
 
+            {/* Donate Button */}
             <a
               href="https://ko-fi.com/noobsambit"
               target="_blank"

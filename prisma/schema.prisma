@@ -37,7 +37,10 @@ model Session {
 
 model User {
   id            String         @id @default(uuid())
-  spotifyId     String         @unique
+  // Last.fm fields
+  lastfmUsername String?       @unique
+  // Legacy Spotify fields (kept for migration)
+  spotifyId     String?        @unique
   email         String?        @unique
   emailVerified DateTime?
   displayName   String?
@@ -86,29 +89,31 @@ model QuizAttempt {
 }
 
 model QuizBattle {
-  id            String                   @id @default(uuid())
-  accessCode    String                   @unique
-  hostId        String
-  status        String                   @default("waiting") // waiting, active, completed
-  questionIds   String[]                 // Array of 15 question IDs
-  maxPlayers    Int                      @default(5)
-  startedAt     DateTime?
-  completedAt   DateTime?
-  createdAt     DateTime                 @default(now())
-  participants  QuizBattleParticipant[]
-  answers       QuizBattleAnswer[]
+  id              String                   @id @default(uuid())
+  accessCode      String                   @unique
+  hostId          String
+  status          String                   @default("waiting") // waiting, active, completed
+  questionIds     String[]                 // Array of 15 question IDs
+  maxPlayers      Int                      @default(5)
+  startedAt       DateTime?                // When host clicked "Start Battle"
+  actualStartTime DateTime?                // When all players are ready and timer actually starts
+  completedAt     DateTime?
+  createdAt       DateTime                 @default(now())
+  participants    QuizBattleParticipant[]
+  answers         QuizBattleAnswer[]
 }
 
 model QuizBattleParticipant {
-  id          String       @id @default(uuid())
-  battleId    String
-  battle      QuizBattle   @relation(fields: [battleId], references: [id], onDelete: Cascade)
-  participantId String     // Client-generated UUID (no login required)
-  nickname    String
-  isHost      Boolean      @default(false)
-  score       Int          @default(0)
-  joinedAt    DateTime     @default(now())
-  answers     QuizBattleAnswer[]
+  id            String       @id @default(uuid())
+  battleId      String
+  battle        QuizBattle   @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  participantId String       // Client-generated UUID (no login required)
+  nickname      String
+  isHost        Boolean      @default(false)
+  score         Int          @default(0)
+  isReady       Boolean      @default(false) // True when player has loaded questions
+  joinedAt      DateTime     @default(now())
+  answers       QuizBattleAnswer[]
 
   @@unique([battleId, participantId])
 }

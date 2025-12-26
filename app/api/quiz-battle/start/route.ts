@@ -52,16 +52,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Start battle
+    // Start battle and reset all isReady flags
     const updatedBattle = await prisma.quizBattle.update({
       where: { id: battleId },
       data: {
         status: 'active',
         startedAt: new Date(),
+        actualStartTime: null, // Will be set when all players are ready
       },
       include: {
         participants: true,
       },
+    });
+
+    // Reset isReady for all participants
+    await prisma.quizBattleParticipant.updateMany({
+      where: { battleId },
+      data: { isReady: false },
     });
 
     return NextResponse.json({

@@ -1,6 +1,5 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Music, TrendingUp, Clock, CheckCircle, ArrowRight, Trophy, XCircle, ListMusic, Info } from 'lucide-react';
@@ -9,7 +8,7 @@ import Footer from '@/components/Footer';
 
 const ImageWithFallback = ({ src, alt, className, fallbackIcon: FallbackIcon, fallbackSize = 20 }: any) => {
   const [imgError, setImgError] = useState(false);
-  
+
   if (!src || imgError) {
     return (
       <div className={`${className} bg-purple-500/10 flex items-center justify-center flex-shrink-0`}>
@@ -17,10 +16,10 @@ const ImageWithFallback = ({ src, alt, className, fallbackIcon: FallbackIcon, fa
       </div>
     );
   }
-  
+
   return (
-    <img 
-      src={src} 
+    <img
+      src={src}
       alt={alt}
       className={className}
       onError={() => setImgError(true)}
@@ -29,27 +28,39 @@ const ImageWithFallback = ({ src, alt, className, fallbackIcon: FallbackIcon, fa
 };
 
 export default function VerificationPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
-  const enableSpotifyVerification =
-    process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
+  const [lastfmUser, setLastfmUser] = useState<any>(null);
 
   useEffect(() => {
-    if (enableSpotifyVerification && status === 'unauthenticated') {
-      router.push('/');
+    // Get Last.fm user from localStorage
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('lastfm_user');
+      if (storedUser) {
+        setLastfmUser(JSON.parse(storedUser));
+      } else {
+        // No user connected, redirect to home
+        router.push('/');
+      }
     }
-  }, [status, router, enableSpotifyVerification]);
+  }, [router]);
 
   const handleVerification = async () => {
+    if (!lastfmUser?.username) {
+      setError('No Last.fm username found. Please connect your account first.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetch('/api/verification', {
+      const res = await fetch('/api/verification/lastfm', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: lastfmUser.username }),
       });
 
       const data = await res.json();
@@ -60,7 +71,7 @@ export default function VerificationPage() {
       }
 
       setResult(data);
-      
+
       // Store verification breakdown in sessionStorage for scorecard display
       if (typeof window !== 'undefined' && data.breakdown) {
         sessionStorage.setItem('verificationBreakdown', JSON.stringify({
@@ -77,7 +88,7 @@ export default function VerificationPage() {
     }
   };
 
-  if (enableSpotifyVerification && status === 'loading') {
+  if (!lastfmUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
         <div className="flex items-center gap-3">
