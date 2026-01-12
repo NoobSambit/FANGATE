@@ -371,13 +371,37 @@ export default function PlayPage() {
 
       const result = await response.json();
       console.log('[PLAY] Batch submission successful:', result);
-      
+
+      // Verify answers were actually saved by fetching them back
+      // This prevents the race condition where results page loads before DB commits
+      const verifyResponse = await fetch(`/api/quiz-battle/verify-answers?battleId=${battleId}&participantId=${participantId}`);
+
+      if (!verifyResponse.ok) {
+        console.error('[PLAY] Failed to verify answers');
+        throw new Error('Failed to verify answers were saved');
+      }
+
+      const verifyData = await verifyResponse.json();
+      console.log('[PLAY] Verified answers count:', verifyData.answerCount, 'expected:', Object.keys(answersToSubmit).length);
+
+      if (verifyData.answerCount < Object.keys(answersToSubmit).length) {
+        console.warn('[PLAY] Answer count mismatch! Waiting and retrying...');
+        // Wait a bit and retry verification once
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const retryResponse = await fetch(`/api/quiz-battle/verify-answers?battleId=${battleId}&participantId=${participantId}`);
+        if (retryResponse.ok) {
+          const retryData = await retryResponse.json();
+          console.log('[PLAY] Retry verified answers count:', retryData.answerCount);
+        }
+      }
+
       // Wait for other players - show waiting screen
       // Battle status polling will redirect when all players finish or time runs out
     } catch (err: any) {
       console.error('[PLAY] Error submitting answers:', err);
       setError('Failed to submit answers');
       setIsSubmittingAnswers(false);
+      isSubmittingRef.current = false;
     }
   };
 

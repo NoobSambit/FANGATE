@@ -67,7 +67,7 @@ export default function ResultsPage() {
       return;
     }
 
-    const loadResults = async () => {
+    const loadResults = async (retryCount = 0) => {
       try {
         const response = await fetch('/api/quiz-battle/results', {
           method: 'POST',
@@ -81,15 +81,25 @@ export default function ResultsPage() {
           throw new Error(data.error || 'Failed to load results');
         }
 
-        setResults(data.participantResults);
-        setWinners(data.winners);
-
-        // Find my result
         const myRes = data.participantResults.find(
           (p: ParticipantResult) => p.participantId === participantId
         );
-        setMyResult(myRes || null);
 
+        // Check if my answers are missing (race condition protection)
+        if (myRes && myRes.questionResults.some((q: QuestionResult) => !q.answered)) {
+          const answeredCount = myRes.questionResults.filter((q: QuestionResult) => q.answered).length;
+          console.warn(`[RESULTS] Only ${answeredCount}/${myRes.questionResults.length} answers found. Retry ${retryCount + 1}/3`);
+
+          if (retryCount < 3) {
+            // Wait and retry - answers might still be committing
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return loadResults(retryCount + 1);
+          }
+        }
+
+        setResults(data.participantResults);
+        setWinners(data.winners);
+        setMyResult(myRes || null);
         setLoading(false);
       } catch (err: any) {
         setError(err.message || 'Failed to load results');
