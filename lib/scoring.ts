@@ -43,7 +43,7 @@ export const SCORING_SYSTEM = {
   // Account Age
   accountAge: {
     name: 'Account Age',
-    description: 'Spotify account age bonus',
+    description: 'Last.fm account age bonus',
     points: 10,
     maxPoints: 10,
     requirement: 'Account must be older than 60 days',
@@ -57,7 +57,7 @@ export const SCORING_SUMMARY = {
   maxScore: 200, // Maximum possible score (capped)
   totalPossiblePoints: 750, // Theoretical maximum (50 + 140 + 500 + 50 + 10)
   // Combined scoring weights
-  spotifyWeight: 0.4, // 40% weight for Spotify score
+  lastfmWeight: 0.4, // 40% weight for Last.fm score
   quizWeight: 0.6, // 60% weight for quiz score (quiz is weighted more)
   combinedMinimum: 70, // Minimum combined score to pass
 } as const;

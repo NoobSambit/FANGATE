@@ -24,8 +24,15 @@ import Footer from '@/components/Footer';
 interface QuestionResult {
   id: string;
   question: string;
-  options: string[];
-  correctIndex: number;
+  choices: string[];
+  answerIndex: number;
+  difficulty: string;
+  tags: string[];
+  members: string[];
+  eras: string[];
+  locale: string;
+  source: string;
+  explanation: string;
   userAnswer: number;
   isCorrect: boolean;
 }
@@ -39,7 +46,7 @@ export default function SuccessPage() {
   const verificationId = searchParams.get('verificationId');
   const quizPassed = searchParams.get('quizPassed') === 'true';
   const combinedScore = searchParams.get('combinedScore');
-  const spotifyScore = searchParams.get('spotifyScore');
+  const lastfmScore = searchParams.get('lastfmScore');
   const enableSpotifyVerification =
     process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
   const mockedQuery = searchParams.get('mocked') === 'true';
@@ -53,9 +60,9 @@ export default function SuccessPage() {
   const [quizData, setQuizData] = useState<{
     quizScore?: number;
     quizPassed?: boolean;
-    spotifyScore?: number;
+    lastfmScore?: number;
     combinedScore?: number;
-    spotifyBreakdown?: any;
+    lastfmBreakdown?: any;
     mocked?: boolean;
   }>({});
   const [showScorecard, setShowScorecard] = useState(true);
@@ -100,12 +107,12 @@ export default function SuccessPage() {
                   ? data.mocked
                   : mockedQuery,
             });
-          } else if (combinedScore && spotifyScore && score) {
+          } else if (combinedScore && lastfmScore && score) {
             // Fallback to URL params if sessionStorage not available
             setQuizData({
               quizScore: parseInt(score),
               quizPassed: quizPassed,
-              spotifyScore: parseInt(spotifyScore),
+              lastfmScore: parseInt(lastfmScore),
               combinedScore: parseInt(combinedScore),
               mocked: mockedQuery,
             });
@@ -117,7 +124,7 @@ export default function SuccessPage() {
             const breakdown = JSON.parse(storedBreakdown);
             setQuizData(prev => ({
               ...prev,
-              spotifyBreakdown: breakdown,
+              lastfmBreakdown: breakdown,
             }));
           }
         } catch (error) {
@@ -130,7 +137,7 @@ export default function SuccessPage() {
       loadQuizResults();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, router, enableSpotifyVerification, combinedScore, spotifyScore, score, quizPassed, mockedQuery]);
+  }, [status, router, enableSpotifyVerification, combinedScore, lastfmScore, score, quizPassed, mockedQuery]);
 
   useEffect(() => {
     if (enableSpotifyVerification && !isMockFlow && passed && verificationId) {
@@ -240,9 +247,9 @@ export default function SuccessPage() {
   };
 
   const spotifyPoints = Number(
-    quizData.spotifyBreakdown?.fanScore ??
-      quizData.spotifyScore ??
-      spotifyScore ??
+    quizData.lastfmBreakdown?.fanScore ??
+      quizData.lastfmScore ??
+      lastfmScore ??
       0,
   );
 
@@ -299,14 +306,14 @@ export default function SuccessPage() {
                 </p>
                 
                 {/* Show different messages based on quiz performance */}
-                {!quizPassed && (quizData.spotifyScore || spotifyScore) && (
+                {!quizPassed && (quizData.lastfmScore || lastfmScore) && (
                   <div className="mb-4 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg max-w-2xl mx-auto">
                     <p className="text-lg sm:text-xl text-white/90 font-semibold mb-2">
-                      💜 Your Spotify Listening Saved You! 💜
+                      💜 Your Last.fm Listening Saved You! 💜
                     </p>
                     <p className="text-sm sm:text-base text-white/70 mb-2">
                       Okay, so your memory might be... questionable (you got {score}/10 on the quiz 😅), 
-                      but your Spotify doesn&apos;t lie! Your {quizData.spotifyScore || spotifyScore} point fan score 
+                      but your Last.fm doesn&apos;t lie! Your {quizData.lastfmScore || lastfmScore} point fan score 
                       from actually listening to BTS music pulled through and saved your ticket.
                     </p>
                     <p className="text-xs sm:text-sm text-purple-300/80 italic">
@@ -330,7 +337,7 @@ export default function SuccessPage() {
                       {quizData.combinedScore}/100
                     </p>
                     <p className="text-xs text-white/50 mt-1">
-                      Spotify: {quizData.spotifyScore || spotifyScore} (40%) + Quiz: {((parseInt(score || '0') / 10) * 100).toFixed(0)}% (60%)
+                      Last.fm: {quizData.lastfmScore || lastfmScore} (40%) + Quiz: {((parseInt(score || '0') / 10) * 100).toFixed(0)}% (60%)
                     </p>
                   </div>
                 )}
@@ -413,8 +420,8 @@ export default function SuccessPage() {
                           </div>
 
                           <div className="space-y-2 ml-8">
-                            {result.options.map((option, optionIndex) => {
-                              const isCorrect = optionIndex === result.correctIndex;
+                            {result.choices.map((option, optionIndex) => {
+                              const isCorrect = optionIndex === result.answerIndex;
                               const isUserAnswer = optionIndex === result.userAnswer;
                               const isWrongAnswer = isUserAnswer && !isCorrect;
 
@@ -512,7 +519,7 @@ export default function SuccessPage() {
               </div>
 
               {/* Detailed Scorecard for Pass */}
-              {quizData.spotifyBreakdown && (
+              {quizData.lastfmBreakdown && (
                 <div className="glass-effect p-6 sm:p-8 rounded-xl mb-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
@@ -529,22 +536,22 @@ export default function SuccessPage() {
 
                   {showScorecard && (
                     <div className="space-y-6">
-                      {/* Spotify Score Breakdown */}
+                      {/* Last.fm Score Breakdown */}
                       <div>
                         <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                           <Music className="text-purple-400" size={20} />
-                          Spotify Listening Score
+                          Last.fm Listening Score
                         </h3>
                         <div className="space-y-3">
                           <div className="p-4 bg-white/2 border border-white/10 rounded-lg">
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Top Artists Analysis</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.topArtists || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.topArtists || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.topArtists > 0 
+                              {quizData.lastfmBreakdown.breakdown?.topArtists > 0 
                                 ? 'BTS found in your top 50 artists' 
                                 : 'BTS not in your top 50 artists'}
                             </p>
@@ -554,11 +561,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Solo Member Recognition</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.soloMembers || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.soloMembers || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.soloMembersCount || 0} solo artist(s) found
+                              {quizData.lastfmBreakdown.breakdown?.soloMembersCount || 0} solo artist(s) found
                             </p>
                           </div>
 
@@ -566,11 +573,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Top Tracks</span>
                               <span className="text-lg font-bold text-pink-400">
-                                +{quizData.spotifyBreakdown.breakdown?.topTracks || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.topTracks || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.topTracksCount || 0} BTS track(s) in your top 50
+                              {quizData.lastfmBreakdown.breakdown?.topTracksCount || 0} BTS track(s) in your top 50
                             </p>
                           </div>
 
@@ -578,11 +585,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Recent Listening</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.recentListening || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.recentListening || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.recentListeningCount || 0} BTS track(s) in recently played
+                              {quizData.lastfmBreakdown.breakdown?.recentListeningCount || 0} BTS track(s) in recently played
                             </p>
                           </div>
 
@@ -590,11 +597,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Account Age</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.accountAge || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.accountAge || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.accountAge > 0 
+                              {quizData.lastfmBreakdown.breakdown?.accountAge > 0 
                                 ? 'Account over 60 days old' 
                                 : 'Account less than 60 days old'}
                             </p>
@@ -602,9 +609,9 @@ export default function SuccessPage() {
 
                           <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg mt-4">
                             <div className="flex items-center justify-between">
-                              <span className="text-base font-semibold text-white">Total Spotify Score</span>
+                              <span className="text-base font-semibold text-white">Total Last.fm Score</span>
                               <span className="text-2xl font-bold text-purple-400">
-                                {quizData.spotifyBreakdown.fanScore || quizData.spotifyScore || spotifyScore}
+                                {quizData.lastfmBreakdown.fanScore || quizData.lastfmScore || lastfmScore}
                               </span>
                             </div>
                             <p className="text-xs text-purple-300/70 mt-1">Weight: 40%</p>
@@ -649,11 +656,11 @@ export default function SuccessPage() {
                         <div className="p-4 bg-gradient-to-br from-green-500/10 to-purple-500/10 border border-green-500/30 rounded-lg">
                           <div className="space-y-3 mb-4">
                             <div className="flex items-center justify-between text-sm">
-                              <span className="text-white/70">Spotify Score (40%):</span>
+                              <span className="text-white/70">Last.fm Score (40%):</span>
                               <span className="text-white font-semibold">
-                                {quizData.spotifyBreakdown.fanScore || quizData.spotifyScore || spotifyScore} × 0.4 = 
+                                {quizData.lastfmBreakdown.fanScore || quizData.lastfmScore || lastfmScore} × 0.4 = 
                                 <span className="text-purple-400 ml-2">
-                                  {((parseInt(quizData.spotifyBreakdown?.fanScore || quizData.spotifyScore || spotifyScore || '0')) * 0.4).toFixed(1)}
+                                  {((parseInt(quizData.lastfmBreakdown?.fanScore || quizData.lastfmScore || lastfmScore || '0')) * 0.4).toFixed(1)}
                                 </span>
                               </span>
                             </div>
@@ -703,7 +710,7 @@ export default function SuccessPage() {
                   Combined Score: {combinedScore || quizData.combinedScore || 'N/A'}/100 (minimum 70 required)
                 </p>
                 <p className="text-sm text-white/60 mb-2">
-                  Quiz: {score}/10 | Spotify: {spotifyScore || quizData.spotifyScore || 'N/A'} points
+                  Quiz: {score}/10 | Last.fm: {lastfmScore || quizData.lastfmScore || 'N/A'} points
                 </p>
                 <p className="text-sm text-white/50">
                   Review the correct answers below and try to improve your score
@@ -788,8 +795,8 @@ export default function SuccessPage() {
                           </div>
 
                           <div className="space-y-2 ml-8">
-                            {result.options.map((option, optionIndex) => {
-                              const isCorrect = optionIndex === result.correctIndex;
+                            {result.choices.map((option, optionIndex) => {
+                              const isCorrect = optionIndex === result.answerIndex;
                               const isUserAnswer = optionIndex === result.userAnswer;
                               const isWrongAnswer = isUserAnswer && !isCorrect;
 
@@ -853,7 +860,7 @@ export default function SuccessPage() {
               )}
 
               {/* Detailed Scorecard for Fail */}
-              {quizData.spotifyBreakdown && (
+              {quizData.lastfmBreakdown && (
                 <div className="glass-effect p-6 sm:p-8 rounded-xl mb-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
@@ -870,22 +877,22 @@ export default function SuccessPage() {
 
                   {showScorecard && (
                     <div className="space-y-6">
-                      {/* Spotify Score Breakdown */}
+                      {/* Last.fm Score Breakdown */}
                       <div>
                         <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                           <Music className="text-purple-400" size={20} />
-                          Spotify Listening Score
+                          Last.fm Listening Score
                         </h3>
                         <div className="space-y-3">
                           <div className="p-4 bg-white/2 border border-white/10 rounded-lg">
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Top Artists Analysis</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.topArtists || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.topArtists || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.topArtists > 0 
+                              {quizData.lastfmBreakdown.breakdown?.topArtists > 0 
                                 ? 'BTS found in your top 50 artists' 
                                 : 'BTS not in your top 50 artists'}
                             </p>
@@ -895,11 +902,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Solo Member Recognition</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.soloMembers || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.soloMembers || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.soloMembersCount || 0} solo artist(s) found
+                              {quizData.lastfmBreakdown.breakdown?.soloMembersCount || 0} solo artist(s) found
                             </p>
                           </div>
 
@@ -907,11 +914,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Top Tracks</span>
                               <span className="text-lg font-bold text-pink-400">
-                                +{quizData.spotifyBreakdown.breakdown?.topTracks || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.topTracks || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.topTracksCount || 0} BTS track(s) in your top 50
+                              {quizData.lastfmBreakdown.breakdown?.topTracksCount || 0} BTS track(s) in your top 50
                             </p>
                           </div>
 
@@ -919,11 +926,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Recent Listening</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.recentListening || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.recentListening || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.recentListeningCount || 0} BTS track(s) in recently played
+                              {quizData.lastfmBreakdown.breakdown?.recentListeningCount || 0} BTS track(s) in recently played
                             </p>
                           </div>
 
@@ -931,11 +938,11 @@ export default function SuccessPage() {
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-white/70">Account Age</span>
                               <span className="text-lg font-bold text-purple-400">
-                                +{quizData.spotifyBreakdown.breakdown?.accountAge || 0}
+                                +{quizData.lastfmBreakdown.breakdown?.accountAge || 0}
                               </span>
                             </div>
                             <p className="text-xs text-white/50">
-                              {quizData.spotifyBreakdown.breakdown?.accountAge > 0 
+                              {quizData.lastfmBreakdown.breakdown?.accountAge > 0 
                                 ? 'Account over 60 days old' 
                                 : 'Account less than 60 days old'}
                             </p>
@@ -943,9 +950,9 @@ export default function SuccessPage() {
 
                           <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg mt-4">
                             <div className="flex items-center justify-between">
-                              <span className="text-base font-semibold text-white">Total Spotify Score</span>
+                              <span className="text-base font-semibold text-white">Total Last.fm Score</span>
                               <span className="text-2xl font-bold text-purple-400">
-                                {quizData.spotifyBreakdown.fanScore || quizData.spotifyScore || spotifyScore}
+                                {quizData.lastfmBreakdown.fanScore || quizData.lastfmScore || lastfmScore}
                               </span>
                             </div>
                             <p className="text-xs text-purple-300/70 mt-1">Weight: 40%</p>
@@ -990,11 +997,11 @@ export default function SuccessPage() {
                         <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
                           <div className="space-y-3 mb-4">
                             <div className="flex items-center justify-between text-sm">
-                              <span className="text-white/70">Spotify Score (40%):</span>
+                              <span className="text-white/70">Last.fm Score (40%):</span>
                               <span className="text-white font-semibold">
-                                {quizData.spotifyBreakdown.fanScore || quizData.spotifyScore || spotifyScore} × 0.4 = 
+                                {quizData.lastfmBreakdown.fanScore || quizData.lastfmScore || lastfmScore} × 0.4 = 
                                 <span className="text-purple-400 ml-2">
-                                  {((parseInt(quizData.spotifyBreakdown?.fanScore || quizData.spotifyScore || spotifyScore || '0')) * 0.4).toFixed(1)}
+                                  {((parseInt(quizData.lastfmBreakdown?.fanScore || quizData.lastfmScore || lastfmScore || '0')) * 0.4).toFixed(1)}
                                 </span>
                               </span>
                             </div>
@@ -1029,10 +1036,10 @@ export default function SuccessPage() {
               {/* Try Again */}
               <div className="glass-effect p-6 sm:p-8 rounded-xl">
                 <p className="text-white/70 mb-4 text-center text-sm sm:text-base">
-                  Your combined score wasn&apos;t high enough this time. The scoring combines your Spotify listening (40%) and quiz performance (60%).
+                  Your combined score wasn&apos;t high enough this time. The scoring combines your Last.fm listening (40%) and quiz performance (60%).
                 </p>
                 <p className="text-white/60 mb-6 text-center text-xs sm:text-sm">
-                  💡 Tip: Listen to more BTS music to boost your Spotify score, and study up on BTS trivia to improve your quiz score!
+                  💡 Tip: Listen to more BTS music to boost your Last.fm score, and study up on BTS trivia to improve your quiz score!
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <button
@@ -1129,7 +1136,7 @@ export default function SuccessPage() {
                   </div>
                   <div className="rounded-xl sm:rounded-2xl border border-white/15 bg-white/10 px-3 py-4 sm:px-4 sm:py-5">
                     <p className="text-[10px] sm:text-xs text-white/60 uppercase tracking-widest">
-                      Spotify Dedication
+                      Last.fm Dedication
                     </p>
                     <p
                       className={`mt-1 sm:mt-2 text-2xl sm:text-3xl font-bold ${

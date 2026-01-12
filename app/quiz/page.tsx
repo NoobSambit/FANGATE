@@ -11,7 +11,7 @@ export default function QuizPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const verificationId = searchParams.get('verificationId');
-  const initialSpotifyScore = Number(searchParams.get('fanScore') || '0');
+  const initialLastfmScore = Number(searchParams.get('fanScore') || '0');
   const envEnableSpotify =
     process.env.NEXT_PUBLIC_ENABLE_SPOTIFY_VERIFICATION === 'true';
   const isMockFlow =
@@ -142,7 +142,7 @@ export default function QuizPage() {
           answers: submittedAnswers,
           questionIds: questionIds,
           verificationId,
-          spotifyScore: initialSpotifyScore,
+          lastfmScore: initialLastfmScore,
         }),
       });
 
@@ -160,7 +160,7 @@ export default function QuizPage() {
         sessionStorage.setItem('quizData', JSON.stringify({
           quizScore: result.score,
           quizPassed: result.quizPassed,
-          spotifyScore: result.spotifyScore,
+          lastfmScore: result.lastfmScore,
           combinedScore: result.combinedScore,
         }));
       }
@@ -170,7 +170,7 @@ export default function QuizPage() {
           ? result.mocked
           : isMockFlow;
       router.push(
-        `/success?passed=${result.overallPassed}&score=${result.score}&verificationId=${verificationId}&quizPassed=${result.quizPassed}&combinedScore=${result.combinedScore}&spotifyScore=${result.spotifyScore}&mocked=${mockedParam}`,
+        `/success?passed=${result.overallPassed}&score=${result.score}&verificationId=${verificationId}&quizPassed=${result.quizPassed}&combinedScore=${result.combinedScore}&lastfmScore=${result.lastfmScore}&mocked=${mockedParam}`,
       );
     } catch (error) {
       console.error('Quiz submission error:', error);
@@ -259,7 +259,7 @@ export default function QuizPage() {
 
               {/* Options */}
               <div className="space-y-3 mb-8">
-                {questions[currentQuestion].options.map((option: string, index: number) => (
+                {questions[currentQuestion].choices.map((option: string, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedAnswer(index)}

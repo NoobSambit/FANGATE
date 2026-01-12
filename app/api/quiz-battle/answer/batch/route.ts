@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
         
         if (!question) continue;
 
-        const isCorrect = question.correctIndex === answerIndex;
+        const isCorrect = question.answerIndex === answerIndex;
         if (isCorrect) correctCountInBatch++;
 
         answersToCreate.push({

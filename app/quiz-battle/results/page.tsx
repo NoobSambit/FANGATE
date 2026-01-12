@@ -8,8 +8,14 @@ import Link from 'next/link';
 interface QuestionResult {
   questionId: string;
   question: string;
-  options: string[];
-  correctIndex: number;
+  choices: string[];
+  answerIndex: number;
+  difficulty: string;
+  tags: string[];
+  members: string[];
+  eras: string[];
+  locale: string;
+  source: string;
   userAnswer: number;
   isCorrect: boolean;
   answered: boolean;
@@ -42,6 +48,15 @@ export default function ResultsPage() {
   const [myResult, setMyResult] = useState<ParticipantResult | null>(null);
   const [error, setError] = useState('');
   const [showCard, setShowCard] = useState(false);
+  // Use lazy initialization to avoid extra render that can cause scroll jumps
+  const [formattedDate] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  });
 
   useEffect(() => {
     const battleId = sessionStorage.getItem('quizBattle_battleId');
@@ -277,7 +292,6 @@ export default function ResultsPage() {
                 <div className="bg-zinc-900/30 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm">
                   {results.map((participant, index) => {
                     const isMe = participant.participantId === myResult.participantId;
-                    const isTopThree = index < 3;
 
                     return (
                       <div
@@ -381,34 +395,56 @@ export default function ResultsPage() {
                         {question.isCorrect ? <CheckCircle size={18} /> : <XCircle size={18} />}
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                           <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Question {index + 1}</span>
-                          {question.isCorrect ? (
-                            <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">Correct</span>
-                          ) : (
-                            <span className="text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded">Incorrect</span>
-                          )}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {/* Difficulty badge */}
+                            <span className={`text-xs font-bold px-2 py-1 rounded ${
+                              question.difficulty === 'easy' ? 'bg-emerald-500/10 text-emerald-400' :
+                              question.difficulty === 'medium' ? 'bg-amber-500/10 text-amber-400' :
+                              'bg-red-500/10 text-red-400'
+                            }`}>
+                              {question.difficulty}
+                            </span>
+                            {question.isCorrect ? (
+                              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">Correct</span>
+                            ) : (
+                              <span className="text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded">Incorrect</span>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Tags */}
+                        {question.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mb-3">
+                            {question.tags.map((tag) => (
+                              <span key={tag} className="text-xs px-2 py-0.5 bg-indigo-500/10 text-indigo-300 rounded-full border border-indigo-500/20">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
                         <h3 className="text-lg font-medium text-white mb-4">
                           {question.question}
                         </h3>
 
                         {!question.isCorrect && (
-                          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                          <div className="grid sm:grid-cols-2 gap-4 text-sm mb-4">
                             <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
                               <span className="block text-xs font-bold text-red-400 mb-1 uppercase">Your Answer</span>
-                              <span className="text-red-100">{question.options[question.userAnswer]}</span>
+                              <span className="text-red-100">{question.choices[question.userAnswer]}</span>
                             </div>
                             <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                               <span className="block text-xs font-bold text-emerald-400 mb-1 uppercase">Correct Answer</span>
-                              <span className="text-emerald-100">{question.options[question.correctIndex]}</span>
+                              <span className="text-emerald-100">{question.choices[question.answerIndex]}</span>
                             </div>
                           </div>
                         )}
                          {question.isCorrect && (
-                           <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-sm">
+                           <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-sm mb-4">
                               <span className="block text-xs font-bold text-emerald-400 mb-1 uppercase">Your Answer</span>
-                              <span className="text-emerald-100">{question.options[question.userAnswer]}</span>
+                              <span className="text-emerald-100">{question.choices[question.userAnswer]}</span>
                             </div>
                          )}
                       </div>
@@ -483,13 +519,11 @@ export default function ResultsPage() {
                  <div className="text-xs font-bold text-zinc-600 uppercase tracking-widest">
                     fangate.army
                  </div>
-                 <div className="text-xs font-medium text-zinc-500">
-                    {new Date().toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                 </div>
+                 {formattedDate && (
+                   <div className="text-xs font-medium text-zinc-500">
+                     {formattedDate}
+                   </div>
+                 )}
               </div>
             </div>
 

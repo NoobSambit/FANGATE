@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const isCorrect = question.correctIndex === answerIndex;
+    const isCorrect = question.answerIndex === answerIndex;
 
     console.log('[ANSWER] About to save answer:', {
       battleId,

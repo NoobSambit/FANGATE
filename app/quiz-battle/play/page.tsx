@@ -7,7 +7,14 @@ import { Clock, Trophy, Loader2, ChevronRight, Users } from 'lucide-react';
 interface Question {
   id: string;
   question: string;
-  options: string[];
+  choices: string[];
+  difficulty?: string;
+  tags?: string[];
+  members?: string[];
+  eras?: string[];
+  locale?: string;
+  source?: string;
+  explanation?: string;
 }
 
 interface BattleStatus {
@@ -749,7 +756,7 @@ export default function PlayPage() {
 
               {/* Answer Options */}
               <div className="space-y-4">
-                {currentQuestion.options.map((option, index) => {
+                {currentQuestion.choices.map((option, index) => {
                   const isSelected = selectedAnswer === index;
 
                   return (

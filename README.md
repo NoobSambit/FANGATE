@@ -1,458 +1,585 @@
-# FANGATE — BTS Fan Verification & Quiz Battle Platform
+# FANGATE
 
-**FANGATE** is an interactive web application designed for BTS fans (ARMY) to verify their dedication through music listening analysis and trivia challenges. Features include single-player verification with access tokens, multiplayer real-time quiz battles, downloadable score cards, and social sharing.
+**BTS Fan Verification & Quiz Battle Platform**
+
+A comprehensive web application for verifying BTS fandom through multi-factor authentication combining music listening data analysis with interactive trivia challenges. Features single-player verification with time-limited access tokens and real-time multiplayer quiz battles.
 
 ---
 
 ## Table of Contents
 
-- [Features Overview](#features-overview)
-- [Core Features](#core-features)
-  - [Fan Verification System](#1-fan-verification-system)
-  - [Quiz Battle (Multiplayer)](#2-quiz-battle-multiplayer)
-  - [Social Sharing & Downloads](#3-social-sharing--downloads)
-- [How It Works](#how-it-works)
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
 - [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Database Setup](#database-setup)
-- [API Endpoints](#api-endpoints)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [API Reference](#api-reference)
 - [Project Structure](#project-structure)
 - [Deployment](#deployment)
-- [Troubleshooting](#troubleshooting)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## Features Overview
+## Overview
 
-### Main Features
-- **Last.fm Integration** — Username-based authentication (no OAuth required)
-- **Fan Score Calculation** — Analyzes listening history for BTS content
-- **Single-Player Quiz** — 10 BTS trivia questions with 5-minute timer
-- **Multiplayer Quiz Battle** — Real-time battles with up to 5 players
-- **Combined Scoring** — Last.fm (40%) + Quiz (60%) = Verification score
-- **Access Tokens** — Time-limited (10 min) tokens for verified users
-- **Downloadable Score Cards** — Shareable JPG images of results
-- **Twitter Integration** — One-click sharing with prefilled tweets
-- **BTS-Themed UI** — Dark theme with gradient overlays and animations
-- **Donation Support** — Ko-fi integration for platform sustainability
+FANGATE is a fandom verification system designed to authenticate genuine BTS fans (ARMY) through a two-factor evaluation process:
+
+1. **Music Listening Analysis (40%)** - Analyzes Last.fm listening history for BTS and solo member engagement
+2. **Trivia Knowledge Assessment (60%)** - Tests knowledge through BTS trivia questions
+
+The platform also includes a multiplayer quiz battle mode for competitive fandom verification and social engagement.
 
 ---
 
-## Core Features
+## Features
 
-### 1. Fan Verification System
+### Verification System
 
-#### **Last.fm Authentication** ([app/page.tsx:1](app/page.tsx#L1))
-- Simple username input (no password required)
-- Reads public Last.fm data via API
-- Creates/updates user in database
-- No complex OAuth flow
+#### Last.fm Integration
+- Username-based authentication (no OAuth required)
+- Public profile data retrieval via Last.fm REST API
+- Comprehensive artist name matching for BTS and all solo members
+- Fallback to mock data for development/testing
 
-#### **Fan Score Calculation** ([lib/lastfm.ts:1](lib/lastfm.ts#L1), [lib/scoring.ts:1](lib/scoring.ts#L1))
+#### Fan Score Calculation Algorithm
 
-The system analyzes your Last.fm listening history:
+The scoring system analyzes multiple dimensions of music engagement:
 
-| Category | Points | Max | Details |
-|----------|--------|-----|---------|
-| **BTS in Top Artists** | 50 | 50 | BTS (방탄소년단) in top 50 artists |
-| **Solo Members** | 20 each | 140 | Jungkook, Suga, RM, V, J-Hope, Jimin, Jin |
-| **BTS Top Tracks** | 10 each | 500 | BTS tracks in your top 50 |
-| **Recent Listening** | 1 each | 50 | BTS tracks in last 50 plays |
-| **Account Age Bonus** | 10 | 10 | Account older than 60 days |
-| **TOTAL** | — | **200** | Maximum possible score |
+| Category | Points | Maximum | Criteria |
+|----------|--------|---------|----------|
+| Primary Artist | 50 | 50 | BTS detected in top 50 artists (6-month period) |
+| Solo Member Engagement | 20/each | 140 | Each solo member in top 50 artists |
+| Track Affinity | 10/each | 500 | BTS tracks in top 50 tracks |
+| Recent Activity | 1/each | 50 | BTS tracks in last 50 scrobbles |
+| Account Tenure | 10 | 10 | Account age > 60 days |
+| **Total** | | **200** | |
 
-**Combined Verification:**
-- Last.fm Score: 40% weight
-- Quiz Score: 60% weight
-- **Pass Requirement:** 70/100 combined score
+**Combined Verification Score:**
+- Last.fm Score: 40% weight (normalized to 40 points)
+- Quiz Score: 60% weight (normalized to 60 points)
+- Passing threshold: 70/100 combined points
 
-#### **Single-Player Quiz** ([app/quiz/page.tsx:1](app/quiz/page.tsx#L1))
-- 10 BTS trivia questions
-- Multiple choice (4 options per question)
+#### Single-Player Quiz
+- 10 randomly selected questions from 1,893-question database
+- 4-option multiple choice format
 - 5-minute countdown timer
-- Navigate between questions (forward/backward)
+- Bidirectional navigation (previous/next)
 - Real-time progress tracking
-- Minimum 7/10 correct to contribute to passing
+- Immediate answer verification
 
-#### **Verification Results** ([app/verification/page.tsx:1](app/verification/page.tsx#L1))
-- Detailed score breakdown
-- Last.fm listening analysis
-- Quiz performance review
-- Generated access token (if passed)
-- Downloadable "ARMY Pass" card
-- Twitter sharing option
-- Confetti animation for passing users
+#### Access Token Generation
+- JWT-based tokens for verified users
+- 10-minute expiration (configurable)
+- Secure signature using HS256 algorithm
+- Token validation endpoint for external integration
 
----
+### Multiplayer Quiz Battle
 
-### 2. Quiz Battle (Multiplayer)
+#### Battle Management
+- Room-based architecture with unique 6-character access codes
+- Support for 2-5 concurrent players
+- No authentication required (client-generated UUIDs)
+- Host-controlled game flow
 
-#### **Battle Creation & Management** ([app/quiz-battle/page.tsx:1](app/quiz-battle/page.tsx#L1))
+#### Real-Time Gameplay
+- 15 synchronized trivia questions per battle
+- 60-second countdown timer with synchronized start
+- Client-side polling for state synchronization (2-3s intervals)
+- Grace period for late answer submission (30 seconds)
+- Live leaderboard with participant tracking
 
-**Host Battle:**
-- Generates unique 6-character access code (30^6 possible combinations)
-- Selects 15 random BTS trivia questions
-- Supports up to 5 players (configurable)
-- No login required — uses client-generated UUIDs
+#### Battle Results
+- Comprehensive scoring breakdown per player
+- Gold/Silver/Bronze medal system for top 3
+- Question-by-question answer comparison
+- Downloadable scorecard as high-quality JPG
+- Social sharing integration
 
-**Join Battle:**
-- Enter access code to join existing battle
-- Provide nickname for display
-- Battle must be in "waiting" status
-- Automatic participant list updates
+### Social Features
 
-#### **Battle Lobby** ([app/quiz-battle/lobby/page.tsx:1](app/quiz-battle/lobby/page.tsx#L1))
-- Displays access code for sharing
-- Shows participant list with ready status
-- "Ready" indicator for synchronization
-- Host controls battle start
-- Requires minimum 2 participants
+#### Score Card Generation
+- Client-side image generation using html2canvas
+- High-quality JPG export (95% compression)
+- Includes branding, scores, and performance metrics
+- No server-side processing required
 
-#### **Real-Time Gameplay** ([app/quiz-battle/play/page.tsx:1](app/quiz-battle/play/page.tsx#L1))
+#### Twitter Integration
+- One-click sharing via Twitter Intent API
+- Contextual message templates based on results
+- Creator attribution
+- Manual image attachment workflow
 
-**Key Features:**
-- **Synchronized Start** — Timer begins when all players mark "ready"
-- **15 Questions** — Same questions in same order for all players
-- **60-Second Timer** — Countdown starts after all players ready
-- **Live Leaderboard** — See participants' progress and finish status
-- **Batch Answer Submission** — Efficient bulk answer processing
-- **Waiting Screen** — Shows while other players finish
-
-**Technical Details:**
-- Client-side polling (2-3 second intervals with jitter)
-- Consistent question order using database-stored questionIds
-- Grace period: 30 seconds after battle completion for late submissions
-- Auto-completion when time expires or all players finish
-
-#### **Battle Results** ([app/quiz-battle/results/page.tsx:1](app/quiz-battle/results/page.tsx#L1))
-- **Leaderboard** with rankings (Gold, Silver, Bronze medals for top 3)
-- Individual player statistics (score, accuracy, rank)
-- Question-by-question breakdown
-- Shows user answer vs correct answer
-- Downloadable scorecard as JPG
-- Twitter sharing with rank and score
-- "Play Again" button to create new battle
-
----
-
-### 3. Social Sharing & Downloads
-
-#### **Score Card Downloads** (All result pages)
-- HTML2Canvas integration for image generation
-- High-quality JPG export (95% quality)
-- Includes branding, score, and statistics
-- Works for both verification and battle results
-- Client-side generation (no server processing)
-
-#### **Twitter Integration**
-- One-click sharing via `twitter.com/intent/tweet`
-- Prefilled contextual messages:
-  - Verification pass/fail with score
-  - Battle results with rank and stats
-- Creator attribution (@Boy_With_Code)
-- No Twitter API keys required
-- Users manually attach downloaded images
-
-#### **Open Graph & Social Metadata** ([app/layout.tsx:1](app/layout.tsx#L1))
+#### Open Graph Metadata
 - Rich link previews on social platforms
-- Custom OG image: `https://res.cloudinary.com/dtamgk7i5/image/upload/v1762777066/fangate_hrnkge.png`
-- Title: "FANGATE - Verify Your BTS Fandom"
-- Description: "Verify yourself as ARMY to get access to BTS concert ticketing page."
+- Custom OG images for sharing
+- SEO-optimized metadata
 
 ---
 
-## How It Works
+## Architecture
 
-### Verification Flow
+### Application Flow
 
-```mermaid
-graph TD
-    A[Enter Last.fm Username] --> B[Fetch Listening Data]
-    B --> C[Calculate Fan Score]
-    C --> D{Score >= 70?}
-    D -->|No| E[Show Score & Try Again]
-    D -->|Yes| F[Proceed to Quiz]
-    F --> G[Answer 10 Questions]
-    G --> H[Calculate Combined Score]
-    H --> I{Combined >= 70?}
-    I -->|Yes| J[Generate Access Token]
-    I -->|No| E
-    J --> K[Download Pass & Share]
+#### Verification Process
+```
+User Input (Last.fm username)
+    ↓
+Fetch & Analyze Listening Data
+    ↓
+Calculate Fan Score (0-200)
+    ↓
+Proceed to Quiz (if score sufficient)
+    ↓
+Answer 10 Trivia Questions
+    ↓
+Calculate Combined Score
+    ↓
+Generate Access Token (if passed)
 ```
 
-### Quiz Battle Flow
-
-```mermaid
-graph TD
-    A[Create/Join Battle] --> B[Battle Lobby]
-    B --> C[Host Starts Battle]
-    C --> D[Players Load Questions]
-    D --> E[All Players Mark Ready]
-    E --> F[Timer Starts 60s]
-    F --> G[Answer Questions]
-    G --> H{Time Up OR All Finished?}
-    H -->|No| G
-    H -->|Yes| I[Submit Answers]
-    I --> J[View Results & Leaderboard]
+#### Multiplayer Battle Flow
 ```
+Create/Join Battle
+    ↓
+Lobby Phase (wait for participants)
+    ↓
+Host Starts Battle
+    ↓
+All Players Mark Ready
+    ↓
+Synchronized 60s Timer
+    ↓
+Answer Submission Phase
+    ↓
+Results & Leaderboard
+```
+
+### System Design
+
+#### Frontend Architecture
+- Next.js App Router with React Server Components
+- Client-side state management for quiz battles
+- Polling-based real-time updates
+- Responsive design with mobile-first approach
+
+#### Backend Architecture
+- Next.js API Routes (serverless functions)
+- RESTful API design
+- PostgreSQL with Prisma ORM
+- Session-based authentication with NextAuth.js
 
 ---
 
 ## Technology Stack
 
 ### Frontend
-- **Framework:** Next.js 14.2.18 (App Router)
-- **Language:** TypeScript 5
-- **Styling:** Tailwind CSS 3.4.1
-- **UI Library:** React 18.3.1
-- **Icons:** Lucide React 0.460.0
-- **Animations:** React Confetti 6.1.0
-- **Image Export:** html2canvas 1.4.1
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Next.js | 14.2.18 | React framework with App Router |
+| React | 18.3.1 | UI library |
+| TypeScript | 5.x | Type-safe development |
+| Tailwind CSS | 3.4.1 | Utility-first styling |
+| Lucide React | 0.460.0 | Icon library |
+| html2canvas | 1.4.1 | Client-side image generation |
+| react-confetti | 6.1.0 | Celebration animations |
 
 ### Backend
-- **API:** Next.js API Routes
-- **Authentication:** NextAuth.js 4.24.10 (optional Spotify)
-- **Database ORM:** Prisma 5.22.0
-- **Database:** PostgreSQL (recommended)
-- **API Integration:** Axios 1.7.8
-- **JWT:** jose 5.9.6
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Next.js API Routes | 14.x | Serverless API endpoints |
+| Prisma | 5.22.0 | Database ORM |
+| PostgreSQL | - | Primary database |
+| NextAuth.js | 4.24.10 | Authentication framework |
+| Jose | 5.9.6 | JWT token handling |
+| Axios | 1.7.8 | HTTP client for external APIs |
 
-### External APIs
-- **Last.fm API** — Music listening data
-- **Spotify API** — Alternative music provider (optional)
-- **Twitter Intent API** — Social sharing
+### External Services
+| Service | Purpose |
+|---------|---------|
+| Last.fm API | Music listening data |
+| Spotify Web API | Alternative authentication (optional) |
+| Twitter Intent API | Social sharing |
 
 ### DevOps
-- **Hosting:** Cloudflare Pages (@cloudflare/next-on-pages 1.12.0)
-- **Package Manager:** npm
-- **Runtime:** Node.js 20+
+| Technology | Purpose |
+|------------|---------|
+| Cloudflare Pages | Edge deployment |
+| @cloudflare/next-on-pages | 1.12.0 | Cloudflare adapter |
 
 ---
 
-## Getting Started
+## Installation
 
 ### Prerequisites
+
 - Node.js 20 or higher
-- PostgreSQL database
-- Last.fm API key ([Get one here](https://www.last.fm/api/account/create))
+- PostgreSQL 12 or higher
+- Last.fm API key
 - Git
 
-### Installation
+### Setup Instructions
 
-1. **Clone the repository:**
+1. **Clone the repository**
 ```bash
 git clone https://github.com/your-username/fangate.git
 cd fangate
 ```
 
-2. **Install dependencies:**
+2. **Install dependencies**
 ```bash
 npm install
 ```
 
-3. **Set up environment variables:**
+3. **Configure environment variables**
 
-Create a `.env` file in the root directory (see [Environment Variables](#environment-variables) section below)
+Create a `.env` file in the root directory (see [Configuration](#configuration))
 
-4. **Set up the database:**
+4. **Initialize the database**
 ```bash
 # Generate Prisma client
 npx prisma generate
 
-# Run migrations
-npx prisma migrate dev
+# Run database migrations
+npx prisma migrate deploy
 
 # Seed quiz questions
 npm run seed
 ```
 
-5. **Start development server:**
+5. **Start the development server**
 ```bash
 npm run dev
 ```
 
-Visit [http://localhost:5000](http://localhost:5000)
+The application will be available at [http://localhost:5000](http://localhost:5000)
 
 ---
 
-## Environment Variables
+## Configuration
 
-Create a `.env` file with the following variables:
-
-### Required Variables
+### Required Environment Variables
 
 ```bash
-# Database
+# Database Connection
 DATABASE_URL="postgresql://user:password@localhost:5432/fangate?schema=public"
 DIRECT_DATABASE_URL="postgresql://user:password@localhost:5432/fangate"
 
-# Last.fm API (Get from https://www.last.fm/api/account/create)
-LASTFM_API_KEY=your_lastfm_api_key_here
-LASTFM_API_SECRET=your_lastfm_shared_secret_here
+# NextAuth Configuration
+NEXTAUTH_SECRET="your-cryptographic-secret-minimum-32-chars"
+NEXTAUTH_URL="http://localhost:5000"
 
-# NextAuth
-NEXTAUTH_SECRET=your-nextauth-secret-here
-NEXTAUTH_URL=http://localhost:5000
+# Last.fm API Credentials
+LASTFM_API_KEY="your_lastfm_api_key"
+LASTFM_API_SECRET="your_lastfm_shared_secret"
 
 # Public URLs
-NEXT_PUBLIC_SITE_URL=http://localhost:5000
+NEXT_PUBLIC_SITE_URL="http://localhost:5000"
 ```
 
-### Optional Variables
+### Optional Environment Variables
 
 ```bash
-# Spotify OAuth (Optional - for Spotify verification mode)
-SPOTIFY_CLIENT_ID=your_spotify_client_id
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+# Spotify OAuth (Optional)
+SPOTIFY_CLIENT_ID="your_spotify_client_id"
+SPOTIFY_CLIENT_SECRET="your_spotify_client_secret"
 
 # Feature Flags
-ENABLE_SPOTIFY_VERIFICATION=false  # Set to true to enable Spotify mode
-ENABLE_LASTFM_VERIFICATION=true    # Set to false to use mock data
+ENABLE_LASTFM_VERIFICATION=true   # Enable Last.fm verification
+ENABLE_SPOTIFY_VERIFICATION=false # Enable Spotify verification
 
 # External Integration
-NEXT_PUBLIC_TICKET_REDIRECT_URL=https://tickets.example.com  # Optional ticket sale link
+NEXT_PUBLIC_TICKET_REDIRECT_URL="https://tickets.example.com"
 ```
 
-### Getting API Keys
+### Obtaining API Credentials
 
-#### Last.fm API Key
+#### Last.fm API
 1. Visit [https://www.last.fm/api/account/create](https://www.last.fm/api/account/create)
-2. Fill in application details:
-   - **Application name:** FANGATE
-   - **Description:** BTS fan verification platform
-   - **Callback URL:** `http://localhost:5000` (or your domain)
-3. Submit and copy your **API Key** and **Shared Secret**
+2. Provide application details:
+   - Application name: FANGATE
+   - Description: BTS fan verification platform
+   - Callback URL: Your domain
+3. Copy the API Key and Shared Secret
 
-#### Spotify API Credentials (Optional)
+#### Spotify API (Optional)
 1. Visit [https://developer.spotify.com/dashboard](https://developer.spotify.com/dashboard)
-2. Create a new app
-3. Add redirect URI: `http://localhost:5000/api/auth/callback/spotify`
-4. Copy **Client ID** and **Client Secret**
+2. Create a new application
+3. Add redirect URI: `{YOUR_DOMAIN}/api/auth/callback/spotify`
+4. Copy Client ID and Client Secret
 
 ---
 
-## Database Setup
+## Database Schema
 
-### Schema Overview
+### Core Models
 
-The database includes the following models:
-
-- **User** — User accounts (Last.fm/Spotify)
-- **Verification** — Fan verification records and access tokens
-- **QuizQuestion** — Quiz question bank
-- **QuizAttempt** — Single-player quiz attempts
-- **QuizBattle** — Multiplayer battle sessions
-- **QuizBattleParticipant** — Battle participants
-- **QuizBattleAnswer** — Participant answers in battles
-- **Account** — NextAuth provider accounts
-- **Session** — NextAuth sessions
-
-### Migrations
-
-```bash
-# Create a new migration after schema changes
-npx prisma migrate dev --name your_migration_name
-
-# Apply migrations in production
-npx prisma migrate deploy
-
-# Reset database (WARNING: deletes all data)
-npx prisma migrate reset
+#### User
+```prisma
+model User {
+  id              String
+  lastfmUsername  String?   @unique
+  spotifyId       String?   @unique
+  email           String?   @unique
+  displayName     String?
+  image           String?
+  createdAt       DateTime
+  accounts        Account[]
+  sessions        Session[]
+  verifications   Verification[]
+  quizAttempts    QuizAttempt[]
+}
 ```
 
-### Seeding Quiz Questions
-
-```bash
-# Seed initial quiz questions
-npm run seed
+#### Verification
+```prisma
+model Verification {
+  id             String
+  userId         String
+  user           User         @relation(...)
+  fanScore       Int          // Last.fm score (0-200)
+  quizPassed     Boolean
+  verifiedAt     DateTime?
+  passToken      String?      // JWT access token
+  tokenExpiresAt DateTime?
+  createdAt      DateTime
+}
 ```
 
-This populates the `QuizQuestion` table with BTS trivia questions. Questions are stored with:
-- Question text
-- 4 multiple choice options
-- Correct answer index (0-3)
+#### QuizBattle
+```prisma
+model QuizBattle {
+  id              String
+  accessCode      String      @unique    // 6-character room code
+  hostId          String
+  status          String                 // waiting | active | completed
+  questionIds     String[]               // Array of question IDs
+  maxPlayers      Int
+  startedAt       DateTime?
+  actualStartTime DateTime?              // When timer begins
+  completedAt     DateTime?
+  participants    QuizBattleParticipant[]
+  answers         QuizBattleAnswer[]
+}
+```
+
+#### QuizBattleParticipant
+```prisma
+model QuizBattleParticipant {
+  id            String
+  battleId      String
+  battle        QuizBattle   @relation(...)
+  participantId String                  // Client-generated UUID
+  nickname      String
+  isHost        Boolean
+  score         Int
+  isReady       Boolean                 // Question load status
+  joinedAt      DateTime
+  answers       QuizBattleAnswer[]
+}
+```
+
+### Relationships
+
+```
+User (1) ----< (N) Verification
+User (1) ----< (N) QuizAttempt
+User (1) ----< (N) Account
+User (1) ----< (N) Session
+
+QuizBattle (1) ----< (N) QuizBattleParticipant
+QuizBattle (1) ----< (N) QuizBattleAnswer
+QuizBattleParticipant (1) ----< (N) QuizBattleAnswer
+```
 
 ---
 
-## API Endpoints
+## API Reference
 
-### Authentication
+### Authentication Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/auth/lastfm` | POST | Authenticate with Last.fm username |
+#### POST /api/auth/lastfm
+Authenticates user via Last.fm username.
 
-**Request Body:**
+**Request:**
 ```json
 {
   "username": "lastfm_username"
 }
 ```
 
-### Verification
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/verification/lastfm` | POST | Calculate Last.fm fan score |
-| `/api/verification` | GET | Get Spotify verification (legacy) |
-
-### Quiz (Single-Player)
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/quiz` | GET | Fetch quiz questions |
-| `/api/quiz` | POST | Submit quiz answers |
-| `/api/token` | POST | Generate access token |
-
-**Quiz Submission:**
+**Response:**
 ```json
 {
-  "userId": "user-uuid",
-  "spotifyScore": 150,
+  "success": true,
+  "user": {
+    "id": "uuid",
+    "lastfmUsername": "lastfm_username",
+    "createdAt": "2024-01-01T00:00:00Z"
+  }
+}
+```
+
+### Verification Endpoints
+
+#### POST /api/verification/lastfm
+Calculates fan score based on Last.fm listening data.
+
+**Request:**
+```json
+{
+  "username": "lastfm_username"
+}
+```
+
+**Response:**
+```json
+{
+  "totalScore": 145,
+  "breakdown": {
+    "topArtists": 50,
+    "soloMembers": 60,
+    "topTracks": 30,
+    "recentListening": 5,
+    "accountAge": 0
+  },
+  "details": {
+    "btsArtist": { "name": "BTS", "playcount": "1523" },
+    "soloArtists": [...],
+    "topTracks": [...],
+    "recentTracks": [...]
+  }
+}
+```
+
+### Quiz Endpoints
+
+#### GET /api/quiz
+Fetches 10 random quiz questions.
+
+**Response:**
+```json
+{
+  "questions": [
+    {
+      "id": "uuid",
+      "question": "Question text",
+      "options": ["A", "B", "C", "D"],
+      "correctIndex": 0
+    }
+  ]
+}
+```
+
+#### POST /api/quiz
+Submits quiz answers and calculates score.
+
+**Request:**
+```json
+{
+  "userId": "user_uuid",
+  "lastfmScore": 145,
   "answers": [0, 2, 1, 3, 0, 1, 2, 3, 0, 1]
 }
 ```
 
-### Quiz Battle (Multiplayer)
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/quiz-battle/create` | POST | Create new battle |
-| `/api/quiz-battle/join` | POST | Join existing battle |
-| `/api/quiz-battle/start` | POST | Start battle (host only) |
-| `/api/quiz-battle/ready` | POST | Mark player as ready |
-| `/api/quiz-battle/status` | GET | Get battle status (polling) |
-| `/api/quiz-battle/complete` | POST | Check/mark battle complete |
-| `/api/quiz-battle/answer/batch` | POST | Submit multiple answers |
-| `/api/quiz-battle/results` | POST | Get detailed results |
-
-**Create Battle:**
+**Response:**
 ```json
 {
-  "nickname": "Player1",
-  "participantId": "client-generated-uuid"
+  "quizScore": 80,
+  "combinedScore": 75,
+  "passed": true,
+  "correctAnswers": 8,
+  "token": "jwt_token"
 }
 ```
 
-**Join Battle:**
+### Quiz Battle Endpoints
+
+#### POST /api/quiz-battle/create
+Creates a new multiplayer battle room.
+
+**Request:**
+```json
+{
+  "nickname": "Player1",
+  "participantId": "client_generated_uuid"
+}
+```
+
+**Response:**
+```json
+{
+  "battleId": "uuid",
+  "accessCode": "ABC123",
+  "status": "waiting"
+}
+```
+
+#### POST /api/quiz-battle/join
+Joins an existing battle.
+
+**Request:**
 ```json
 {
   "accessCode": "ABC123",
   "nickname": "Player2",
-  "participantId": "client-generated-uuid"
+  "participantId": "client_generated_uuid"
 }
 ```
 
-**Batch Answer Submission:**
+#### GET /api/quiz-battle/status?battleId={uuid}
+Polls battle status for real-time updates.
+
+**Response:**
 ```json
 {
-  "battleId": "battle-uuid",
-  "participantId": "participant-uuid",
-  "answers": [
-    { "questionId": "q1-uuid", "answerIndex": 2 },
-    { "questionId": "q2-uuid", "answerIndex": 0 }
+  "status": "active",
+  "actualStartTime": "2024-01-01T00:00:00Z",
+  "participants": [
+    {
+      "nickname": "Player1",
+      "isReady": true,
+      "score": 0
+    }
   ]
+}
+```
+
+#### POST /api/quiz-battle/answer/batch
+Submits multiple answers efficiently.
+
+**Request:**
+```json
+{
+  "battleId": "uuid",
+  "participantId": "uuid",
+  "answers": [
+    { "questionId": "q1", "answerIndex": 2 },
+    { "questionId": "q2", "answerIndex": 0 }
+  ]
+}
+```
+
+#### POST /api/quiz-battle/results
+Retrieves detailed battle results.
+
+**Response:**
+```json
+{
+  "battleId": "uuid",
+  "leaderboard": [
+    {
+      "nickname": "Player1",
+      "score": 12,
+      "rank": 1,
+      "medal": "gold"
+    }
+  ],
+  "answers": [...]
 }
 ```
 
@@ -462,49 +589,52 @@ This populates the `QuizQuestion` table with BTS trivia questions. Questions are
 
 ```
 fangate/
-├── app/                          # Next.js App Router pages
-│   ├── api/                      # API route handlers
-│   │   ├── auth/                 # Authentication endpoints
-│   │   │   └── lastfm/           # Last.fm auth
-│   │   ├── quiz/                 # Single-player quiz
-│   │   ├── quiz-battle/          # Multiplayer battle APIs
-│   │   │   ├── create/           # Create battle
-│   │   │   ├── join/             # Join battle
-│   │   │   ├── start/            # Start battle
-│   │   │   ├── ready/            # Ready status
-│   │   │   ├── status/           # Battle polling
-│   │   │   ├── complete/         # Battle completion
-│   │   │   ├── answer/batch/     # Batch answers
-│   │   │   └── results/          # Battle results
-│   │   ├── verification/         # Verification APIs
-│   │   │   └── lastfm/           # Last.fm verification
-│   │   └── token/                # Access token generation
-│   ├── quiz/                     # Single-player quiz page
-│   ├── quiz-battle/              # Battle pages
-│   │   ├── lobby/                # Battle lobby
-│   │   ├── play/                 # Battle gameplay
-│   │   └── results/              # Battle results
-│   ├── verification/             # Verification page
-│   ├── layout.tsx                # Root layout (metadata)
-│   └── page.tsx                  # Home page (Last.fm auth)
-├── lib/                          # Utility libraries
-│   ├── auth.ts                   # NextAuth configuration
-│   ├── db.ts                     # Prisma client singleton
-│   ├── lastfm.ts                 # Last.fm API wrapper
-│   ├── scoring.ts                # Fan score calculation
-│   └── spotify.ts                # Spotify API wrapper (legacy)
-├── prisma/                       # Database schema & migrations
-│   ├── schema.prisma             # Database models
-│   └── migrations/               # Migration history
-├── public/                       # Static assets
-│   └── fangate-logo.png          # App branding
-├── scripts/                      # Utility scripts
-│   └── seedQuiz.ts               # Seed quiz questions
-├── .env                          # Environment variables (gitignored)
-├── .env.example                  # Environment template
-├── package.json                  # Dependencies & scripts
-├── tsconfig.json                 # TypeScript configuration
-└── tailwind.config.js            # Tailwind CSS configuration
+├── app/                                    # Next.js App Router
+│   ├── api/                                # API routes
+│   │   ├── auth/
+│   │   │   ├── [...nextauth]/             # NextAuth configuration
+│   │   │   └── lastfm/                    # Last.fm authentication
+│   │   ├── quiz/                          # Single-player quiz API
+│   │   ├── quiz-battle/                   # Multiplayer battle API
+│   │   │   ├── create/
+│   │   │   ├── join/
+│   │   │   ├── start/
+│   │   │   ├── ready/
+│   │   │   ├── status/
+│   │   │   ├── complete/
+│   │   │   ├── answer/
+│   │   │   │   └── batch/                 # Batch answer submission
+│   │   │   └── results/
+│   │   ├── verification/
+│   │   │   └── lastfm/                    # Last.fm verification
+│   │   └── token/                         # JWT token generation
+│   ├── admin/                             # Admin dashboard
+│   ├── quiz/                              # Single-player quiz page
+│   ├── quiz-battle/                       # Multiplayer battle pages
+│   │   ├── lobby/                         # Battle waiting room
+│   │   ├── play/                          # Battle gameplay
+│   │   └── results/                       # Battle results
+│   ├── success/                           # Post-verification page
+│   ├── verification/                      # Verification results page
+│   ├── layout.tsx                         # Root layout
+│   └── page.tsx                           # Home page
+├── lib/                                   # Utility libraries
+│   ├── auth.ts                            # NextAuth configuration
+│   ├── db.ts                              # Prisma client
+│   ├── lastfm.ts                          # Last.fm API wrapper
+│   ├── scoring.ts                         # Score calculation
+│   └── spotify.ts                         # Spotify API wrapper
+├── prisma/                                # Database schema
+│   ├── schema.prisma                      # Prisma schema
+│   └── migrations/                        # Migration history
+├── scripts/                               # Utility scripts
+│   └── seedQuiz.ts                        # Quiz seeder
+├── public/                                # Static assets
+├── .env.example                           # Environment template
+├── next.config.js                         # Next.js configuration
+├── tailwind.config.js                     # Tailwind configuration
+├── tsconfig.json                          # TypeScript configuration
+└── package.json                           # Dependencies
 ```
 
 ---
@@ -513,184 +643,122 @@ fangate/
 
 ### Cloudflare Pages (Recommended)
 
-1. **Build for Cloudflare:**
+**Build Configuration:**
 ```bash
 npm run build:cloudflare
 ```
 
-2. **Configure Cloudflare Pages:**
-   - Build command: `npm run build:cloudflare`
-   - Build output directory: `.vercel/output/static`
-   - Node version: 20+
+**Settings:**
+- Build command: `npm run build:cloudflare`
+- Build output directory: `.vercel/output/static`
+- Node.js version: 20+
 
-3. **Set environment variables** in Cloudflare dashboard
-
-4. **Deploy:**
-```bash
-# Automatic deployment via GitHub integration
-# Or manually upload .vercel/output/static
-```
+**Environment Variables:**
+Configure all required variables in the Cloudflare dashboard.
 
 ### Vercel
 
-1. **Install Vercel CLI:**
+**Deploy via CLI:**
 ```bash
-npm i -g vercel
-```
-
-2. **Deploy:**
-```bash
+npm install -g vercel
 vercel
 ```
 
-3. **Configure environment variables** in Vercel dashboard
+**Configure:**
+- Build command: `npm run build`
+- Environment variables in Vercel dashboard
 
 ### Traditional Hosting
 
-1. **Build production:**
+**Build and start:**
 ```bash
 npm run build
-```
-
-2. **Start production server:**
-```bash
 npm run start
 ```
 
-3. **Use PM2 or similar process manager:**
+**Process manager (PM2):**
 ```bash
 pm2 start npm --name "fangate" -- start
+pm2 save
+pm2 startup
 ```
 
 ---
 
-## Troubleshooting
+## Development
 
-### Last.fm Issues
-
-**"Last.fm username not found"**
-- Verify username spelling
-- Check if profile is public (privacy settings)
-- Try a different username to test API connectivity
-
-**"Failed to fetch Last.fm data"**
-- Verify `LASTFM_API_KEY` is correct in `.env`
-- Check API key status at [https://www.last.fm/api/account](https://www.last.fm/api/account)
-- Last.fm has a 5 requests/second rate limit per API key
-- Set `ENABLE_LASTFM_VERIFICATION=false` to use mock data for testing
-
-### Database Issues
-
-**"Prisma Client is not generated"**
-```bash
-npx prisma generate
-```
-
-**Migration errors**
-```bash
-# Reset database (WARNING: deletes data)
-npx prisma migrate reset
-
-# Or create new migration
-npx prisma migrate dev
-```
-
-**Connection issues**
-- Verify `DATABASE_URL` format: `postgresql://user:pass@host:port/dbname`
-- Check PostgreSQL is running
-- Ensure database exists
-
-### Quiz Battle Issues
-
-**Players not synchronized**
-- Check client-side polling is active (every 2-3 seconds)
-- Verify `actualStartTime` is set when all players ready
-- Ensure browser allows background polling (not throttled)
-
-**Answers not submitting**
-- Check 30-second grace period hasn't expired
-- Verify `participantId` matches database record
-- Ensure battle status is "active" or recently "completed"
-
-**Questions out of order**
-- This is a bug if it happens — questions should be consistent via `questionIds` array
-- Check database has preserved question order in battle record
-
-### Build Issues
-
-**"Module not found" errors**
-```bash
-# Clear node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**TypeScript errors**
-```bash
-# Check TypeScript version
-npm list typescript
-
-# Rebuild TypeScript
-npm run build
-```
-
----
-
-## Scripts
+### Available Scripts
 
 ```bash
-# Development
-npm run dev              # Start dev server on port 5000
-
-# Production
+npm run dev              # Start development server on port 5000
 npm run build            # Build for production
 npm run build:cloudflare # Build for Cloudflare Pages
 npm run start            # Start production server
-
-# Database
-npm run postinstall      # Generate Prisma client (auto-runs after npm install)
-npm run seed             # Seed quiz questions
-
-# Code Quality
 npm run lint             # Run ESLint
+npm run seed             # Seed quiz questions
+```
+
+### Database Operations
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Create migration
+npx prisma migrate dev --name migration_name
+
+# Apply migrations (production)
+npx prisma migrate deploy
+
+# Reset database (WARNING: deletes all data)
+npx prisma migrate reset
+
+# View database in Prisma Studio
+npx prisma studio
+```
+
+### Feature Flags
+
+Toggle features via environment variables:
+
+```bash
+# Use mock Last.fm data for testing
+ENABLE_LASTFM_VERIFICATION=false
+
+# Enable Spotify verification mode
+ENABLE_SPOTIFY_VERIFICATION=true
 ```
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please follow these guidelines:
+Contributions are welcome. Please follow these guidelines:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch: `git checkout -b feature/feature-name`
+3. Commit changes: `git commit -m 'Add feature'`
+4. Push to branch: `git push origin feature/feature-name`
+5. Submit a pull request
 
----
+### Code Style
 
-## Support the Project
-
-FANGATE is maintained by a student developer. Server costs and API fees are approximately $20/month. If you find this project useful, consider supporting via [Ko-fi](https://ko-fi.com/boy_with_code).
+- Use TypeScript for all new code
+- Follow existing code patterns
+- Run linting before committing: `npm run lint`
+- Test thoroughly before submitting PRs
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See LICENSE file for details.
+This project is licensed under the MIT License.
 
 ---
 
-## Acknowledgments
+## Credits
 
-- Built with love for ARMY
-- Creator: [@Boy_With_Code](https://twitter.com/Boy_With_Code)
-- BTS trivia questions curated from official sources
-- Last.fm API for music data
-- Cloudflare Pages for hosting
-
----
-
-Made with 💜 for ARMY.
-
-
+- Developer: [@Boy_With_Code](https://twitter.com/Boy_With_Code)
+- Built with Next.js, TypeScript, and Tailwind CSS
+- Quiz data sourced from official BTS content
+- Last.fm API integration for music data analysis

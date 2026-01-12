@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Music, TrendingUp, Clock, CheckCircle, ArrowRight, Trophy, XCircle, ListMusic, Info } from 'lucide-react';
+import { Music, TrendingUp, Clock, CheckCircle, ArrowRight, Trophy, XCircle, ListMusic, Info, Sparkles } from 'lucide-react';
 import { getScoringBreakdown } from '@/lib/scoring';
 import Footer from '@/components/Footer';
 
@@ -120,23 +120,26 @@ export default function VerificationPage() {
               Fan Verification
             </h1>
             <p className="text-white/60 text-sm sm:text-base">
-              {!result 
-                ? "We'll analyze your Spotify listening history to calculate your BTS fan score"
-                : "Your Spotify listening analysis is complete"
+              {!result
+                ? "We'll analyze your Last.fm listening history to calculate your BTS fan score"
+                : "Your Last.fm listening analysis is complete"
               }
             </p>
           </div>
 
           {!result && (
             <div className="glass-effect p-6 sm:p-8 rounded-xl">
-              <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                <p className="text-amber-200 font-semibold text-sm mb-1">
-                  Spotify API Status
-                </p>
-                <p className="text-amber-100/80 text-xs sm:text-sm leading-relaxed">
-                  Spotify currently limits new apps, so we&apos;ll show a sample verification breakdown to help you continue to the quiz. 
-                  💜 Sorry for the detour—we&apos;ll switch back as soon as they approve us!
-                </p>
+              <div className="mb-6 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Music className="text-purple-400 flex-shrink-0 mt-0.5" size={18} />
+                  <div>
+                    <p className="text-purple-200 font-semibold text-sm mb-1">Last.fm Integration</p>
+                    <p className="text-purple-300/80 text-xs sm:text-sm leading-relaxed">
+                      We use Last.fm to analyze your listening history - a free, privacy-focused music tracking service.
+                      Make sure your Last.fm profile is set to public so we can analyze your BTS plays!
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="mb-6 p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
@@ -145,7 +148,7 @@ export default function VerificationPage() {
                   <div>
                     <p className="text-purple-200 font-semibold text-sm mb-1">How Scoring Works</p>
                     <p className="text-purple-300/80 text-xs sm:text-sm">
-                      We analyze your Spotify listening history to calculate your fan score. You need a minimum of 70 points to proceed to the quiz.
+                      We analyze your Last.fm listening history to calculate your fan score. You need a minimum of 70 points to proceed to the quiz.
                     </p>
                   </div>
                 </div>
@@ -224,12 +227,23 @@ export default function VerificationPage() {
                   {result.fanScore}
                 </div>
                 <div className="text-white/60 text-sm sm:text-base font-medium mb-1">Total Fan Score</div>
-                <div className="text-xs sm:text-sm text-white/40">
-                  {result.canTakeQuiz 
-                    ? "✓ Minimum score of 70 achieved" 
+                <div className="text-xs sm:text-sm text-white/40 mb-3">
+                  {result.canTakeQuiz
+                    ? "✓ Minimum score of 70 achieved"
                     : `Need ${70 - result.fanScore} more points to proceed`
                   }
                 </div>
+                {result.fanScore >= 200 && (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full">
+                    <Sparkles className="text-purple-400" size={14} />
+                    <span className="text-sm text-purple-300">
+                      Maximum score reached! You&apos;re a mega ARMY! 💜
+                    </span>
+                  </div>
+                )}
+                <p className="text-xs text-white/30 mt-3">
+                  Note: Score is capped at 200 points. Categories have individual limits (BTS: 50, Solo members: 140, Tracks: 500, Recent: 50, Account age: 10)
+                </p>
               </div>
 
               {/* Score Breakdown */}
@@ -464,8 +478,8 @@ export default function VerificationPage() {
                     </div>
                     <p className="text-green-300/80 text-xs sm:text-sm">
                       {result.mocked
-                        ? `We’re using a sample Spotify score of ${result.fanScore} points while we wait on Spotify’s approvals. Jump into the quiz to finish your verification!`
-                        : `Your Spotify score is ${result.fanScore} points. Now take the quiz to complete your verification!`}
+                        ? `We're using sample Last.fm data (${result.fanScore} points) for demonstration. Enable Last.fm API in your environment for real verification!`
+                        : `Your Last.fm score is ${result.fanScore} points. Now take the quiz to complete your verification!`}
                     </p>
                   </div>
                   
@@ -475,12 +489,12 @@ export default function VerificationPage() {
                       Combined Scoring System
                     </h3>
                     <p className="text-xs sm:text-sm text-white/70 mb-3">
-                      Your final score combines your Spotify listening (40%) and quiz performance (60%). 
-                      Quiz score is weighted more, but your Spotify dedication can help!
+                      Your final score combines your Last.fm listening (40%) and quiz performance (60%).
+                      Quiz score is weighted more, but your Last.fm dedication can help!
                     </p>
                     <div className="space-y-2 text-xs sm:text-sm text-white/60">
                       <div className="flex items-center justify-between">
-                        <span>Your Spotify Score:</span>
+                        <span>Your Last.fm Score:</span>
                         <span className="font-semibold text-purple-400">{result.fanScore} points (40%)</span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -493,8 +507,8 @@ export default function VerificationPage() {
                       </div>
                     </div>
                     <p className="text-xs text-purple-300/70 mt-3 italic">
-                      💡 Tip: Even if you don&apos;t ace the quiz, your Spotify listening can help you pass! 
-                      An ARMY with good memory might struggle, but your playlist doesn&apos;t lie!
+                      💡 Tip: Even if you don&apos;t ace the quiz, your Last.fm listening can help you pass!
+                      An ARMY with good memory might struggle, but your scrobble history doesn&apos;t lie!
                     </p>
                   </div>
 

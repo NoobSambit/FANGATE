@@ -1,21 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const ENABLE_SPOTIFY_VERIFICATION =
-  process.env.ENABLE_SPOTIFY_VERIFICATION === 'true';
+  process.env.ENABLE_SPOTIFY_VERIFICATION === "true";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const questionIdsParam = searchParams.get('questionIds');
+    const questionIdsParam = searchParams.get("questionIds");
 
     let questions;
 
     if (questionIdsParam) {
       // Fetch specific questions by IDs and preserve order
-      const questionIds = questionIdsParam.split(',');
+      const questionIds = questionIdsParam.split(",");
       const fetchedQuestions = await prisma.quizQuestion.findMany({
         where: {
           id: {
@@ -25,15 +25,15 @@ export async function GET(req: NextRequest) {
       });
 
       // Create a map for quick lookup
-      const questionMap = new Map(fetchedQuestions.map(q => [q.id, q]));
+      const questionMap = new Map(fetchedQuestions.map((q) => [q.id, q]));
 
       // Preserve the order of the input questionIds
       questions = questionIds
-        .map(id => questionMap.get(id))
+        .map((id) => questionMap.get(id))
         .filter((q): q is NonNullable<typeof q> => q !== undefined);
 
-      console.log('[QUIZ GET] Requested IDs:', questionIds);
-      console.log('[QUIZ GET] Returned IDs:', questions.map(q => q.id));
+      console.log("[QUIZ GET] Requested IDs:", questionIds);
+      console.log("[QUIZ GET] Returned IDs:", questions.map((q) => q.id));
     } else {
       // Get all question IDs first
       const allQuestions = await prisma.quizQuestion.findMany({
@@ -41,7 +41,10 @@ export async function GET(req: NextRequest) {
       });
 
       if (allQuestions.length === 0) {
-        return NextResponse.json({ error: 'No questions available' }, { status: 404 });
+        return NextResponse.json(
+          { error: "No questions available" },
+          { status: 404 },
+        );
       }
 
       // Shuffle using Fisher-Yates algorithm for proper randomization
@@ -50,7 +53,9 @@ export async function GET(req: NextRequest) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
-      const selectedIds = shuffled.slice(0, Math.min(10, allQuestions.length)).map(q => q.id);
+      const selectedIds = shuffled
+        .slice(0, Math.min(10, allQuestions.length))
+        .map((q) => q.id);
 
       // Fetch the selected questions and preserve order
       const fetchedQuestions = await prisma.quizQuestion.findMany({
@@ -61,19 +66,22 @@ export async function GET(req: NextRequest) {
         },
       });
 
-      const questionMap = new Map(fetchedQuestions.map(q => [q.id, q]));
+      const questionMap = new Map(fetchedQuestions.map((q) => [q.id, q]));
       questions = selectedIds
-        .map(id => questionMap.get(id))
+        .map((id) => questionMap.get(id))
         .filter((q): q is NonNullable<typeof q> => q !== undefined);
     }
 
-    // Remove correctIndex before sending to client
-    const sanitizedQuestions = questions.map(({ correctIndex, ...q }) => q);
+    // Remove answerIndex before sending to client (security)
+    // Include all metadata fields for frontend display
+    const sanitizedQuestions = questions.map(
+      ({ answerIndex, ...q }) => q,
+    );
 
     return NextResponse.json(sanitizedQuestions);
   } catch (error) {
-    console.error('Quiz fetch error:', error);
-    return NextResponse.json({ error: 'Failed to fetch quiz' }, { status: 500 });
+    console.error("Quiz fetch error:", error);
+    return NextResponse.json({ error: "Failed to fetch quiz" }, { status: 500 });
   }
 }
 
@@ -90,19 +98,27 @@ export async function POST(req: NextRequest) {
 
     if (!user && ENABLE_SPOTIFY_VERIFICATION) {
       if (!session?.user?.email) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const { answers, questionIds, verificationId, spotifyScore: providedSpotifyScore } = await req.json();
+    const {
+      answers,
+      questionIds,
+      verificationId,
+      lastfmScore: providedLastfmScore,
+    } = await req.json();
 
     if (!questionIds || !Array.isArray(questionIds) || questionIds.length !== 10) {
-      return NextResponse.json({ error: 'Invalid question IDs' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid question IDs" },
+        { status: 400 },
+      );
     }
 
     if (!answers || !Array.isArray(answers) || answers.length !== 10) {
-      return NextResponse.json({ error: 'Invalid answers' }, { status: 400 });
+      return NextResponse.json({ error: "Invalid answers" }, { status: 400 });
     }
 
     if (verificationId && ENABLE_SPOTIFY_VERIFICATION) {
@@ -111,11 +127,31 @@ export async function POST(req: NextRequest) {
       });
 
       if (!verification) {
-        return NextResponse.json({ error: 'Verification not found' }, { status: 404 });
+        return NextResponse.json(
+          { error: "Verification not found" },
+          { status: 404 },
+        );
       }
 
       if (!user || verification.userId !== user.id) {
-        return NextResponse.json({ error: 'Forbidden: Verification does not belong to you' }, { status: 403 });
+        return NextResponse.json(
+          { error: "Forbidden: Verification does not belong to you" },
+          { status: 403 },
+        );
+      }
+    }
+
+    // Also check for Last.fm verification (non-OAuth flow)
+    if (verificationId && !ENABLE_SPOTIFY_VERIFICATION) {
+      const verification = await prisma.verification.findUnique({
+        where: { id: verificationId },
+      });
+
+      if (!verification) {
+        return NextResponse.json(
+          { error: "Verification not found" },
+          { status: 404 },
+        );
       }
     }
 
@@ -129,50 +165,69 @@ export async function POST(req: NextRequest) {
     });
 
     // Create a map of question ID to question for quick lookup
-    const questionMap = new Map(questions.map(q => [q.id, q]));
+    const questionMap = new Map(questions.map((q) => [q.id, q]));
 
     // Build result with questions, user answers, and correctness
-    const questionResults = questionIds.map((questionId: string, index: number) => {
-      const question = questionMap.get(questionId);
-      const userAnswer = answers[index];
-      const isCorrect = question ? question.correctIndex === userAnswer : false;
-      
-      return {
-        id: questionId,
-        question: question?.question || '',
-        options: question?.options || [],
-        correctIndex: question?.correctIndex ?? -1,
-        userAnswer: userAnswer,
-        isCorrect: isCorrect,
-      };
-    });
+    const questionResults = questionIds.map(
+      (questionId: string, index: number) => {
+        const question = questionMap.get(questionId);
+        const userAnswer = answers[index];
+        const isCorrect = question ? question.answerIndex === userAnswer : false;
 
-    const correctCount = questionResults.filter(r => r.isCorrect).length;
+        return {
+          id: questionId,
+          question: question?.question || "",
+          choices: question?.choices || [],
+          answerIndex: question?.answerIndex ?? -1,
+          difficulty: question?.difficulty || "medium",
+          tags: question?.tags || [],
+          members: question?.members || [],
+          eras: question?.eras || [],
+          locale: question?.locale || "en",
+          source: question?.source || "",
+          explanation: question?.explanation || "",
+          userAnswer: userAnswer,
+          isCorrect: isCorrect,
+        };
+      },
+    );
+
+    const correctCount = questionResults.filter((r) => r.isCorrect).length;
     const quizScore = correctCount;
     const quizPercentage = (quizScore / 10) * 100;
     const quizPassed = quizScore >= 7; // Quiz itself passed (7/10)
 
-    // Get Spotify fan score and breakdown from verification
-    let spotifyScore = 0;
+    // Get Last.fm fan score and breakdown from verification
+    let lastfmScore = 0;
     if (ENABLE_SPOTIFY_VERIFICATION && verificationId) {
       const verification = await prisma.verification.findUnique({
         where: { id: verificationId },
-        select: { 
+        select: {
           fanScore: true,
-          // We'll need to fetch the breakdown from the verification data
-          // For now, we'll calculate it or store it separately
         },
       });
       if (verification) {
-        spotifyScore = verification.fanScore;
+        lastfmScore = verification.fanScore;
       }
     } else if (!ENABLE_SPOTIFY_VERIFICATION) {
-      spotifyScore = Number(providedSpotifyScore) || 0;
+      // Last.fm mode: use score from request or verification
+      lastfmScore = Number(providedLastfmScore) || 0;
+      if (verificationId) {
+        const verification = await prisma.verification.findUnique({
+          where: { id: verificationId },
+          select: { fanScore: true },
+        });
+        if (verification && verification.fanScore > 0) {
+          lastfmScore = verification.fanScore;
+        }
+      }
     }
 
-    // Calculate combined score: Spotify (40%) + Quiz (60%)
+    // Calculate combined score: Last.fm (40%) + Quiz (60%)
     // Quiz score is weighted more as requested
-    const combinedScore = Math.round((spotifyScore * 0.4) + (quizPercentage * 0.6));
+    const combinedScore = Math.round(
+      lastfmScore * 0.4 + quizPercentage * 0.6,
+    );
     const overallPassed = combinedScore >= 70;
 
     if (ENABLE_SPOTIFY_VERIFICATION && user) {
@@ -199,7 +254,7 @@ export async function POST(req: NextRequest) {
       score: quizScore,
       quizPassed, // Whether quiz itself passed (7/10)
       overallPassed, // Whether combined score passed (>=70)
-      spotifyScore,
+      lastfmScore,
       quizPercentage,
       combinedScore,
       correctCount,
@@ -208,10 +263,10 @@ export async function POST(req: NextRequest) {
       mocked: !ENABLE_SPOTIFY_VERIFICATION,
     });
   } catch (error: any) {
-    console.error('Quiz submission error:', error);
+    console.error("Quiz submission error:", error);
     return NextResponse.json(
-      { error: error.message || 'Quiz submission failed' },
-      { status: 500 }
+      { error: error.message || "Quiz submission failed" },
+      { status: 500 },
     );
   }
 }
