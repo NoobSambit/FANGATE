@@ -46,7 +46,7 @@ export default function PlayPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<{ [questionId: string]: number }>({});
   const answersRef = useRef<{ [questionId: string]: number }>({});
-  const [timeRemaining, setTimeRemaining] = useState(60); // 60 seconds
+  const [timeRemaining, setTimeRemaining] = useState(200); // 200 seconds
   const [loading, setLoading] = useState(true);
   const [battleStartTime, setBattleStartTime] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -121,7 +121,7 @@ export default function PlayPage() {
           // Calculate initial time remaining
           const now = Date.now();
           const elapsed = Math.floor((now - actualStart) / 1000);
-          const remaining = Math.max(0, 60 - elapsed);
+          const remaining = Math.max(0, 200 - elapsed);
           setTimeRemaining(remaining);
         } else {
           // Mark this player as ready now that questions are loaded
@@ -148,7 +148,7 @@ export default function PlayPage() {
               // Calculate initial time remaining
               const now = Date.now();
               const elapsed = Math.floor((now - actualStart) / 1000);
-              const remaining = Math.max(0, 60 - elapsed);
+              const remaining = Math.max(0, 200 - elapsed);
               setTimeRemaining(remaining);
             } else {
               console.log('[PLAY] Waiting for other players to be ready');
@@ -171,7 +171,7 @@ export default function PlayPage() {
     const updateTimer = () => {
       const now = Date.now();
       const elapsed = Math.floor((now - battleStartTime) / 1000);
-      const remaining = Math.max(0, 60 - elapsed);
+      const remaining = Math.max(0, 200 - elapsed);
 
       setTimeRemaining(remaining);
 
@@ -238,7 +238,7 @@ export default function PlayPage() {
             // Calculate initial time remaining
             const now = Date.now();
             const elapsed = Math.floor((now - actualStart) / 1000);
-            const remaining = Math.max(0, 60 - elapsed);
+            const remaining = Math.max(0, 200 - elapsed);
             setTimeRemaining(remaining);
           }
 
@@ -407,10 +407,10 @@ export default function PlayPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0d0d12]">
         <div className="flex items-center gap-3">
-          <Loader2 className="text-purple-500 animate-spin" size={24} />
-          <span className="text-white/70">Loading battle...</span>
+          <Loader2 className="text-purple-400 animate-spin" size={24} />
+          <span className="text-purple-200/60">Loading battle...</span>
         </div>
       </div>
     );
@@ -418,12 +418,12 @@ export default function PlayPage() {
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0d0d12] p-4">
         <div className="text-center">
           <div className="text-red-400 mb-4">Failed to load questions</div>
           <button
             onClick={() => router.push('/quiz-battle')}
-            className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
+            className="px-6 py-3 bg-purple-900/30 border border-purple-800/50 rounded-lg text-white hover:bg-purple-900/50 transition-colors"
           >
             Back to Quiz Battle
           </button>
@@ -438,61 +438,53 @@ export default function PlayPage() {
     const totalPlayers = battleStatus.participants.length;
 
     return (
-      <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
-        {/* Animated background */}
-        <div className="fixed inset-0 bg-gradient-to-br from-indigo-950/30 via-[#0a0a0f] to-purple-950/30 pointer-events-none" />
-
-        {/* Animated orbs */}
-        <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-
-        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0d0d12]">
+        <div className="min-h-screen flex items-center justify-center p-4 sm:p-6">
           <div className="max-w-2xl w-full">
             {/* Loading Icon */}
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-6 sm:mb-8">
               <div className="relative">
-                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                  <Loader2 className="w-16 h-16 text-white animate-spin" />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-purple-900/40 border-2 border-purple-700/50 flex items-center justify-center">
+                  <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-purple-400 animate-spin" />
                 </div>
-                <div className="absolute inset-0 w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 animate-ping opacity-20" />
               </div>
             </div>
 
             {/* Title */}
-            <div className="text-center mb-8">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent mb-4">
+            <div className="text-center mb-6 sm:mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
                 Get Ready!
               </h1>
-              <p className="text-2xl text-white/90 mb-2">
+              <p className="text-lg sm:text-xl md:text-2xl text-purple-200/80 mb-1 sm:mb-2">
                 Questions loaded successfully
               </p>
-              <p className="text-white/60 text-lg">Waiting for all players to be ready...</p>
+              <p className="text-sm sm:text-base text-purple-200/50">Waiting for all players to be ready...</p>
             </div>
 
             {/* Progress indicator */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-white/70 text-sm">Players Ready</span>
-                <span className="text-white/70 text-sm">{readyCount}/{totalPlayers} ready</span>
+            <div className="mb-6 sm:mb-8">
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <span className="text-purple-200/60 text-xs sm:text-sm">Players Ready</span>
+                <span className="text-purple-200/60 text-xs sm:text-sm">{readyCount}/{totalPlayers} ready</span>
               </div>
-              <div className="h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
+              <div className="h-2 sm:h-3 bg-purple-950/40 rounded-full overflow-hidden border border-purple-900/40">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000 ease-out"
+                  className="h-full bg-purple-700 transition-all duration-1000 ease-out"
                   style={{ width: `${(readyCount / totalPlayers) * 100}%` }}
                 />
               </div>
             </div>
 
             {/* Players Status Card */}
-            <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="p-2 bg-indigo-500/20 rounded-lg">
-                  <Users className="text-indigo-400" size={24} />
+            <div className="bg-[#15151f] border border-purple-900/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="p-1.5 sm:p-2 bg-purple-950/50 rounded-lg">
+                  <Users className="text-purple-400 w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] md:w-[24px] md:h-[24px]" />
                 </div>
-                <span className="text-2xl font-bold text-white">Players</span>
+                <span className="text-xl sm:text-2xl font-semibold text-white">Players</span>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {battleStatus.participants.map((p, index) => {
                   const isCurrentPlayer = p.participantId === participantId;
                   const isPlayerReady = p.isReady;
@@ -500,28 +492,28 @@ export default function PlayPage() {
                   return (
                     <div
                       key={p.participantId}
-                      className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 ${
+                      className={`flex items-center justify-between p-3 sm:p-4 rounded-lg sm:rounded-xl transition-all ${
                         isCurrentPlayer
-                          ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border-2 border-indigo-500/50'
-                          : 'bg-white/5 border border-white/10'
+                          ? 'bg-purple-950/40 border border-purple-700/50'
+                          : 'bg-purple-950/20 border border-purple-900/30'
                       }`}
                     >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                      <div className="flex items-center gap-2 sm:gap-4">
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm ${
                           isPlayerReady
-                            ? 'bg-green-500/20 text-green-400 border-2 border-green-500/50'
-                            : 'bg-white/10 text-white/60'
+                            ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-800/50'
+                            : 'bg-purple-900/30 text-purple-200/50'
                         }`}>
                           {p.nickname.charAt(0).toUpperCase()}
                         </div>
 
                         <div>
-                          <div className="flex items-center gap-2">
-                            <span className={`font-semibold ${isCurrentPlayer ? 'text-white text-lg' : 'text-white/80'}`}>
+                          <div className="flex items-center gap-1.5 sm:gap-2">
+                            <span className={`font-semibold text-sm sm:text-base ${isCurrentPlayer ? 'text-white' : 'text-purple-200/80'}`}>
                               {p.nickname}
                             </span>
                             {isCurrentPlayer && (
-                              <span className="px-2 py-0.5 bg-indigo-500/30 text-indigo-300 text-xs rounded-full">You</span>
+                              <span className="px-1.5 sm:px-2 py-0.5 bg-purple-900/50 text-purple-300 text-[10px] sm:text-xs rounded-full">You</span>
                             )}
                           </div>
                         </div>
@@ -529,14 +521,14 @@ export default function PlayPage() {
 
                       <div>
                         {isPlayerReady ? (
-                          <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30">
-                            <div className="w-2 h-2 bg-green-400 rounded-full" />
-                            <span className="font-semibold">Ready</span>
+                          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-emerald-950/40 text-emerald-400 rounded-lg border border-emerald-900/50">
+                            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-full" />
+                            <span className="font-semibold text-xs sm:text-sm">Ready</span>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/60 rounded-lg">
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            <span>Loading...</span>
+                          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-purple-900/30 text-purple-200/50 rounded-lg">
+                            <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                            <span className="text-xs sm:text-sm">Loading...</span>
                           </div>
                         )}
                       </div>
@@ -546,7 +538,7 @@ export default function PlayPage() {
               </div>
             </div>
 
-            <div className="mt-6 text-center text-white/50 text-sm">
+            <div className="mt-4 sm:mt-6 text-center text-purple-200/40 text-xs sm:text-sm">
               The timer will start when all players are ready
             </div>
           </div>
@@ -562,46 +554,38 @@ export default function PlayPage() {
     const totalPlayers = battleStatus?.participants.length || 1;
 
     return (
-      <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
-        {/* Animated background */}
-        <div className="fixed inset-0 bg-gradient-to-br from-purple-950/30 via-[#0a0a0f] to-pink-950/30 pointer-events-none" />
-
-        {/* Animated orbs */}
-        <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-
-        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0d0d12]">
+        <div className="min-h-screen flex items-center justify-center p-4 sm:p-6">
           <div className="max-w-2xl w-full">
-            {/* Success Icon with animation */}
-            <div className="flex justify-center mb-8">
+            {/* Success Icon */}
+            <div className="flex justify-center mb-6 sm:mb-8">
               <div className="relative">
-                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center animate-bounce-slow">
-                  <Trophy className="w-16 h-16 text-white" />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-purple-900/40 border-2 border-purple-700/50 flex items-center justify-center">
+                  <Trophy className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-purple-400" />
                 </div>
-                <div className="absolute inset-0 w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 animate-ping opacity-20" />
               </div>
             </div>
 
             {/* Title */}
-            <div className="text-center mb-8">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mb-4 animate-gradient">
+            <div className="text-center mb-6 sm:mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
                 Quiz Completed!
               </h1>
-              <p className="text-2xl text-white/90 mb-2">
-                You answered <span className="font-bold text-purple-400">{answeredCount}</span> out of <span className="font-bold text-pink-400">{questions.length}</span> questions
+              <p className="text-base sm:text-lg md:text-xl text-purple-200/80 mb-1 sm:mb-2">
+                You answered <span className="font-semibold text-purple-400">{answeredCount}</span> out of <span className="font-semibold text-purple-400">{questions.length}</span> questions
               </p>
-              <p className="text-white/60 text-lg">Waiting for other players to finish...</p>
+              <p className="text-sm sm:text-base text-purple-200/50">Waiting for other players to finish...</p>
             </div>
 
             {/* Progress indicator */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-white/70 text-sm">Battle Progress</span>
-                <span className="text-white/70 text-sm">{finishedPlayersCount}/{totalPlayers} players finished</span>
+            <div className="mb-6 sm:mb-8">
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <span className="text-purple-200/60 text-xs sm:text-sm">Battle Progress</span>
+                <span className="text-purple-200/60 text-xs sm:text-sm">{finishedPlayersCount}/{totalPlayers} players finished</span>
               </div>
-              <div className="h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
+              <div className="h-2 sm:h-3 bg-purple-950/40 rounded-full overflow-hidden border border-purple-900/40">
                 <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-1000 ease-out"
+                  className="h-full bg-purple-700 transition-all duration-1000 ease-out"
                   style={{ width: `${(finishedPlayersCount / totalPlayers) * 100}%` }}
                 />
               </div>
@@ -609,15 +593,15 @@ export default function PlayPage() {
 
             {/* Players Status Card */}
             {battleStatus && (
-              <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl mb-6">
-                <div className="flex items-center justify-center gap-3 mb-6">
-                  <div className="p-2 bg-purple-500/20 rounded-lg">
-                    <Users className="text-purple-400" size={24} />
+              <div className="bg-[#15151f] border border-purple-900/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 mb-4 sm:mb-6">
+                <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                  <div className="p-1.5 sm:p-2 bg-purple-950/50 rounded-lg">
+                    <Users className="text-purple-400 w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] md:w-[24px] md:h-[24px]" />
                   </div>
-                  <span className="text-2xl font-bold text-white">Players Status</span>
+                  <span className="text-xl sm:text-2xl font-semibold text-white">Players Status</span>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {battleStatus.participants.map((p, index) => {
                     const isCurrentPlayer = p.participantId === participantId;
                     const playerFinishStatus = battleStatus.participantsFinishStatus?.find(
@@ -628,46 +612,46 @@ export default function PlayPage() {
                     return (
                       <div
                         key={p.participantId}
-                        className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 ${
+                        className={`flex items-center justify-between p-3 sm:p-4 rounded-lg sm:rounded-xl transition-all ${
                           isCurrentPlayer
-                            ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-2 border-purple-500/50'
-                            : 'bg-white/5 border border-white/10'
+                            ? 'bg-purple-950/40 border border-purple-700/50'
+                            : 'bg-purple-950/20 border border-purple-900/30'
                         }`}
                       >
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2 sm:gap-4">
                           {/* Rank badge */}
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                            index === 0 ? 'bg-yellow-500/20 text-yellow-400 border-2 border-yellow-500/50' :
-                            index === 1 ? 'bg-gray-400/20 text-gray-300 border-2 border-gray-400/50' :
-                            index === 2 ? 'bg-orange-600/20 text-orange-400 border-2 border-orange-600/50' :
-                            'bg-white/10 text-white/60'
+                          <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm ${
+                            index === 0 ? 'bg-amber-950/40 text-amber-400 border border-amber-800/50' :
+                            index === 1 ? 'bg-zinc-800/50 text-zinc-300 border border-zinc-700/50' :
+                            index === 2 ? 'bg-orange-950/40 text-orange-400 border border-orange-800/50' :
+                            'bg-purple-900/30 text-purple-200/50'
                           }`}>
                             #{index + 1}
                           </div>
 
                           <div>
-                            <div className="flex items-center gap-2">
-                              <span className={`font-semibold ${isCurrentPlayer ? 'text-white text-lg' : 'text-white/80'}`}>
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                              <span className={`font-semibold text-sm sm:text-base ${isCurrentPlayer ? 'text-white' : 'text-purple-200/80'}`}>
                                 {p.nickname}
                               </span>
                               {isCurrentPlayer && (
-                                <span className="px-2 py-0.5 bg-purple-500/30 text-purple-300 text-xs rounded-full">You</span>
+                                <span className="px-1.5 sm:px-2 py-0.5 bg-purple-900/50 text-purple-300 text-[10px] sm:text-xs rounded-full">You</span>
                               )}
                             </div>
-                            <span className="text-white/50 text-sm">Score: {p.score}</span>
+                            <span className="text-purple-200/40 text-xs sm:text-sm">Score: {p.score}</span>
                           </div>
                         </div>
 
                         <div>
                           {hasPlayerFinished ? (
-                            <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30">
-                              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                              <span className="font-semibold">Finished</span>
+                            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-emerald-950/40 text-emerald-400 rounded-lg border border-emerald-900/50">
+                              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-full" />
+                              <span className="font-semibold text-xs sm:text-sm">Finished</span>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/60 rounded-lg">
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              <span>Playing...</span>
+                            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-purple-900/30 text-purple-200/50 rounded-lg">
+                              <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                              <span className="text-xs sm:text-sm">Playing...</span>
                             </div>
                           )}
                         </div>
@@ -679,44 +663,15 @@ export default function PlayPage() {
             )}
 
             {/* Timer */}
-            <div className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-white/20 rounded-xl">
-              <Clock className="text-purple-400" size={24} />
-              <span className="text-white/70">Time remaining:</span>
-              <span className="text-2xl font-mono font-bold text-white">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-purple-950/40 border border-purple-900/40 rounded-xl">
+              <Clock className="text-purple-400 w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] md:w-[24px] md:h-[24px]" />
+              <span className="text-purple-200/60 text-sm sm:text-base">Time remaining:</span>
+              <span className="text-xl sm:text-2xl font-mono font-semibold text-white">
                 {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
               </span>
             </div>
           </div>
         </div>
-
-        <style jsx>{`
-          @keyframes bounce-slow {
-            0%, 100% {
-              transform: translateY(0);
-            }
-            50% {
-              transform: translateY(-20px);
-            }
-          }
-
-          @keyframes gradient {
-            0%, 100% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-          }
-
-          .animate-bounce-slow {
-            animation: bounce-slow 3s ease-in-out infinite;
-          }
-
-          .animate-gradient {
-            background-size: 200% auto;
-            animation: gradient 3s linear infinite;
-          }
-        `}</style>
       </div>
     );
   }

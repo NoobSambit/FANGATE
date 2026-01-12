@@ -185,7 +185,7 @@ export default function QuizBattlePage() {
                 </div>
                 <div className="p-3 sm:p-4 bg-zinc-900/50 border border-white/10 rounded-xl backdrop-blur-sm">
                   <Clock className="text-emerald-400 mx-auto mb-2" size={20} />
-                  <div className="text-lg sm:text-2xl font-bold text-white mb-1">150s</div>
+                  <div className="text-lg sm:text-2xl font-bold text-white mb-1">200s</div>
                   <div className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-wider font-bold">Time Limit</div>
                 </div>
               </div>

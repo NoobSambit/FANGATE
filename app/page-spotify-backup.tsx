@@ -236,7 +236,7 @@ export default function Home() {
                   {/* Stat Card 2 */}
                   <div className="bg-black/40 backdrop-blur-md border border-white/5 p-4 sm:p-6 rounded-2xl hover:border-purple-500/30 transition-colors duration-300 lg:mt-8">
                     <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-400 mb-2 sm:mb-4" />
-                    <div className="text-2xl sm:text-3xl font-bold text-white mb-1">150s</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white mb-1">200s</div>
                     <div className="text-xs sm:text-sm text-zinc-500 font-medium uppercase tracking-wider">Time Limit</div>
                   </div>
 

@@ -40,6 +40,7 @@ interface Winner {
 export default function ResultsPage() {
   const router = useRouter();
   const cardRef = useRef<HTMLDivElement>(null);
+  const hasLoadedResultsRef = useRef(false);
 
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
@@ -59,6 +60,12 @@ export default function ResultsPage() {
   });
 
   useEffect(() => {
+    // If we've already loaded results, don't redirect even if sessionStorage is cleared
+    // This allows refreshing/revisiting the results page
+    if (hasLoadedResultsRef.current) {
+      return;
+    }
+
     const battleId = sessionStorage.getItem('quizBattle_battleId');
     const participantId = sessionStorage.getItem('quizBattle_participantId');
 
@@ -101,6 +108,14 @@ export default function ResultsPage() {
         setWinners(data.winners);
         setMyResult(myRes || null);
         setLoading(false);
+
+        // Mark that we've successfully loaded results
+        hasLoadedResultsRef.current = true;
+
+        // Clear sessionStorage after successfully loading results
+        // This prevents being forced back to results when navigating away
+        sessionStorage.removeItem('quizBattle_battleId');
+        sessionStorage.removeItem('quizBattle_participantId');
       } catch (err: any) {
         setError(err.message || 'Failed to load results');
         setLoading(false);
