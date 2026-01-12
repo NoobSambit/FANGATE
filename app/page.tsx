@@ -72,7 +72,7 @@ export default function Home() {
                 onClick={() => router.push('/quiz-battle')}
                 className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-purple-300 hover:text-purple-200 transition-colors"
               >
-                <Swords size={13} className="sm:size-[15px]" />
+                <Swords size={13} />
                 <span className="hidden sm:inline">Battle</span>
               </button>
               <button
@@ -91,7 +91,7 @@ export default function Home() {
         <div className="text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 mb-6 sm:mb-10 bg-purple-950/40 border border-purple-900/40 rounded-full">
-            <Sparkles className="text-purple-400" size={12} className="sm:size-[14px]" />
+            <Sparkles className="text-purple-400" size={12} />
             <span className="text-xs sm:text-sm text-purple-300 font-medium">Fun ARMY Game Challenge</span>
           </div>
 
@@ -112,7 +112,7 @@ export default function Home() {
           {connected ? (
             <div className="flex flex-col items-center gap-3 sm:gap-4">
               <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-3 bg-emerald-950/40 border border-emerald-900/40 rounded-lg mb-1 sm:mb-2">
-                <CheckCircle className="text-emerald-400" size={16} className="sm:size-[18px]" />
+                <CheckCircle className="text-emerald-400" size={16} />
                 <span className="text-xs sm:text-sm text-emerald-300 font-medium">Last.fm Connected</span>
               </div>
               <button
@@ -120,7 +120,7 @@ export default function Home() {
                 className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-medium text-white bg-purple-700 hover:bg-purple-600 transition-colors rounded-lg"
               >
                 Start Verification
-                <ArrowRight size={16} className="sm:size-[18px]" />
+                <ArrowRight size={16} />
               </button>
             </div>
           ) : (
@@ -135,7 +135,7 @@ export default function Home() {
                     className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-purple-950/40 border border-purple-900/40 rounded-xl text-white placeholder:text-purple-300/40 focus:outline-none focus:border-purple-700 transition-colors text-sm sm:text-base"
                     required
                   />
-                  <Music className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-purple-400/40" size={18} className="sm:size-[20px]" />
+                  <Music className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-purple-400/40" size={18} />
                 </div>
                 <button
                   type="submit"
@@ -149,10 +149,10 @@ export default function Home() {
                     </>
                   ) : (
                     <>
-                      <Music size={18} className="sm:size-[20px]" />
+                      <Music size={18} />
                       <span className="hidden xs:inline">Connect with Last.fm</span>
                       <span className="xs:hidden">Connect</span>
-                      <ArrowRight size={18} className="sm:size-[20px]" />
+                      <ArrowRight size={18} />
                     </>
                   )}
                 </button>
@@ -182,7 +182,7 @@ export default function Home() {
 
           {/* Security Note */}
           <p className="text-xs sm:text-sm text-purple-200/40 mt-6 sm:mt-10 flex items-center justify-center gap-1.5 sm:gap-2">
-            <Shield size={11} className="sm:size-[13px]" />
+            <Shield size={11} />
             We only read public data - no password required
           </p>
         </div>
@@ -271,7 +271,7 @@ export default function Home() {
               Complete transparency on how we calculate your fan score in this fun game
             </p>
             <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-950/40 border border-purple-900/40 rounded-full">
-              <Info className="text-purple-400" size={14} className="sm:size-[16px]" />
+              <Info className="text-purple-400" size={14} />
               <span className="text-xs sm:text-sm text-purple-300">
                 Minimum score required: 70 points | Quiz: 10 questions (70% to pass)
               </span>
@@ -293,7 +293,7 @@ export default function Home() {
                 <div key={idx} className="bg-purple-950/20 border border-purple-900/30 p-4 sm:p-5 md:p-6 rounded-xl">
                   <div className="flex items-start gap-3 sm:gap-4">
                     <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-purple-900/40 rounded-lg flex items-center justify-center border border-purple-800/40">
-                      <Icon className="text-purple-400" size={18} className="sm:size-[22px]" />
+                      <Icon className="text-purple-400" size={18} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
@@ -332,7 +332,7 @@ export default function Home() {
           {/* Combined Scoring Explanation */}
           <div className="mt-6 sm:mt-8 bg-purple-950/30 border border-purple-800/40 p-4 sm:p-5 md:p-6 rounded-xl">
             <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
-              <Award className="text-purple-400" size={18} className="sm:size-[22px]" />
+              <Award className="text-purple-400" size={18} />
               Final Verification Score
             </h3>
             <p className="text-xs sm:text-sm text-purple-200/70 mb-3 sm:mb-5">
@@ -422,7 +422,7 @@ export default function Home() {
               onClick={() => setShowDonationModal(false)}
               className="absolute top-3 sm:top-4 right-3 sm:right-4 p-1.5 sm:p-2 text-purple-200/60 hover:text-white transition-colors"
             >
-              <X size={20} className="sm:size-[24px]" />
+              <X size={20} />
             </button>
 
             <div className="mb-4 sm:mb-6">
@@ -453,7 +453,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full px-5 sm:px-6 py-3 sm:py-4 bg-purple-700 hover:bg-purple-600 text-white font-semibold rounded-xl transition-all text-sm sm:text-base"
             >
-              <Heart size={18} className="sm:size-[20px] fill-current" />
+              <Heart size={18} className="fill-current" />
               <span>Donate on Ko-fi</span>
               <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
