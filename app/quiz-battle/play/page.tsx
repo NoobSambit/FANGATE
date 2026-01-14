@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Clock, Trophy, Loader2, ChevronRight, Users } from 'lucide-react';
+import { QUIZ_BATTLE_CONFIG, getTimeRemaining } from '@/lib/quiz-config';
 
 interface Question {
   id: string;
@@ -46,7 +47,7 @@ export default function PlayPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<{ [questionId: string]: number }>({});
   const answersRef = useRef<{ [questionId: string]: number }>({});
-  const [timeRemaining, setTimeRemaining] = useState(200); // 200 seconds
+  const [timeRemaining, setTimeRemaining] = useState<number>(QUIZ_BATTLE_CONFIG.TIME_LIMIT_SECONDS);
   const [loading, setLoading] = useState(true);
   const [battleStartTime, setBattleStartTime] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -119,9 +120,7 @@ export default function PlayPage() {
           setWaitingForPlayers(false);
 
           // Calculate initial time remaining
-          const now = Date.now();
-          const elapsed = Math.floor((now - actualStart) / 1000);
-          const remaining = Math.max(0, 200 - elapsed);
+          const remaining = getTimeRemaining(data.battle.actualStartTime);
           setTimeRemaining(remaining);
         } else {
           // Mark this player as ready now that questions are loaded
@@ -146,9 +145,7 @@ export default function PlayPage() {
               setWaitingForPlayers(false);
 
               // Calculate initial time remaining
-              const now = Date.now();
-              const elapsed = Math.floor((now - actualStart) / 1000);
-              const remaining = Math.max(0, 200 - elapsed);
+              const remaining = getTimeRemaining(readyData.actualStartTime);
               setTimeRemaining(remaining);
             } else {
               console.log('[PLAY] Waiting for other players to be ready');
@@ -169,10 +166,7 @@ export default function PlayPage() {
     if (loading || !battleStartTime || waitingForPlayers) return;
 
     const updateTimer = () => {
-      const now = Date.now();
-      const elapsed = Math.floor((now - battleStartTime) / 1000);
-      const remaining = Math.max(0, 200 - elapsed);
-
+      const remaining = getTimeRemaining(new Date(battleStartTime));
       setTimeRemaining(remaining);
 
       if (remaining <= 0 && !hasFinished) {
@@ -236,9 +230,7 @@ export default function PlayPage() {
             setWaitingForPlayers(false);
 
             // Calculate initial time remaining
-            const now = Date.now();
-            const elapsed = Math.floor((now - actualStart) / 1000);
-            const remaining = Math.max(0, 200 - elapsed);
+            const remaining = getTimeRemaining(completeData.battle.actualStartTime);
             setTimeRemaining(remaining);
           }
 

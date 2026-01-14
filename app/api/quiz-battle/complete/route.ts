@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { QUIZ_BATTLE_CONFIG } from '@/lib/quiz-config';
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,11 +38,11 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Check if time has expired (60 seconds = 1:00)
+    // Check if time has expired (use centralized config)
     // Use actualStartTime if set (when all players ready), otherwise don't count time yet
     const actualStart = battle.actualStartTime ? new Date(battle.actualStartTime).getTime() : null;
     const elapsed = actualStart ? Math.floor((Date.now() - actualStart) / 1000) : 0;
-    const timeExpired = actualStart ? elapsed >= 60 : false;
+    const timeExpired = actualStart ? elapsed >= QUIZ_BATTLE_CONFIG.TIME_LIMIT_SECONDS : false;
 
     // Complete battle if time expired or all participants finished
     // Note: We consider a participant finished if they have 15 answers
@@ -99,7 +100,7 @@ export async function POST(req: NextRequest) {
 
     const responsePayload: any = {
       completed: false,
-      timeRemaining: Math.max(0, 60 - elapsed),
+      timeRemaining: Math.max(0, QUIZ_BATTLE_CONFIG.TIME_LIMIT_SECONDS - elapsed),
       participantsFinishStatus,
     };
 

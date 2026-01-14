@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { QUIZ_BATTLE_CONFIG } from '@/lib/quiz-config';
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,8 +44,8 @@ export async function POST(req: NextRequest) {
       const now = Date.now();
       const timeSinceCompletion = (now - completedAt) / 1000;
 
-      // Allow 30 seconds grace period for batch submissions
-      if (timeSinceCompletion > 30) {
+      // Allow grace period for batch submissions (use centralized config)
+      if (timeSinceCompletion > QUIZ_BATTLE_CONFIG.SUBMISSION_GRACE_PERIOD_SECONDS) {
         console.log('[ANSWER_BATCH] Battle completed', timeSinceCompletion, 'seconds ago, rejecting');
         return NextResponse.json(
           { error: 'Battle is not active' },
